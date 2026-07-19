@@ -1,5 +1,20 @@
 # Reference-derived analysis of MEC System Model and Problem Formulation sections
 
+## Contents
+
+1. [Scope and portable source identification](#scope-and-portable-source-identification)
+2. [Shared macro-structure](#shared-macro-structure)
+3. [Source-by-source structural anatomy](#source-by-source-structural-anatomy)
+4. [Demand-aware multi-area multi-UAV MEC](#1-demand-aware-multi-area-multi-uav-mec)
+5. [UAV-enabled multi-source fusion](#2-uav-enabled-multi-source-fusion)
+6. [Terrain-aware UAV-MEC](#3-terrain-aware-uav-mec)
+7. [Reliable offloading in dispersed computing](#4-reliable-offloading-in-dispersed-computing)
+8. [HAP-UAV periodic planning manuscript](#5-hap-uav-periodic-planning-manuscript)
+9. [Stable paragraph roles](#stable-paragraph-roles)
+10. [Problem Formulation as closure](#problem-formulation-as-closure)
+11. [Architecture inheritance lessons](#architecture-inheritance-lessons)
+12. [Benchmark-inconsistent failure patterns](#benchmark-inconsistent-failure-patterns)
+
 ## Scope and portable source identification
 
 This analysis is distilled from the model and formulation sections of five benchmark manuscripts. Titles, section names, and stable identifiers replace local filesystem paths.

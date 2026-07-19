@@ -1,5 +1,19 @@
 # Evidence workflow, language rules, and quality gates
 
+## Contents
+
+1. [Pre-draft evidence table](#pre-draft-evidence-table)
+2. [Introduction-to-Related-Work traceability](#introduction-to-related-work-traceability)
+3. [Recommended section patterns](#recommended-section-patterns)
+4. [Sentence roles](#sentence-roles)
+5. [Density rules](#density-rules)
+6. [Language and style](#language-and-style)
+7. [Citation fidelity gates](#citation-fidelity-gates)
+8. [Structural hard gates](#structural-hard-gates)
+9. [Center-sentence audit](#center-sentence-audit)
+10. [Gap-to-module audit](#gap-to-module-audit)
+11. [Final compression pass](#final-compression-pass)
+
 ## Pre-draft evidence table
 
 Create one row per evidence unit, not necessarily one row per citation:

@@ -1,5 +1,20 @@
 # Modeling, formulation, and writing gates
 
+## Contents
+
+1. [Architecture inheritance ledger](#1-architecture-inheritance-ledger)
+2. [Model contract table](#2-model-contract-table)
+3. [Causal dependency graph](#3-causal-dependency-graph)
+4. [Paragraph and equation pacing](#4-paragraph-and-equation-pacing)
+5. [Timing and state gates](#5-timing-and-state-gates)
+6. [Physical and dimensional gates](#6-physical-and-dimensional-gates)
+7. [Constraint placement and closure](#7-constraint-placement-and-closure)
+8. [Decision and objective traceability](#8-decision-and-objective-traceability)
+9. [Problem Formulation hard gates](#9-problem-formulation-hard-gates)
+10. [Model-to-algorithm boundary](#10-model-to-algorithm-boundary)
+11. [Language and style](#11-language-and-style)
+12. [Final audit sequence](#12-final-audit-sequence)
+
 ## 1. Architecture inheritance ledger
 
 Complete before revising an existing model:

@@ -1,0 +1,25 @@
+{
+  "schema_version": 1,
+  "skills": [
+    {
+      "name": "writing-mec-introductions",
+      "path": "skills/writing-mec-introductions"
+    },
+    {
+      "name": "writing-mec-related-work",
+      "path": "skills/writing-mec-related-work"
+    },
+    {
+      "name": "writing-mec-system-models",
+      "path": "skills/writing-mec-system-models"
+    },
+    {
+      "name": "writing-mec-methods",
+      "path": "skills/writing-mec-methods"
+    },
+    {
+      "name": "writing-mec-experiments",
+      "path": "skills/writing-mec-experiments"
+    }
+  ]
+}

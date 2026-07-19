@@ -1,5 +1,19 @@
 # Reference-derived analysis of MEC Related Work sections
 
+## Contents
+
+1. [Scope and portable source identification](#scope-and-portable-source-identification)
+2. [What is stable across the five sources](#what-is-stable-across-the-five-sources)
+3. [Source-by-source structural anatomy](#source-by-source-structural-anatomy)
+4. [Demand-aware multi-area multi-UAV MEC](#1-demand-aware-multi-area-multi-uav-mec)
+5. [UAV-enabled multi-source fusion in vehicular networks](#2-uav-enabled-multi-source-fusion-in-vehicular-networks)
+6. [Terrain-aware UAV-MEC in urban environments](#3-terrain-aware-uav-mec-in-urban-environments)
+7. [Reliable task offloading in dispersed computing](#4-reliable-task-offloading-in-dispersed-computing)
+8. [HAP-UAV periodic planning manuscript](#5-hap-uav-periodic-planning-manuscript)
+9. [Paragraph-level story test](#paragraph-level-story-test)
+10. [How this differs from the Introduction benchmark](#how-this-differs-from-the-introduction-benchmark)
+11. [Benchmark-consistent failure patterns](#benchmark-consistent-failure-patterns)
+
 ## Scope and portable source identification
 
 This analysis is distilled from the Related Work sections of the following benchmark manuscripts. Titles and section labels, rather than machine-specific file paths, identify the evidence base.
