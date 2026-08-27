@@ -1,0 +1,85 @@
+---
+name: write-introductions
+description: Use when drafting, revising, or auditing an engineering-paper Introduction, especially when the motivation chain is weak, literature detail overwhelms the argument, the scenario does not motivate the method, citations are reused without distinct roles, or contributions overstate the supplied evidence.
+---
+
+# Write Introductions
+
+## Purpose
+
+Build an Introduction as a causal argument rather than a compressed literature review or method manual. Reading only the paragraph-opening center sentences should reveal why the problem matters, what precise limitation remains, which scenario or operating condition exposes it, what decision difficulty follows, and why the proposed method needs its stated modules.
+
+## Required resources and routing
+
+1. Always read [the core contract and quality gates](references/core/contract-and-quality-gates.md) in full.
+2. Read [the MEC domain pack](references/domains/mec.md) only when the manuscript concerns mobile edge computing, UAV-MEC, HAP-UAV, vehicular edge computing, dispersed edge computing, or a directly adjacent MEC setting.
+3. If no domain pack matches, apply the generic workflow and derive domain facts only from the manuscript and supplied sources. Do not treat MEC examples as universal content.
+
+## Workflow
+
+### 1. Establish the problem-method contract
+
+Read the abstract, current Introduction, Related Work, system model, method, contribution list, and relevant bibliography. Write one grounded sentence for each item:
+
+- application importance and concrete operating problem;
+- decisive limitation in the closest research line;
+- scenario, trigger, actors, and completion boundary;
+- coupled decisions, objectives, and hard constraints;
+- structure that weakens a standard solver;
+- proposed module that addresses each stated difficulty;
+- evidence that supports each contribution claim.
+
+Do not draft past an unresolved item. Mark it as an evidence or model gap instead of inventing it.
+
+### 2. Build a citation-role ledger
+
+| Claim | Exact source passage | Introduction role | Used elsewhere here? | Keep, merge, or move |
+|---|---|---|---|---|
+
+Verify each claim in the source itself. Assign each source one primary role in the Introduction, use the smallest sufficient citation cluster, and place citations immediately after the proposition they support. If a source appears more than once, retain the repetition only when it supports materially independent claims and record that reason. Detailed paper-by-paper comparisons belong in Related Work.
+
+### 3. Draft the center-sentence spine
+
+Use this generic functional sequence, merging adjacent functions when causality remains clear:
+
+1. field importance and concrete problem;
+2. current research focus and decisive limitation;
+3. motivation-aligned classification of the closest research;
+4. shared boundary that motivates the target setting;
+5. target setting, decisions, objectives, and main constraints;
+6. method motivation derived from the setting's structure;
+7. proposed method and module-to-difficulty mapping;
+8. bounded contributions and paper organization.
+
+The sequence is a reasoning contract, not a fixed paragraph count. When the selected domain pack defines a stricter chain, follow it.
+
+### 4. Fill paragraphs at Introduction resolution
+
+Use `primary center sentence -> cause or fact -> necessary evidence -> consequence or transition`. Give each paragraph one main rhetorical job. Keep symbols, equations, protocol branches, exact constraint semantics, implementation steps, and detailed benchmark results in their proper later sections.
+
+Prefer compact paragraphs, but split by rhetorical turns rather than sentence count. A classification paragraph may be longer when every sentence answers the same comparison question.
+
+### 5. Derive the method from the problem
+
+Proceed in this order:
+
+1. name the exact decision or information structure created by the target setting;
+2. explain why the general solver family is suitable;
+3. identify why its standard form is insufficient;
+4. map each proposed module to one stated difficulty;
+5. claim only effects supported by the manuscript's analysis or experiments.
+
+Popularity is not method motivation. The solver family is the carrier; the problem-specific mechanism is the reason for the design.
+
+### 6. Close with contributions and audit
+
+Use two to four contributions spanning the paper's actual novelty layers, such as `scenario/model -> formulation -> method -> evidence`. Start each item with an action and new object, then state a bounded effect or validation scope.
+
+Run the core center-sentence, classification, evidence, citation, paragraph, and module-mapping gates. Then run the selected domain gates. Revise until the Introduction is causal, source-grounded, non-redundant, and clearly separated from Related Work.
+
+## Output constraints
+
+- Match the manuscript's language, terminology, notation, and citation format.
+- Deliver only the requested prose or audit by default.
+- In an audit, lead with the center-sentence spine and the highest-impact causal or evidence failures.
+- Do not modify Related Work, the system model, the method, or the bibliography unless the user authorizes those edits.

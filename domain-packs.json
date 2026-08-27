@@ -1,0 +1,32 @@
+{
+  "schema_version": 1,
+  "domains": [
+    {
+      "name": "mec",
+      "display_name": "Mobile Edge Computing",
+      "description": "MEC, UAV-MEC, HAP-UAV, vehicular edge computing, dispersed edge computing, and directly adjacent systems.",
+      "skills": [
+        {
+          "name": "write-introductions",
+          "reference": "references/domains/mec.md"
+        },
+        {
+          "name": "write-related-work",
+          "reference": "references/domains/mec.md"
+        },
+        {
+          "name": "write-system-models",
+          "reference": "references/domains/mec.md"
+        },
+        {
+          "name": "write-methods",
+          "reference": "references/domains/mec.md"
+        },
+        {
+          "name": "write-experiments",
+          "reference": "references/domains/mec.md"
+        }
+      ]
+    }
+  ]
+}

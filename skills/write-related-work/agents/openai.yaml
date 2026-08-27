@@ -1,0 +1,4 @@
+interface:
+  display_name: "Related Work Writer"
+  short_description: "Write mechanism-organized literature synthesis"
+  default_prompt: "Use $write-related-work to draft, revise, or audit this engineering-paper Related Work section."

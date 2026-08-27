@@ -1,0 +1,4 @@
+interface:
+  display_name: "Method Writer"
+  short_description: "Write traceable and executable methods"
+  default_prompt: "Use $write-methods to draft, revise, or audit this engineering-paper Method section."

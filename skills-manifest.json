@@ -2,24 +2,28 @@
   "schema_version": 1,
   "skills": [
     {
-      "name": "writing-mec-introductions",
-      "path": "skills/writing-mec-introductions"
+      "name": "write-introductions",
+      "path": "skills/write-introductions"
     },
     {
-      "name": "writing-mec-related-work",
-      "path": "skills/writing-mec-related-work"
+      "name": "write-related-work",
+      "path": "skills/write-related-work"
     },
     {
-      "name": "writing-mec-system-models",
-      "path": "skills/writing-mec-system-models"
+      "name": "write-system-models",
+      "path": "skills/write-system-models"
     },
     {
-      "name": "writing-mec-methods",
-      "path": "skills/writing-mec-methods"
+      "name": "write-methods",
+      "path": "skills/write-methods"
     },
     {
-      "name": "writing-mec-experiments",
-      "path": "skills/writing-mec-experiments"
+      "name": "write-experiments",
+      "path": "skills/write-experiments"
+    },
+    {
+      "name": "latex-prose-audit",
+      "path": "skills/latex-prose-audit"
     }
   ]
 }

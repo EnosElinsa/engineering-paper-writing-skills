@@ -1,0 +1,72 @@
+---
+name: write-experiments
+description: Use when drafting, revising, or auditing engineering-paper Experimental Studies, Results, Performance Evaluation, ablation, convergence, sensitivity, robustness, or numerical-analysis sections, especially when evaluation fairness, reproducibility, evidence-to-claim logic, statistical support, training credibility, or paragraph organization is weak.
+---
+
+# Write Experiments
+
+## Purpose
+
+Design and write an experimental section as a chain of questions, controlled comparisons, observations, explanations, and bounded conclusions. Every paper claim must map to sufficient evidence, and every figure or table must have a distinct evidentiary role.
+
+## Required resources and routing
+
+1. Always read [the core contract and quality gates](references/core/contract-and-quality-gates.md) in full.
+2. For population-based, Pareto, constrained, or dynamic evolutionary optimization, read [the evolutionary-algorithm route](references/methods/evolutionary-algorithms.md).
+3. For value-based, policy-gradient, actor-critic, single-agent, or multi-agent learning, read [the reinforcement-learning route](references/methods/reinforcement-learning.md).
+4. Read [the MEC domain pack](references/domains/mec.md) only for MEC or directly adjacent edge-computing systems.
+5. When several routes apply, read all relevant references and audit each evidence channel separately.
+
+## Workflow
+
+### 1. Build the claim-to-experiment ledger
+
+| Paper claim | Experiment question | Controlled comparison | Metric and direction | Artifact | Required evidence | Status |
+|---|---|---|---|---|---|---|
+
+Include effectiveness, component contribution, efficiency, scalability, convergence, feasibility, robustness, generalization, and deployment claims. Remove or bound claims without an adequate experiment.
+
+### 2. Establish the evaluation contract
+
+State environment or dataset, instances and splits, baselines, implementation and hardware, budgets, hyperparameter-selection rules, random seeds, independent runs, uncertainty summaries, statistical tests, stopping criteria, and failure handling. Compare methods under equivalent information, data, compute, or evaluation budgets relevant to the claim.
+
+### 3. Assign each artifact one primary role
+
+Use tables for exact comparisons, figures for trends or distributions, ablations for component causality, sensitivity studies for parameter dependence, and case studies for operating behavior. Avoid duplicating the same evidence across several artifacts without a distinct question.
+
+### 4. Draft by experiment question
+
+Use two linked blocks:
+
+`question -> rationale -> controlled variables -> metrics -> artifact pointer`
+
+`overall answer -> discriminating values or statistics -> trend and exception -> supported mechanism explanation -> bounded conclusion`
+
+Open with the experiment purpose or empirical answer, not “Figure X shows.” Do not narrate every plotted point or repeat the caption.
+
+### 5. Reconcile quantitative claims
+
+For every retained number, record the artifact, panel or row, metric direction, aggregation, denominator, comparison baseline, and run-selection rule. Recompute relative changes. Distinguish percentage change from percentage-point change and mean from best, median, representative, or individual runs.
+
+Use “significant,” “stable,” “robust,” “generalizes,” and causal verbs only when the stated analysis supports those meanings.
+
+### 6. Apply method-family and domain checks
+
+Evolutionary studies must reconcile evaluation budgets, population and generation settings, independent runs, feasibility failures, reference fronts or points, Pareto metrics, convergence, and statistical comparisons.
+
+Learning studies must separate training, validation, and test roles; reward from physical metrics; hyperparameter and checkpoint selection; seeds and uncertainty; generalization; robustness; and offline training cost from online execution cost.
+
+The domain pack may add physical metrics, scenario controls, feasibility events, and interpretation boundaries. It does not replace the generic fairness and claim gates.
+
+### 7. Run the final audit
+
+Apply the core evidence, fairness, reproducibility, statistics, paragraph, and claim gates, then all selected method and domain gates. Verify that every claim maps to evidence, every artifact has a purpose, all exact values match, exceptions are reported, explanations do not exceed experimental isolation, and conclusions name the tested range.
+
+## Output constraints
+
+- Match notation, terminology, tense, labels, and venue style.
+- Preserve correct data and configuration; do not manufacture missing results.
+- When drafting, return the complete requested unit or section.
+- When auditing, report evidence failures by claim and severity before proposing a replacement experiment map.
+- Do not alter the method, system model, bibliography, figures, tables, raw data, or manuscript files outside the authorized scope.
+

@@ -1,0 +1,4 @@
+interface:
+  display_name: "LaTeX Prose Audit"
+  short_description: "Audit academic prose, evidence, notation, and LaTeX"
+  default_prompt: "Use $latex-prose-audit to audit this LaTeX manuscript with prioritized, line-specific findings."

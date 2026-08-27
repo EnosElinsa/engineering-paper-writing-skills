@@ -22,6 +22,10 @@ def make_collection(root: pathlib.Path, names: tuple[str, ...] = ("valid-skill",
         ],
     }
     _write(root / "skills-manifest.json", json.dumps(manifest, indent=2))
+    _write(
+        root / "domain-packs.json",
+        json.dumps({"schema_version": 1, "domains": []}, indent=2),
+    )
     for name in names:
         skill = root / "skills" / name
         _write(
@@ -71,6 +75,11 @@ class ValidateSkillsTests(unittest.TestCase):
         _write(self.root / "skills-manifest.json", "{not-json")
         errors = validate_collection(self.root)
         self.assertTrue(any("manifest" in error.lower() for error in errors))
+
+    def test_rejects_malformed_domain_pack_manifest(self) -> None:
+        _write(self.root / "domain-packs.json", "{not-json")
+        errors = validate_collection(self.root)
+        self.assertTrue(any("domain" in error.lower() for error in errors))
 
     def test_rejects_manifest_name_path_mismatch(self) -> None:
         manifest = json.loads((self.root / "skills-manifest.json").read_text())
@@ -130,6 +139,89 @@ class ValidateSkillsTests(unittest.TestCase):
         _write(path, path.read_text().replace("references/guide.md", "references/missing.md"))
         errors = validate_collection(self.root)
         self.assertTrue(any("missing local link" in error.lower() for error in errors))
+
+    def test_accepts_declared_domain_reference(self) -> None:
+        skill = self.root / "skills" / "valid-skill"
+        path = skill / "SKILL.md"
+        _write(
+            path,
+            path.read_text().replace(
+                "Read [the guide](references/guide.md).",
+                "Read [the guide](references/guide.md) and [the domain pack](references/domains/mec.md).",
+            ),
+        )
+        _write(skill / "references" / "domains" / "mec.md", "# MEC\n\nDomain rules.\n")
+        domains = {
+            "schema_version": 1,
+            "domains": [
+                {
+                    "name": "mec",
+                    "display_name": "Mobile Edge Computing",
+                    "description": "MEC systems.",
+                    "skills": [
+                        {
+                            "name": "valid-skill",
+                            "reference": "references/domains/mec.md",
+                        }
+                    ],
+                }
+            ],
+        }
+        _write(self.root / "domain-packs.json", json.dumps(domains, indent=2))
+        self.assertEqual(validate_collection(self.root), [])
+
+    def test_rejects_domain_reference_for_unknown_skill(self) -> None:
+        domains = {
+            "schema_version": 1,
+            "domains": [
+                {
+                    "name": "mec",
+                    "display_name": "Mobile Edge Computing",
+                    "description": "MEC systems.",
+                    "skills": [
+                        {
+                            "name": "missing-skill",
+                            "reference": "references/domains/mec.md",
+                        }
+                    ],
+                }
+            ],
+        }
+        _write(self.root / "domain-packs.json", json.dumps(domains))
+        errors = validate_collection(self.root)
+        self.assertTrue(any("unknown skill" in error.lower() for error in errors))
+
+    def test_rejects_latex_prose_audit_as_domain_scoped(self) -> None:
+        make_collection(self.root, ("latex-prose-audit",))
+        domains = {
+            "schema_version": 1,
+            "domains": [
+                {
+                    "name": "mec",
+                    "display_name": "Mobile Edge Computing",
+                    "description": "MEC systems.",
+                    "skills": [
+                        {
+                            "name": "latex-prose-audit",
+                            "reference": "references/domains/mec.md",
+                        }
+                    ],
+                }
+            ],
+        }
+        _write(self.root / "domain-packs.json", json.dumps(domains))
+        errors = validate_collection(self.root)
+        self.assertTrue(any("domain-independent" in error.lower() for error in errors))
+
+    def test_rejects_legacy_mec_skill_name(self) -> None:
+        make_collection(self.root, ("writing-mec-introductions",))
+        errors = validate_collection(self.root)
+        self.assertTrue(any("legacy" in error.lower() for error in errors))
+
+    def test_rejects_legacy_repository_name_in_readme(self) -> None:
+        _write(self.root / "README.md", "# mec-paper-writing-skills\n")
+        errors = validate_collection(self.root)
+        self.assertTrue(any("legacy repository" in error.lower() for error in errors))
 
 
 if __name__ == "__main__":

@@ -1,1 +1,1 @@
-"""Tests for the MEC paper writing skills collection."""
+"""Tests for the engineering-paper writing skills collection."""

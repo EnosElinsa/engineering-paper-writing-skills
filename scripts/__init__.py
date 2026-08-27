@@ -1,1 +1,1 @@
-"""Repository-local validation and installation utilities."""
+"""Validation and installation utilities for the skill collection."""

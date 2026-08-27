@@ -1,55 +1,89 @@
-# MEC Paper Writing Skills
+# Engineering Paper Writing Skills
 
-[![Validate skills](https://github.com/EnosElinsa/mec-paper-writing-skills/actions/workflows/validate.yml/badge.svg)](https://github.com/EnosElinsa/mec-paper-writing-skills/actions/workflows/validate.yml)
+[![Validate skills](https://github.com/EnosElinsa/engineering-paper-writing-skills/actions/workflows/validate.yml/badge.svg)](https://github.com/EnosElinsa/engineering-paper-writing-skills/actions/workflows/validate.yml)
 
-A portable collection of five source-grounded Codex skills for writing and auditing MEC, UAV-MEC, HAP-UAV, vehicular edge computing, and related optimization papers.
+A portable, extensible collection of source-grounded Codex skills for writing and auditing engineering research papers.
 
-The collection turns recurring paper-writing judgments into explicit workflows: paragraph-opening center sentences, MECE research classification, evidence-controlled literature synthesis, model-to-problem closure, method-to-model traceability, and bounded experimental claims.
+The repository separates three layers:
+
+- **generic section contracts** for Introductions, Related Work, System Models, Methods, and Experiments;
+- **method-family routes** for evolutionary algorithms and reinforcement learning;
+- **domain packs** for field-specific causal structure, terminology, physical checks, and evidence expectations.
+
+Mobile edge computing is the first formally supported domain pack. The generic skills remain usable outside MEC, while `latex-prose-audit` stays domain-independent.
 
 ## Included skills
 
-| Skill | Use it for |
-|---|---|
-| `writing-mec-introductions` | Background-to-scenario-to-algorithm storylines, MECE classification, citation economy, and Introduction/Related Work boundaries |
-| `writing-mec-related-work` | Mechanism-based literature synthesis, category comparison, evidence fidelity, and gap-to-module closure |
-| `writing-mec-system-models` | Architecture-first system modeling, symbol and timing discipline, constraints, and problem formulation |
-| `writing-mec-methods` | Evolutionary-algorithm or reinforcement-learning methods, executable semantics, novelty boundaries, and complexity |
-| `writing-mec-experiments` | Evolutionary or reinforcement-learning experiments, fair evaluation, evidence-to-claim paragraphs, ablations, and robustness boundaries |
+| Skill | Generic responsibility | Optional routes |
+|---|---|---|
+| `write-introductions` | Causal motivation, research classification, scenario-to-method derivation, citation economy, and bounded contributions | `domains/mec.md` |
+| `write-related-work` | Mechanism-based literature synthesis, evidence-backed boundaries, and gap-to-paper closure | `domains/mec.md` |
+| `write-system-models` | Architecture inheritance, operational flow, symbols, timing, constraints, and formulation closure | `domains/mec.md` |
+| `write-methods` | Model-to-algorithm traceability, novelty boundaries, executable semantics, deployment, and complexity | evolutionary algorithms, reinforcement learning, and `domains/mec.md` |
+| `write-experiments` | Evaluation contracts, fair comparisons, evidence-to-claim writing, statistics, ablations, and robustness | evolutionary algorithms, reinforcement learning, and `domains/mec.md` |
+| `latex-prose-audit` | LaTeX-aware sentence-level prose, semantic roles, articles, notation, mathematical phrasing, references, and source integrity | domain-independent |
 
-Each skill is independently installable. Methods and experiments contain internal evolutionary-algorithm and reinforcement-learning routes; they are not split into duplicate skills.
+Each skill is independently installable. The section skills always load their generic core, then load only the applicable method and domain references.
 
-## Design principles
+## MEC domain pack
 
-- **Source-grounded:** the writing patterns were distilled from representative MEC-family papers and a calibrated HAP-UAV manuscript.
-- **Progressive disclosure:** every `SKILL.md` contains the workflow and loads detailed references only when needed.
-- **Format-independent:** the skills work with LaTeX, Markdown, Word-derived text, or another manuscript representation.
-- **Repository-independent:** no skill requires a wiki layout, raw-paper directory, Git workflow, or local machine path.
-- **Evidence-bounded:** citation, novelty, causality, optimality, robustness, and performance claims cannot exceed the supplied evidence.
+The initial `mec` pack is declared in [domain-packs.json](domain-packs.json) and is available to the five section-writing skills.
 
-The calibration-paper corpus is not distributed in this repository. Bibliographic titles inside the references record provenance without creating a runtime dependency.
+Its Introduction contract preserves the source-derived chain:
+
+`scenario motivation -> scenario -> algorithm motivation -> algorithm`
+
+Its System Model contract adds MEC-specific control boundaries, service-flow ordering, timing and state semantics, resource and mobility closure, physical constraints, and operational fallback checks. The method and experiment adapters connect encoded decisions and evidence to MEC quantities without turning those details into universal engineering rules.
+
+The pack was distilled from complete sections of representative team and benchmark manuscripts. Source titles in the references provide provenance; the copyrighted paper corpus is not distributed and is not required at runtime.
+
+## Repository structure
+
+```text
+skills/
+  write-introductions/
+    SKILL.md
+    references/core/contract-and-quality-gates.md
+    references/domains/mec.md
+  write-related-work/
+  write-system-models/
+  write-methods/
+    references/methods/evolutionary-algorithms.md
+    references/methods/reinforcement-learning.md
+    references/domains/mec.md
+  write-experiments/
+  latex-prose-audit/
+skills-manifest.json
+domain-packs.json
+scripts/
+tests/
+```
+
+A future domain is added as a matching `references/domains/<domain>.md` adapter in the affected section skills and one declaration in `domain-packs.json`. Domain adapters may specialize a core contract, but must not replace generic evidence, causality, safety, or claim-bounding gates.
 
 ## Install with Codex
 
-Ask Codex to install all five paths from this public repository:
+Ask Codex to install all six paths from this public repository:
 
 ```text
-Install these skills from EnosElinsa/mec-paper-writing-skills:
-skills/writing-mec-introductions
-skills/writing-mec-related-work
-skills/writing-mec-system-models
-skills/writing-mec-methods
-skills/writing-mec-experiments
+Install these skills from EnosElinsa/engineering-paper-writing-skills:
+skills/write-introductions
+skills/write-related-work
+skills/write-system-models
+skills/write-methods
+skills/write-experiments
+skills/latex-prose-audit
 ```
 
-Codex's GitHub skill installer places them under `$CODEX_HOME/skills`, or `~/.codex/skills` when `CODEX_HOME` is unset. Newly installed skills are available on the next turn.
+Codex's skill installer places them under `$CODEX_HOME/skills`, or `~/.codex/skills` when `CODEX_HOME` is unset. Newly installed or replaced skills are available in a new Codex task.
 
 ## Install from a clone
 
-Python 3.10 or newer is required for the repository tools; the skills themselves are Markdown and YAML.
+Python 3.10 or newer is required for the repository tools.
 
 ```bash
-git clone https://github.com/EnosElinsa/mec-paper-writing-skills.git
-cd mec-paper-writing-skills
+git clone https://github.com/EnosElinsa/engineering-paper-writing-skills.git
+cd engineering-paper-writing-skills
 python scripts/validate_skills.py
 python scripts/install_skills.py
 ```
@@ -57,38 +91,41 @@ python scripts/install_skills.py
 Install one skill or inspect targets without writing:
 
 ```bash
-python scripts/install_skills.py --skill writing-mec-introductions
+python scripts/install_skills.py --skill write-introductions
 python scripts/install_skills.py --dry-run
 python scripts/install_skills.py --dest /path/to/skills
 ```
 
-The installer refuses an existing destination by default. After reviewing upstream changes, update managed copies explicitly:
+The installer refuses existing destinations by default. After reviewing upstream changes, replace only manifest-listed skills explicitly:
 
 ```bash
 git pull --ff-only
 python scripts/install_skills.py --force
 ```
 
-`--force` replaces only manifest-listed skill directories selected for installation. To uninstall, remove the corresponding named directory from the global skills directory; the installer never deletes unrelated skills.
+## Validation
 
-## Citation policy
-
-The Introduction skill retains strict citation accuracy, placement, primary-role, and non-repetition rules. It deliberately does not include the original Markdown numeric-citation parser: citation audits must use the target manuscript's native citation system, and mechanical non-repetition cannot prove that a citation is accurate or sufficient.
-
-## Validate the collection
-
-Run the unit suite and collection validator:
+Run:
 
 ```bash
 python -m unittest discover -s tests -v
 python scripts/validate_skills.py
 ```
 
-Validation covers manifest integrity, skill metadata, direct reference loading, long-reference navigation, local Markdown links, portability boundaries, and installer safety.
+Validation checks skill and domain manifests, metadata, direct reference routing, domain declarations, Markdown links and navigation, portability boundaries, legacy identities, and installer safety.
+
+## Design principles
+
+- **Generic core, explicit specialization:** universal section logic stays separate from method and domain assumptions.
+- **Source-grounded rules:** domain adapters record the cross-paper evidence behind specialized guidance.
+- **Progressive disclosure:** a skill loads only the references required by the target paper.
+- **Artifact-independent:** no skill requires a particular wiki, manuscript format, Git workflow, corpus directory, or local machine path.
+- **Evidence-bounded:** novelty, citation, causality, optimality, robustness, and performance claims cannot exceed supplied evidence.
+- **Extensible contracts:** new domains use the same adapter interface and validation rules as MEC.
 
 ## Contributing
 
-Issues and focused pull requests are welcome. Keep changes source-grounded, format-independent, and limited to one writing function or shared quality rule. Run the complete validation commands before opening a pull request, and do not add copyrighted paper corpora or machine-specific paths.
+Issues and focused pull requests are welcome. Keep generic changes domain-neutral, put field assumptions in a declared domain pack, and put solver-family rules in the applicable method route. Run the complete validation commands before opening a pull request. Do not add copyrighted paper corpora or machine-specific paths.
 
 ## License
 

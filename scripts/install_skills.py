@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Install MEC paper-writing skills into a Codex skills directory."""
+"""Install engineering-paper writing skills into a Codex skills directory."""
 
 from __future__ import annotations
 

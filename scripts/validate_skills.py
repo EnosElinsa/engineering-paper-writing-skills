@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Validate the portable MEC paper-writing skill collection."""
+"""Validate the portable engineering-paper writing skill collection."""
 
 from __future__ import annotations
 
@@ -16,6 +16,11 @@ NAME_RE = re.compile(r"^[a-z0-9]+(?:-[a-z0-9]+)*$")
 MARKDOWN_LINK_RE = re.compile(r"!?\[[^\]]*\]\(([^)]+)\)")
 HEADING_RE = re.compile(r"^#{1,6}\s+(.+?)\s*$", re.MULTILINE)
 FRONTMATTER_ALLOWED = {"name", "description"}
+DOMAIN_FIELDS = {"name", "display_name", "description", "skills"}
+DOMAIN_SKILL_FIELDS = {"name", "reference"}
+DOMAIN_INDEPENDENT_SKILLS = {"latex-prose-audit"}
+LEGACY_SKILL_PREFIX = "writing-mec-"
+LEGACY_REPOSITORY_NAME = "mec-paper-writing-skills"
 FORBIDDEN_PATTERNS: tuple[tuple[str, re.Pattern[str]], ...] = (
     ("Windows absolute path", re.compile(r"(?i)\b[A-Z]:[\\/]")),
     ("Unix home path", re.compile(r"(?i)(?:^|[\s`'\"])/(?:home|Users)/")),
@@ -78,12 +83,102 @@ def load_manifest(root: pathlib.Path) -> tuple[list[dict[str, str]], list[str]]:
             errors.append(f"{label} repeats skill name {name}")
             continue
         seen.add(name)
+        if name.startswith(LEGACY_SKILL_PREFIX):
+            errors.append(f"{label} uses legacy MEC-only skill name {name}")
         expected = f"skills/{name}"
         if relative != expected:
             errors.append(f"{label} path must be {expected}")
             continue
         entries.append({"name": name, "path": relative})
     return entries, errors
+
+
+def load_domain_packs(
+    root: pathlib.Path,
+    manifest_names: set[str],
+) -> tuple[list[dict[str, Any]], list[str]]:
+    errors: list[str] = []
+    path = root / "domain-packs.json"
+    text = _read_text(path, errors)
+    if text is None:
+        if not path.exists():
+            errors.append(f"{path}: domain-pack manifest is missing")
+        return [], errors
+    try:
+        data: Any = json.loads(text)
+    except json.JSONDecodeError as error:
+        return [], [f"{path}: malformed domain-pack manifest: {error}"]
+    if not isinstance(data, dict):
+        return [], [f"{path}: domain-pack manifest root must be an object"]
+    if data.get("schema_version") != 1:
+        errors.append(f"{path}: domain-pack schema_version must be 1")
+    raw_domains = data.get("domains")
+    if not isinstance(raw_domains, list):
+        errors.append(f"{path}: domains must be a list")
+        return [], errors
+
+    domains: list[dict[str, Any]] = []
+    seen_domains: set[str] = set()
+    for domain_index, raw_domain in enumerate(raw_domains):
+        label = f"{path}: domains[{domain_index}]"
+        if not isinstance(raw_domain, dict) or set(raw_domain) != DOMAIN_FIELDS:
+            errors.append(
+                f"{label} must contain exactly name, display_name, description, and skills"
+            )
+            continue
+        name = raw_domain.get("name")
+        display_name = raw_domain.get("display_name")
+        description = raw_domain.get("description")
+        raw_skills = raw_domain.get("skills")
+        if not isinstance(name, str) or not NAME_RE.fullmatch(name):
+            errors.append(f"{label} has an invalid domain name")
+            continue
+        if name in seen_domains:
+            errors.append(f"{label} repeats domain name {name}")
+            continue
+        seen_domains.add(name)
+        if not isinstance(display_name, str) or not display_name.strip():
+            errors.append(f"{label} display_name must be a non-empty string")
+        if not isinstance(description, str) or not description.strip():
+            errors.append(f"{label} description must be a non-empty string")
+        if not isinstance(raw_skills, list) or not raw_skills:
+            errors.append(f"{label} skills must be a non-empty list")
+            continue
+
+        skills: list[dict[str, str]] = []
+        seen_skills: set[str] = set()
+        for skill_index, raw_skill in enumerate(raw_skills):
+            skill_label = f"{label}.skills[{skill_index}]"
+            if not isinstance(raw_skill, dict) or set(raw_skill) != DOMAIN_SKILL_FIELDS:
+                errors.append(f"{skill_label} must contain exactly name and reference")
+                continue
+            skill_name = raw_skill.get("name")
+            reference = raw_skill.get("reference")
+            if not isinstance(skill_name, str) or not NAME_RE.fullmatch(skill_name):
+                errors.append(f"{skill_label} has an invalid skill name")
+                continue
+            if skill_name in seen_skills:
+                errors.append(f"{skill_label} repeats skill name {skill_name}")
+                continue
+            seen_skills.add(skill_name)
+            if skill_name not in manifest_names:
+                errors.append(f"{skill_label} refers to unknown skill {skill_name}")
+            if skill_name in DOMAIN_INDEPENDENT_SKILLS:
+                errors.append(f"{skill_label}: {skill_name} must remain domain-independent")
+            expected = f"references/domains/{name}.md"
+            if reference != expected:
+                errors.append(f"{skill_label} reference must be {expected}")
+                continue
+            skills.append({"name": skill_name, "reference": reference})
+        domains.append(
+            {
+                "name": name,
+                "display_name": display_name,
+                "description": description,
+                "skills": skills,
+            }
+        )
+    return domains, errors
 
 
 def _parse_frontmatter(path: pathlib.Path, text: str) -> tuple[dict[str, str], list[str]]:
@@ -243,6 +338,39 @@ def validate_collection(root: pathlib.Path) -> list[str]:
         errors.append(f"{skills_dir / name}: manifest skill directory is missing")
     for entry in entries:
         errors.extend(_validate_skill(root, entry))
+
+    domains, domain_errors = load_domain_packs(root, manifest_names)
+    errors.extend(domain_errors)
+    declared_domain_refs: set[tuple[str, str]] = set()
+    for domain in domains:
+        for domain_skill in domain["skills"]:
+            skill_name = domain_skill["name"]
+            reference = domain_skill["reference"]
+            declared_domain_refs.add((skill_name, reference))
+            target = root / "skills" / skill_name / pathlib.PurePosixPath(reference)
+            if skill_name in manifest_names and not target.is_file():
+                errors.append(f"{target}: declared domain reference is missing")
+
+    actual_domain_refs: set[tuple[str, str]] = set()
+    for entry in entries:
+        domain_dir = root / pathlib.PurePosixPath(entry["path"]) / "references" / "domains"
+        if domain_dir.is_dir():
+            for reference in domain_dir.glob("*.md"):
+                relative = reference.relative_to(
+                    root / pathlib.PurePosixPath(entry["path"])
+                ).as_posix()
+                actual_domain_refs.add((entry["name"], relative))
+    for skill_name, reference in sorted(actual_domain_refs - declared_domain_refs):
+        errors.append(
+            f"{root / 'skills' / skill_name / pathlib.PurePosixPath(reference)}: "
+            "domain reference is not declared in domain-packs.json"
+        )
+
+    readme = root / "README.md"
+    if readme.is_file():
+        readme_text = _read_text(readme, errors)
+        if readme_text is not None and LEGACY_REPOSITORY_NAME in readme_text:
+            errors.append(f"{readme}: contains legacy repository identity")
     return sorted(set(errors))
 
 
