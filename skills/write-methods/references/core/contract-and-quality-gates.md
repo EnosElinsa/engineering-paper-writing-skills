@@ -141,7 +141,7 @@ The example names the mechanism, input, order, output, boundary of the guarantee
 
 ### 5.2 Paragraph roles
 
-- **Opening paragraph:** say which formulated problem is solved (cite its equation), list the blocks in order, and point to the preliminaries. Do not restate the Introduction's list of obstacles. A module subsection may describe a difficulty only with operational detail the Introduction lacks, such as a failing move or a dependency order; that narrative lives in the subsection that answers it.
+- **Opening paragraph:** default: say which formulated problem is solved (cite its equation), list the blocks in order, and point to the preliminaries, without restating the Introduction's list of obstacles. A module subsection may describe a difficulty only with operational detail the Introduction lacks, such as a failing move or a dependency order; that narrative lives in the subsection that answers it. Deviate, and open with the difficulty, when the Introduction did not state it at that resolution; record the reason in the scale statement or the audit notes.
 - **Interface paragraph:** explain what information or decision each representation component carries.
 - **Framework paragraph:** describe the executor, phases, information flow, and returned artifact.
 - **Mechanism paragraph:** give the scenario-specific transformation and its reason.
@@ -360,7 +360,7 @@ Mark each gate `PASS`, `FAIL`, or `NOT APPLICABLE`.
 
 ### 12.1 Shared gates
 
-1. **Problem-link gate:** the opening identifies the formulated problem (with its equation) and the block order; difficulty narrative lives in the module subsection that answers it and does not restate the Introduction's list of obstacles.
+1. **Problem-link gate:** by default the opening identifies the formulated problem (with its equation) and the block order; difficulty narrative lives in the module subsection that answers it and does not restate the Introduction's list of obstacles. Deviations are allowed only when the Introduction did not state the difficulty at that resolution, and the reason is recorded.
 2. **Interface gate:** every optimized decision is represented, generated, or delegated explicitly.
 3. **Information gate:** every algorithm input is available to its executor at the stated time.
 4. **Dependency gate:** formulas and mechanisms appear after their inputs and before their consumers.

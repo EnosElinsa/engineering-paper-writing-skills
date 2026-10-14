@@ -557,7 +557,7 @@ Apply these after the shared gates.
 
 **Symptom:** several pages define MDPs and neural networks before the reader knows the controller, information, or decisions.
 
-**Repair:** open with the exact online/partial-observation/action-structure difficulty; retain only learner concepts used by the proposed adaptation.
+**Repair:** open with the formulated problem and the block order, as in the core opening rule, and describe the online/partial-observation/action-structure difficulty in the module subsection that answers it, with operational detail the Introduction lacks. Open with the difficulty itself only when the Introduction did not state it at that resolution, and record the reason. Retain only learner concepts used by the proposed adaptation.
 
 ### 14.2 State as a feature inventory
 
