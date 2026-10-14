@@ -41,7 +41,7 @@ Apply these rules:
 - State what result would weaken or falsify the claim. This prevents post-hoc success criteria.
 - Write the narrowest conclusion that would remain valid if an untested dimension changed.
 
-In design mode (no result artifact exists yet), the ledger lists each result slot as pending, with a hypothesis id, and the prose describes only the protocol; see Step 0 of the skill workflow.
+In design mode (no result artifact exists yet), the ledger gains a leading `Hypothesis id` column, lists each result slot as pending, and the prose describes only the protocol; see Step 0 of the skill workflow.
 
 An empty artifact cell marks an unsupported claim. An artifact with no ledger row is exploratory evidence and must be labeled as exploratory, assigned a claim, or removed.
 

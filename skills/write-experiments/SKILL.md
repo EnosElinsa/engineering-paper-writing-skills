@@ -24,7 +24,7 @@ Design and write an experimental section as a chain of questions, controlled com
 
 - Results mode: result artifacts exist; follow Steps 1-7.
 - Design mode: no results exist. Write the protocol, not the outcome.
-  - Keep the claim-to-experiment ledger. Give each claim a hypothesis id, a falsifying outcome, and the maximum conclusion it could support.
+  - Keep the claim-to-experiment ledger with a leading `Hypothesis id` column. Give each claim an id, a falsifying outcome, and the maximum conclusion it could support.
   - Fix the analysis plan before any run: statistical unit, aggregation hierarchy, test and pairing key, the criterion for "stable", and its tolerance.
   - Use protocol wording ("is compared with", "is measured by"). Result verbs and numbers not taken from the configuration are forbidden (shows, outperforms, achieves, demonstrates, validates, is robust).
   - Leave result slots out of the prose and list them as pending in the ledger.

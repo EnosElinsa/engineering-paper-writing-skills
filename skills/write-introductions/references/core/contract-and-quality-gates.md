@@ -51,7 +51,7 @@ Copy all paragraph-opening sentences into one block. Repair their logic and orde
 
 Sentence count is a soft constraint; number of rhetorical jobs is a hard constraint.
 
-The sentence column gives default ranges, not fixed counts. Declare the range for the manuscript in the scale statement of [the reader and terminology contract](reader-and-terminology-contract.md). A range taken from reference measurements covers every measured reference paragraph, so a range such as `4–7` is a default, not an upper bound. Deviate when the venue limits length or an extra independent boundary needs its own sentence, and record the reason.
+The sentence column gives default ranges, not fixed counts. Declare the range for the manuscript in the scale statement of [the reader and terminology contract](reader-and-terminology-contract.md). The ranges below come from four evolutionary-algorithm UAV-MEC benchmark papers and are a weak prior outside that family. A range taken from reference measurements covers every measured reference paragraph, so a range such as `5–11` is a default, not an upper bound. Deviate when the venue limits length or an extra independent boundary needs its own sentence, and record the reason.
 
 | Paragraph function | Must answer | Normally excludes | Default sentences |
 |---|---|---|---:|
@@ -237,10 +237,10 @@ Therefore, this paper considers scenario C, in which B evolves jointly with deci
 
 ### Scenario paragraph pattern
 
-Write the scenario as one paragraph in this order (see the scale statement for length):
+Default: write the scenario as one paragraph in this order (see the scale statement for length). Deviate when the venue or the model needs a different split, such as merging the scenario with the objectives, and record the reason.
 
 1. One sentence naming the system and its controller.
-2. One sentence listing the recurring functional cycle as four or five parallel verbs (`adjusts its position, responds to requests, collects data, fuses it, and returns the result`).
+2. One sentence listing the recurring functional cycle as parallel verbs, about four to five in the reference papers (`adjusts its position, responds to requests, collects data, fuses it, and returns the result`).
 3. One sentence of the form `To accomplish these operations, the controller jointly decides N types of decisions.`
 4. Each decision in plain words with a purpose clause (`planning the trajectory to improve link quality`), never a variable-like name.
 5. One sentence on the main coupling between decisions.
@@ -249,10 +249,10 @@ State a trigger, waiting rule, or completion boundary here only when the later t
 
 ### Decisions, objectives, and conflicts
 
-- Name each decision by what it does in the system, and gloss it in plain words when it is first listed (a short `i.e.` clause is enough). Do not use a variable-like compound before the reader knows why the quantity exists.
-- Name each objective in domain words with its owner and a one-clause meaning (`the average waiting time of the users`; `energy consumption, which determines operational sustainability`).
+- Default: name each decision by what it does in the system, and gloss it in plain words when it is first listed (a short `i.e.` clause is enough). Do not use a variable-like compound before the reader knows why the quantity exists. Deviate when a standard term of the field is already known to the reader, and record the reason.
+- Default: name each objective in domain words with its owner and a one-clause meaning (`the average waiting time of the users`; `energy consumption, which determines operational sustainability`). Deviate when the venue requires the symbolic name first, and record the reason.
 - Default: explain a conflict with one causal step per direction. Raising A requires X, which raises B; lowering B requires limiting X, which lowers A. Leave second- and third-order consequences to the model or the experiments. Deviate when the closest literature needs a two-step chain to make the conflict understandable, and record the reason.
-- Explain a trade-off or gap in one paragraph only; later mentions are one clause.
+- Default: explain a trade-off or gap in one paragraph; later mentions are one clause. Deviate when a second paragraph adds an independent fact, and record the reason.
 
 ### State concrete engineering difficulties
 

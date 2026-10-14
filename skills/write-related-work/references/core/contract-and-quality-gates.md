@@ -124,7 +124,7 @@ Tie the limitation to problem structure:
 - One paragraph has one primary class-level claim; subordinate center sentences are allowed only when they refine that claim.
 - One cited work normally receives one sentence or one clause.
 - Use two to four evidence units per category paragraph as a default, not a quota.
-- Declare the range from the scale statement (reference measurement: 5–7 substantive paragraphs, about 635–987 English words). Default: stay inside it; deviate when additional independent boundaries genuinely require more, and record the reason. When more than 20% over the upper bound, apply the compression order of the reader and terminology contract: merge papers that share a predicate, drop paper-level numbers, cut announcement sentences, and keep one expanded closest work.
+- Declare the range from the scale statement (reference measurement from four evolutionary-algorithm UAV-MEC benchmark papers, a weak prior outside that family: 5–7 substantive paragraphs, about 635–987 English words). Default: stay inside it; deviate when additional independent boundaries genuinely require more, and record the reason. When more than 20% over the upper bound, apply the compression order of the reader and terminology contract: merge papers that share a predicate, drop paper-level numbers, cut announcement sentences, and keep one expanded closest work.
 - Group papers sharing a mechanism instead of repeating the same predicate.
 - Expand the closest work only enough to establish the exact overlap and mismatch.
 - Assign each closest-work limitation to one primary subsection. Reuse the citation elsewhere only for a different analytical fact, not to repeat the same comparison.

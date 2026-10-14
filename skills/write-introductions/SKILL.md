@@ -37,7 +37,7 @@ Do not draft past an unresolved item. Mark it as an evidence or model gap instea
 | Claim | Exact source passage | Introduction role | Used elsewhere here? | Proposition | Home paragraph | Keep, merge, or move |
 |---|---|---|---|---|---|---|
 
-Verify each claim in the source itself. Assign each source one primary role in the Introduction, use the smallest sufficient citation cluster, and place citations immediately after the proposition they support. If a source appears more than once, retain the repetition only when it supports materially independent claims and record that reason. Detailed paper-by-paper comparisons belong in Related Work. Explain a trade-off or gap in one paragraph only; every other mention is one clause.
+Verify each claim in the source itself. Assign each source one primary role in the Introduction, use the smallest sufficient citation cluster, and place citations immediately after the proposition they support. If a source appears more than once, retain the repetition only when it supports materially independent claims and record that reason. Detailed paper-by-paper comparisons belong in Related Work. Default: explain a trade-off or gap in one paragraph, and make every other mention one clause; deviate when a second paragraph adds an independent fact, and record the reason.
 
 ### 3. Draft the center-sentence spine
 

@@ -330,6 +330,8 @@ The opening paragraph should contain:
 4. the genuine adaptation beyond the baseline;
 5. the section roadmap.
 
+Items 1 and 2 state only what the Introduction did not give at this resolution; otherwise point to the Introduction and do not restate its list of obstacles (see the opening-paragraph rule in the core contract). Items 3 to 5 are method-choice content and stay in the opening.
+
 Do not claim that DRL is required merely because the optimization is non-convex. A static non-convex problem may be better served by other solvers.
 
 ### 10.2 MDP/POMDP interface

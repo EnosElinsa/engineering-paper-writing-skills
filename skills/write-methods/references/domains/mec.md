@@ -29,7 +29,7 @@ Before naming operators or networks, map every encoded or learned output to an M
 
 Typical decisions include deployment, trajectory, association, offloading, admission, scheduling, bandwidth, power, computation, caching, placement, migration, collection, compression, synchronization, and return. Include only those present in the target model.
 
-The method opening must state the MEC-side difficulty in concrete terms, such as cascaded decisions, mixed discrete-continuous coupling, sparse feasible regions, time-varying service state, partial observations, shared-resource contention, or a feasible set shaped by the preceding action. “Nonconvex” and “NP-hard” do not by themselves justify a module.
+The method opening names the formulated problem and the block order and does not restate the Introduction's list of obstacles. State a MEC-side difficulty in the opening or in the module subsection only with operational detail the Introduction lacks, and name it concretely, such as cascaded decisions, mixed discrete-continuous coupling, sparse feasible regions, time-varying service state, partial observations, shared-resource contention, or a feasible set shaped by the preceding action. “Nonconvex” and “NP-hard” do not by themselves justify a module.
 
 ## Dependency-aware construction
 
