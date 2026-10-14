@@ -1,0 +1,287 @@
+{
+  "schema_version": 1,
+  "description": "Maps each documented failure case to the gate identifiers that must exist in the skill text. A path under shared/ means the identifier must appear once in the source and once in every copy listed in shared-files.json.",
+  "cases": {
+    "1": {
+      "summary": "Scenario paragraph written as an event timeline",
+      "gates": [
+        {
+          "file": "skills/write-introductions/references/core/contract-and-quality-gates.md",
+          "id": "G-INT-15"
+        },
+        {
+          "file": "skills/write-introductions/references/core/contract-and-quality-gates.md",
+          "id": "G-INT-scenario"
+        }
+      ]
+    },
+    "2": {
+      "summary": "Decisions named by variable-like compounds",
+      "gates": [
+        {
+          "file": "skills/write-introductions/references/core/contract-and-quality-gates.md",
+          "id": "G-INT-16"
+        },
+        {
+          "file": "skills/write-introductions/references/core/contract-and-quality-gates.md",
+          "id": "G-INT-name"
+        },
+        {
+          "file": "shared/core/reader-and-terminology-contract.md",
+          "id": "G-SH-T4"
+        }
+      ]
+    },
+    "3": {
+      "summary": "Undefined compound objective and long conflict chain",
+      "gates": [
+        {
+          "file": "skills/write-introductions/references/core/contract-and-quality-gates.md",
+          "id": "G-INT-16"
+        },
+        {
+          "file": "skills/write-introductions/references/core/contract-and-quality-gates.md",
+          "id": "G-INT-obj"
+        },
+        {
+          "file": "skills/write-introductions/references/core/contract-and-quality-gates.md",
+          "id": "G-INT-conflict"
+        }
+      ]
+    },
+    "4": {
+      "summary": "Same trade-off explained in full in two paragraphs",
+      "gates": [
+        {
+          "file": "skills/write-introductions/references/core/contract-and-quality-gates.md",
+          "id": "G-INT-17"
+        },
+        {
+          "file": "skills/write-introductions/references/core/contract-and-quality-gates.md",
+          "id": "G-INT-home"
+        },
+        {
+          "file": "shared/core/reader-and-terminology-contract.md",
+          "id": "G-SH-D"
+        },
+        {
+          "file": "skills/write-related-work/references/core/contract-and-quality-gates.md",
+          "id": "G-RW-dup"
+        }
+      ]
+    },
+    "5": {
+      "summary": "Coined terms, inconsistent roots, no definitions",
+      "gates": [
+        {
+          "file": "shared/core/reader-and-terminology-contract.md",
+          "id": "G-SH-T1"
+        },
+        {
+          "file": "shared/core/reader-and-terminology-contract.md",
+          "id": "G-SH-T2"
+        },
+        {
+          "file": "shared/core/reader-and-terminology-contract.md",
+          "id": "G-SH-T3"
+        },
+        {
+          "file": "shared/core/reader-and-terminology-contract.md",
+          "id": "G-SH-T5"
+        },
+        {
+          "file": "shared/core/reader-and-terminology-contract.md",
+          "id": "G-SH-T6"
+        },
+        {
+          "file": "shared/core/reader-and-terminology-contract.md",
+          "id": "G-SH-T7"
+        }
+      ]
+    },
+    "6": {
+      "summary": "Condition words without an antecedent",
+      "gates": [
+        {
+          "file": "shared/core/reader-and-terminology-contract.md",
+          "id": "G-SH-A"
+        },
+        {
+          "file": "skills/write-introductions/references/core/contract-and-quality-gates.md",
+          "id": "G-INT-18"
+        },
+        {
+          "file": "skills/write-methods/references/core/contract-and-quality-gates.md",
+          "id": "G-ME-17"
+        }
+      ]
+    },
+    "7": {
+      "summary": "Mechanism steps without a purpose",
+      "gates": [
+        {
+          "file": "shared/core/reader-and-terminology-contract.md",
+          "id": "G-SH-Q"
+        }
+      ]
+    },
+    "8": {
+      "summary": "Length outside any reference, no scale statement",
+      "gates": [
+        {
+          "file": "shared/core/reader-and-terminology-contract.md",
+          "id": "G-SH-S"
+        },
+        {
+          "file": "skills/write-introductions/references/core/contract-and-quality-gates.md",
+          "id": "G-INT-scale"
+        },
+        {
+          "file": "skills/write-introductions/references/core/contract-and-quality-gates.md",
+          "id": "G-INT-score-scale"
+        }
+      ]
+    },
+    "9": {
+      "summary": "Solver-family subsection mixes axes",
+      "gates": [
+        {
+          "file": "skills/write-related-work/references/core/contract-and-quality-gates.md",
+          "id": "G-RW-axis"
+        }
+      ]
+    },
+    "10": {
+      "summary": "Related Work closing gap copies the Introduction",
+      "gates": [
+        {
+          "file": "skills/write-related-work/references/core/contract-and-quality-gates.md",
+          "id": "G-RW-gap"
+        }
+      ]
+    },
+    "11": {
+      "summary": "Introduction categories missing or relabeled in Related Work",
+      "gates": [
+        {
+          "file": "skills/write-related-work/references/core/contract-and-quality-gates.md",
+          "id": "G-RW-trace"
+        }
+      ]
+    },
+    "12": {
+      "summary": "Uncited universal assertion",
+      "gates": [
+        {
+          "file": "shared/core/reader-and-terminology-contract.md",
+          "id": "G-SH-C"
+        },
+        {
+          "file": "skills/write-related-work/references/core/contract-and-quality-gates.md",
+          "id": "G-RW-claim"
+        }
+      ]
+    },
+    "13": {
+      "summary": "Related Work scale and Chinese character conversion",
+      "gates": [
+        {
+          "file": "skills/write-related-work/references/core/contract-and-quality-gates.md",
+          "id": "G-RW-scale"
+        },
+        {
+          "file": "shared/languages/zh.md",
+          "id": "G-ZH-scale"
+        },
+        {
+          "file": "shared/core/reader-and-terminology-contract.md",
+          "id": "G-SH-S"
+        }
+      ]
+    },
+    "14": {
+      "summary": "System Model opening, titles, pointers, and initial state",
+      "gates": [
+        {
+          "file": "skills/write-system-models/references/core/contract-and-quality-gates.md",
+          "id": "G-SM-open"
+        },
+        {
+          "file": "skills/write-system-models/references/core/contract-and-quality-gates.md",
+          "id": "G-SM-title"
+        },
+        {
+          "file": "skills/write-system-models/references/core/contract-and-quality-gates.md",
+          "id": "G-SM-fwd"
+        },
+        {
+          "file": "skills/write-system-models/references/core/contract-and-quality-gates.md",
+          "id": "G-SM-init"
+        }
+      ]
+    },
+    "15": {
+      "summary": "Method opening restates obstacles; term before definition",
+      "gates": [
+        {
+          "file": "skills/write-methods/references/core/contract-and-quality-gates.md",
+          "id": "G-ME-1"
+        },
+        {
+          "file": "skills/write-methods/references/core/contract-and-quality-gates.md",
+          "id": "G-ME-open"
+        },
+        {
+          "file": "skills/write-methods/references/core/contract-and-quality-gates.md",
+          "id": "G-ME-17"
+        }
+      ]
+    },
+    "16": {
+      "summary": "Experiment design details missing, results mixed with design",
+      "gates": [
+        {
+          "file": "skills/write-experiments/references/core/contract-and-quality-gates.md",
+          "id": "G-EX-mode"
+        },
+        {
+          "file": "skills/write-experiments/references/core/contract-and-quality-gates.md",
+          "id": "G-EX-agg"
+        },
+        {
+          "file": "skills/write-experiments/references/core/contract-and-quality-gates.md",
+          "id": "G-EX-base"
+        },
+        {
+          "file": "skills/write-experiments/references/core/contract-and-quality-gates.md",
+          "id": "G-EX-abl"
+        },
+        {
+          "file": "skills/write-experiments/references/core/contract-and-quality-gates.md",
+          "id": "G-EX-metric"
+        },
+        {
+          "file": "skills/write-experiments/references/core/contract-and-quality-gates.md",
+          "id": "G-EX-stable"
+        },
+        {
+          "file": "skills/write-experiments/references/core/contract-and-quality-gates.md",
+          "id": "G-EX-robust"
+        },
+        {
+          "file": "skills/write-experiments/references/core/contract-and-quality-gates.md",
+          "id": "G-EX-style"
+        }
+      ]
+    },
+    "17": {
+      "summary": "Working notes inside the manuscript",
+      "gates": [
+        {
+          "file": "shared/core/reader-and-terminology-contract.md",
+          "id": "G-SH-H"
+        }
+      ]
+    }
+  }
+}
