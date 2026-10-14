@@ -1,0 +1,25 @@
+{
+  "schema_version": 1,
+  "files": [
+    {
+      "source": "shared/core/reader-and-terminology-contract.md",
+      "targets": [
+        "write-introductions",
+        "write-related-work",
+        "write-system-models",
+        "write-methods",
+        "write-experiments"
+      ]
+    },
+    {
+      "source": "shared/languages/zh.md",
+      "targets": [
+        "write-introductions",
+        "write-related-work",
+        "write-system-models",
+        "write-methods",
+        "write-experiments"
+      ]
+    }
+  ]
+}

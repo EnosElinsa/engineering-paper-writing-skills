@@ -13,8 +13,9 @@ Build an Introduction as a causal argument rather than a compressed literature r
 
 1. Always read [the core contract and quality gates](references/core/contract-and-quality-gates.md) in full.
 2. Always read [the reader and terminology contract](references/core/reader-and-terminology-contract.md).
-3. Read [the MEC domain pack](references/domains/mec.md) only when the manuscript concerns mobile edge computing, UAV-MEC, HAP-UAV, vehicular edge computing, dispersed edge computing, or a directly adjacent MEC setting.
-4. If no domain pack matches, apply the generic workflow and derive domain facts only from the manuscript and supplied sources. Do not treat MEC examples as universal content.
+3. Read [the Chinese manuscript adapter](references/languages/zh.md) when the manuscript is written in Chinese.
+4. Read [the MEC domain pack](references/domains/mec.md) only when the manuscript concerns mobile edge computing, UAV-MEC, HAP-UAV, vehicular edge computing, dispersed edge computing, or a directly adjacent MEC setting. It also holds the reference-scale tables for the scale statement.
+5. If no domain pack matches, apply the generic workflow and derive domain facts only from the manuscript and supplied sources. Do not treat MEC examples as universal content.
 
 ## Workflow
 

@@ -5,7 +5,7 @@ import pathlib
 import tempfile
 import unittest
 
-from scripts.validate_skills import validate_collection
+from scripts.validate_skills import validate_collection, validate_shared
 
 
 def _write(path: pathlib.Path, content: str) -> None:
@@ -222,6 +222,76 @@ class ValidateSkillsTests(unittest.TestCase):
         _write(self.root / "README.md", "# mec-paper-writing-skills\n")
         errors = validate_collection(self.root)
         self.assertTrue(any("legacy repository" in error.lower() for error in errors))
+
+
+SHARED_SOURCE = "shared/core/common.md"
+SHARED_COPY = "references/core/common.md"
+
+
+def add_shared_file(root: pathlib.Path, skills: tuple[str, ...], text: str = "# Common\n\nShared.\n") -> None:
+    """Add one shared source, a byte-identical copy and a SKILL.md link in each skill."""
+    _write(root / SHARED_SOURCE, text)
+    _write(
+        root / "shared-files.json",
+        json.dumps(
+            {"schema_version": 1, "files": [{"source": SHARED_SOURCE, "targets": list(skills)}]},
+            indent=2,
+        ),
+    )
+    for name in skills:
+        skill = root / "skills" / name
+        _write(skill / SHARED_COPY, text)
+        skill_md = skill / "SKILL.md"
+        _write(skill_md, skill_md.read_text() + f"\nRead [the common file]({SHARED_COPY}).\n")
+
+
+class ValidateSharedTests(unittest.TestCase):
+    def setUp(self) -> None:
+        self.temp = tempfile.TemporaryDirectory()
+        self.root = pathlib.Path(self.temp.name)
+        self.skills = ("first-skill", "second-skill")
+        make_collection(self.root, self.skills)
+        add_shared_file(self.root, self.skills)
+
+    def tearDown(self) -> None:
+        self.temp.cleanup()
+
+    def test_accepts_matching_shared_copy(self) -> None:
+        self.assertEqual(validate_collection(self.root), [])
+        self.assertEqual(validate_shared(self.root), [])
+
+    def test_rejects_diverged_shared_copy(self) -> None:
+        _write(self.root / "skills" / "second-skill" / SHARED_COPY, "# Common\n\nEdited locally.\n")
+        errors = validate_collection(self.root)
+        self.assertTrue(any("diverged" in error and "second-skill" in error for error in errors))
+        self.assertFalse(any("first-skill" in error for error in errors))
+
+    def test_rejects_missing_shared_copy(self) -> None:
+        (self.root / "skills" / "first-skill" / SHARED_COPY).unlink()
+        errors = validate_collection(self.root)
+        self.assertTrue(any("shared copy is missing" in error for error in errors))
+
+    def test_rejects_missing_shared_source(self) -> None:
+        (self.root / SHARED_SOURCE).unlink()
+        errors = validate_collection(self.root)
+        self.assertTrue(any("shared source is missing" in error for error in errors))
+
+    def test_rejects_unlinked_shared_copy(self) -> None:
+        skill_md = self.root / "skills" / "first-skill" / "SKILL.md"
+        _write(skill_md, skill_md.read_text().replace(f"]({SHARED_COPY})", "](references/guide.md)") + SHARED_COPY)
+        errors = validate_collection(self.root)
+        self.assertTrue(any("not linked directly" in error for error in errors))
+
+    def test_rejects_shared_target_latex_prose_audit(self) -> None:
+        make_collection(self.root, ("latex-prose-audit",))
+        add_shared_file(self.root, ("latex-prose-audit",))
+        errors = validate_collection(self.root)
+        self.assertTrue(any("must not receive shared copies" in error for error in errors))
+
+    def test_rejects_manifest_missing_when_shared_sources_exist(self) -> None:
+        (self.root / "shared-files.json").unlink()
+        errors = validate_collection(self.root)
+        self.assertTrue(any("without a shared-file manifest" in error for error in errors))
 
 
 if __name__ == "__main__":

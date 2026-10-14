@@ -53,11 +53,17 @@ skills/
     references/domains/mec.md
   write-experiments/
   latex-prose-audit/
+shared/
+  core/reader-and-terminology-contract.md
+  languages/zh.md
 skills-manifest.json
 domain-packs.json
+shared-files.json
 scripts/
 tests/
 ```
+
+Each section skill also carries byte-identical copies of the files under `shared/` at `references/core/reader-and-terminology-contract.md` and `references/languages/zh.md`. `shared/` is the canonical source and `shared-files.json` lists the target skills; `latex-prose-audit` never receives a copy. The Chinese manuscript adapter is a language layer loaded only for Chinese manuscripts, not a domain pack.
 
 A future domain is added as a matching `references/domains/<domain>.md` adapter in the affected section skills and one declaration in `domain-packs.json`. Domain adapters may specialize a core contract, but must not replace generic evidence, causality, safety, or claim-bounding gates.
 
@@ -112,13 +118,22 @@ python -m unittest discover -s tests -v
 python scripts/validate_skills.py
 ```
 
-Validation checks skill and domain manifests, metadata, direct reference routing, domain declarations, Markdown links and navigation, portability boundaries, legacy identities, and installer safety.
+Edit shared content only under `shared/`, then copy it into the skills and check for drift:
+
+```bash
+python scripts/sync_shared.py
+python scripts/sync_shared.py --check
+```
+
+`--check` compares only and exits non-zero when a copy has drifted or is missing. Validation checks skill and domain manifests, metadata, direct reference routing, domain declarations, shared-file sources and byte-identical copies, Markdown links and navigation, portability boundaries, legacy identities, and installer safety. The unit tests also check that every documented failure case has a gate identifier that is present exactly once in the skill text.
 
 ## Design principles
 
 - **Generic core, explicit specialization:** universal section logic stays separate from method and domain assumptions.
 - **Source-grounded rules:** domain adapters record the cross-paper evidence behind specialized guidance.
 - **Progressive disclosure:** a skill loads only the references required by the target paper.
+- **Shared files are copied, then synchronised:** a skill must stay installable on its own and its links may not leave its directory, so rules common to the section skills (the reader and terminology contract, the Chinese manuscript adapter) are copied into each one. `shared/` holds the single canonical source, `scripts/sync_shared.py` writes the copies, and `scripts/sync_shared.py --check` plus the validator fail the build when a copy drifts or goes missing.
+- **Scale from evidence, not from core:** benchmark-derived lengths live in the domain pack as measured defaults with their counting rule. The generic cores state only the protocol for declaring a range.
 - **Artifact-independent:** no skill requires a particular wiki, manuscript format, Git workflow, corpus directory, or local machine path.
 - **Evidence-bounded:** novelty, citation, causality, optimality, robustness, and performance claims cannot exceed supplied evidence.
 - **Extensible contracts:** new domains use the same adapter interface and validation rules as MEC.

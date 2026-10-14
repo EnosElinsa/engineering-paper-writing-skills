@@ -13,10 +13,11 @@ Design and write an experimental section as a chain of questions, controlled com
 
 1. Always read [the core contract and quality gates](references/core/contract-and-quality-gates.md) in full.
 2. Always read [the reader and terminology contract](references/core/reader-and-terminology-contract.md).
-3. For population-based, Pareto, constrained, or dynamic evolutionary optimization, read [the evolutionary-algorithm route](references/methods/evolutionary-algorithms.md).
-4. For value-based, policy-gradient, actor-critic, single-agent, or multi-agent learning, read [the reinforcement-learning route](references/methods/reinforcement-learning.md).
-5. Read [the MEC domain pack](references/domains/mec.md) only for MEC or directly adjacent edge-computing systems.
-6. When several routes apply, read all relevant references and audit each evidence channel separately.
+3. Read [the Chinese manuscript adapter](references/languages/zh.md) when the manuscript is written in Chinese.
+4. For population-based, Pareto, constrained, or dynamic evolutionary optimization, read [the evolutionary-algorithm route](references/methods/evolutionary-algorithms.md).
+5. For value-based, policy-gradient, actor-critic, single-agent, or multi-agent learning, read [the reinforcement-learning route](references/methods/reinforcement-learning.md).
+6. Read [the MEC domain pack](references/domains/mec.md) only for MEC or directly adjacent edge-computing systems. It also holds the order-of-magnitude scale table.
+7. When several routes apply, read all relevant references and audit each evidence channel separately.
 
 ## Workflow
 

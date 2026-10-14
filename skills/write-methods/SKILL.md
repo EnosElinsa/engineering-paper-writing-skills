@@ -13,10 +13,11 @@ Explain a method as an executable solution to the previously formulated problem.
 
 1. Always read [the core contract and quality gates](references/core/contract-and-quality-gates.md) in full.
 2. Always read [the reader and terminology contract](references/core/reader-and-terminology-contract.md).
-3. For population-based, Pareto, constrained, or dynamic evolutionary optimization, read [the evolutionary-algorithm route](references/methods/evolutionary-algorithms.md).
-4. For MDP or POMDP, value-based, policy-gradient, actor-critic, single-agent, or multi-agent learning, read [the reinforcement-learning route](references/methods/reinforcement-learning.md).
-5. Read [the MEC domain pack](references/domains/mec.md) only when the target problem is MEC or a directly adjacent edge-computing system.
-6. When several routes apply, read all applicable references and state which component each route governs.
+3. Read [the Chinese manuscript adapter](references/languages/zh.md) when the manuscript is written in Chinese.
+4. For population-based, Pareto, constrained, or dynamic evolutionary optimization, read [the evolutionary-algorithm route](references/methods/evolutionary-algorithms.md).
+5. For MDP or POMDP, value-based, policy-gradient, actor-critic, single-agent, or multi-agent learning, read [the reinforcement-learning route](references/methods/reinforcement-learning.md).
+6. Read [the MEC domain pack](references/domains/mec.md) only when the target problem is MEC or a directly adjacent edge-computing system. It also holds the order-of-magnitude scale table.
+7. When several routes apply, read all applicable references and state which component each route governs.
 
 ## Workflow
 

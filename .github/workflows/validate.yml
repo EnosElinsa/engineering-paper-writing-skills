@@ -31,5 +31,8 @@ jobs:
       - name: Validate skill collection
         run: python scripts/validate_skills.py
 
+      - name: Check shared files are synchronized
+        run: python scripts/sync_shared.py --check
+
       - name: Verify installer dry run
         run: python scripts/install_skills.py --dry-run

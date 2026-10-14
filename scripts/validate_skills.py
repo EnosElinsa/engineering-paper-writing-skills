@@ -19,6 +19,8 @@ FRONTMATTER_ALLOWED = {"name", "description"}
 DOMAIN_FIELDS = {"name", "display_name", "description", "skills"}
 DOMAIN_SKILL_FIELDS = {"name", "reference"}
 DOMAIN_INDEPENDENT_SKILLS = {"latex-prose-audit"}
+SHARED_FIELDS = {"source", "targets"}
+SHARED_SOURCE_ROOT = "shared"
 LEGACY_SKILL_PREFIX = "writing-mec-"
 LEGACY_REPOSITORY_NAME = "mec-paper-writing-skills"
 FORBIDDEN_PATTERNS: tuple[tuple[str, re.Pattern[str]], ...] = (
@@ -179,6 +181,102 @@ def load_domain_packs(
             }
         )
     return domains, errors
+
+
+def shared_destination(source: str) -> str:
+    """Return the in-skill path of a shared source, e.g. shared/core/x.md -> references/core/x.md."""
+    return "references/" + source.removeprefix(f"{SHARED_SOURCE_ROOT}/")
+
+
+def load_shared_files(
+    root: pathlib.Path,
+    manifest_names: set[str],
+) -> tuple[list[dict[str, Any]], list[str]]:
+    errors: list[str] = []
+    path = root / "shared-files.json"
+    text = _read_text(path, errors)
+    if text is None:
+        return [], errors
+    try:
+        data: Any = json.loads(text)
+    except json.JSONDecodeError as error:
+        return [], [f"{path}: malformed shared-file manifest: {error}"]
+    if not isinstance(data, dict):
+        return [], [f"{path}: shared-file manifest root must be an object"]
+    if data.get("schema_version") != 1:
+        errors.append(f"{path}: shared-file schema_version must be 1")
+    raw_files = data.get("files")
+    if not isinstance(raw_files, list) or not raw_files:
+        errors.append(f"{path}: files must be a non-empty list")
+        return [], errors
+
+    entries: list[dict[str, Any]] = []
+    seen_sources: set[str] = set()
+    for index, raw in enumerate(raw_files):
+        label = f"{path}: files[{index}]"
+        if not isinstance(raw, dict) or set(raw) != SHARED_FIELDS:
+            errors.append(f"{label} must contain exactly source and targets")
+            continue
+        source = raw.get("source")
+        targets = raw.get("targets")
+        if (
+            not isinstance(source, str)
+            or not source.startswith(f"{SHARED_SOURCE_ROOT}/")
+            or ".." in pathlib.PurePosixPath(source).parts
+        ):
+            errors.append(f"{label} source must be a path under {SHARED_SOURCE_ROOT}/")
+            continue
+        if source in seen_sources:
+            errors.append(f"{label} repeats source {source}")
+            continue
+        seen_sources.add(source)
+        if not isinstance(targets, list) or not targets:
+            errors.append(f"{label} targets must be a non-empty list")
+            continue
+        clean_targets: list[str] = []
+        for target in targets:
+            if not isinstance(target, str) or target not in manifest_names:
+                errors.append(f"{label} refers to unknown skill {target!r}")
+            elif target in DOMAIN_INDEPENDENT_SKILLS:
+                errors.append(f"{label}: {target} must not receive shared copies")
+            elif target in clean_targets:
+                errors.append(f"{label} repeats target {target}")
+            else:
+                clean_targets.append(target)
+        entries.append({"source": source, "targets": clean_targets})
+    return entries, errors
+
+
+def validate_shared(root: pathlib.Path) -> list[str]:
+    """Check that every shared source exists and every skill copy is current and linked."""
+    root = pathlib.Path(root).resolve()
+    manifest_path = root / "shared-files.json"
+    if not manifest_path.exists():
+        if (root / SHARED_SOURCE_ROOT).exists():
+            return [f"{manifest_path}: shared sources exist without a shared-file manifest"]
+        return []
+
+    skill_entries, _ = load_manifest(root)
+    entries, errors = load_shared_files(root, {entry["name"] for entry in skill_entries})
+    for entry in entries:
+        source = root / pathlib.PurePosixPath(entry["source"])
+        if not source.is_file():
+            errors.append(f"{source}: shared source is missing")
+            continue
+        expected = source.read_bytes()
+        destination = shared_destination(entry["source"])
+        for skill in entry["targets"]:
+            skill_dir = root / "skills" / skill
+            copy = skill_dir / pathlib.PurePosixPath(destination)
+            if not copy.is_file():
+                errors.append(f"{copy}: shared copy is missing")
+            elif copy.read_bytes() != expected:
+                errors.append(f"{copy}: shared copy has diverged from {entry['source']}")
+            skill_md = skill_dir / "SKILL.md"
+            skill_text = _read_text(skill_md, errors) if skill_md.is_file() else None
+            if skill_text is not None and f"]({destination})" not in skill_text:
+                errors.append(f"{skill_md}: shared copy is not linked directly from SKILL.md: {destination}")
+    return errors
 
 
 def _parse_frontmatter(path: pathlib.Path, text: str) -> tuple[dict[str, str], list[str]]:
@@ -365,6 +463,8 @@ def validate_collection(root: pathlib.Path) -> list[str]:
             f"{root / 'skills' / skill_name / pathlib.PurePosixPath(reference)}: "
             "domain reference is not declared in domain-packs.json"
         )
+
+    errors.extend(validate_shared(root))
 
     readme = root / "README.md"
     if readme.is_file():
