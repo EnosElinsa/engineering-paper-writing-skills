@@ -22,7 +22,7 @@ For an MEC-family paper, the middle of the Introduction must realize this causal
 These four roles may occupy more than four paragraphs, but their order may not be reversed.
 
 1. **Scenario motivation:** derive the unmet operating need from a bounded synthesis of the closest MEC architecture or service mechanisms.
-2. **Scenario:** name the controller and participating entities, trigger or demand, service sequence, coupled decisions, objectives, and decisive physical or resource constraints at Introduction resolution.
+2. **Scenario:** name the controller and participating entities, functional cycle in parallel verbs, coupled decisions, objectives, and decisive physical or resource constraints at Introduction resolution.
 3. **Algorithm motivation:** translate the scenario into exact search, information, state-transition, dependency, or feasibility difficulties. Do not jump from “nonconvex” or “NP-hard” directly to a named solver.
 4. **Algorithm:** introduce the solver family, then map every proposed module to one previously stated difficulty.
 
@@ -112,7 +112,7 @@ The bundled audit script detects numerical reuse. It cannot establish whether a 
 - The Introduction cites field-level claims without explaining author-level algorithms or variable sets.
 - Scenario coupling appears before the paper announces its particular optimization problem.
 - The algorithm paragraph first establishes why feasible search is difficult, then states what reconstruction does.
-- Eighteen of the nineteen citation occurrences receive their own Introduction role; reference [5] appears twice, once for UAV platforms and once for evolutionary optimization, and a stricter draft would assign it to one claim.
+- Seventeen sources are cited once and reference [5] twice, giving nineteen occurrences; [5] serves UAV platforms in one place and evolutionary optimization in another, and a stricter draft would assign it to one claim.
 
 ### 2. UAV-enabled multi-source fusion
 

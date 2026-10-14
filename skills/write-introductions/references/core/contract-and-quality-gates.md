@@ -399,7 +399,7 @@ Revise rather than deliver if any item occurs:
 14. A duplicate is hidden by replacing it with a weaker or inaccurate source.
 15. The scenario paragraph narrates a trigger-to-completion timeline instead of a functional cycle.
 16. A decision, objective, or constraint is named by a coined compound before its function is stated.
-17. The same trade-off or gap is explained in full in two paragraphs.
+17. The same trade-off or gap is explained in full in two paragraphs, unless the second paragraph adds an independent fact (recorded).
 18. A definite expression has no antecedent in the same paragraph, the preceding paragraph, or standard field terminology.
 
 ### Scoring table

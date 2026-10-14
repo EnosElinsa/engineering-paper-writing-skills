@@ -187,7 +187,7 @@ Fail and revise if any of the following occurs:
 - one closest paper consumes disproportionate space without changing the class-level conclusion.
 - the same closest-work description or limitation is repeated under multiple axes;
 - a solver-family subsection mixes two or more axes (see Solver-family subsections);
-- a closing-gap sentence shares a run of eight or more identical consecutive words with the Introduction;
+- a closing-gap sentence shares a run of eight or more identical consecutive words with the Introduction (heuristic threshold);
 - a source that supports a classification category in the Introduction is missing from the same category in Related Work with no recorded exception.
 
 ## Center-sentence audit

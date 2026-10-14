@@ -233,11 +233,11 @@ Use `demonstrates the contribution of`, `results from`, or `is driven by` only w
 
 Use `guarantees`, `proves`, or `ensures` only when a theorem, construction, or exhaustive condition establishes the scope. Empirical evidence alone does not prove optimality, universal feasibility, or convergence to a global optimum.
 
+Always report competing explanations or exceptions that remain plausible. A mechanism-based explanation should connect the manipulated factor to an intermediate system effect and then to the measured metric.
+
 ### Robustness claims
 
 State the perturbation, its magnitude, and whether it was present in training or tuning. A claim of robustness without these three items is a claim about nominal performance. Do not call a smooth nominal curve robust.
-
-Always report competing explanations or exceptions that remain plausible. A mechanism-based explanation should connect the manipulated factor to an intermediate system effect and then to the measured metric.
 
 ## Style, wording, and transitions
 
