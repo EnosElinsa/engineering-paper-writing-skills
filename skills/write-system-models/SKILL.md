@@ -51,7 +51,7 @@ For every equation, record its inputs and output, then topologically order the m
 
 ### 3. Write the overview as a model map
 
-Open with a compact paragraph that defines the actors and control boundary, time convention, operational cycle, decision vector at a high level, objective family, and subsection map. Do not front-load all symbols.
+Open with a compact paragraph that defines the actors and control boundary, time convention, operational cycle, decision vector at a high level, objective family, and subsection map. Do not front-load all symbols. Follow the section-opening rules in the core contract: one overview paragraph and then the first module, no standalone overview subsection, generic subsection titles, at most one forward pointer, and the initial state declared before any recursion.
 
 ### 4. Draft each module locally
 

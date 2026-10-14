@@ -15,6 +15,7 @@
 11. [Problem Formulation as closure](#problem-formulation-as-closure)
 12. [Architecture inheritance lessons](#architecture-inheritance-lessons)
 13. [Benchmark-inconsistent failure patterns](#benchmark-inconsistent-failure-patterns)
+14. [Reference scale](#reference-scale)
 
 ## MEC model contract
 
@@ -50,7 +51,7 @@ The combined benchmark pattern is:
 
 The papers differ in whether `System Model` and `Problem Formulation` share one top-level section. This is a venue/manuscript choice, not a quality rule. What remains stable is that the formulation comes after all quantities needed to evaluate it.
 
-The overview paragraph acts as a map. It identifies the controller and actors, describes the service flow, states the time scope, and previews the modules. It does not begin with equations or a symbol inventory detached from the scenario.
+The overview paragraph acts as a map. It identifies the controller and actors, describes the service flow, states the time scope, and previews the modules. It may define the primary sets and one basic distance, as the Demand-aware paper does, but not module-specific symbols, and it never opens with a symbol inventory detached from the scenario. Default: declare the initial state there or in the first module; of the four reference papers only the Demand-aware paper does so in its opening paragraph, and the Fusion paper gives only the duration, the slot grid, and a battery assumption while the Terrain-aware paper mentions an initial position without values, so deviate when an inherited model defines the state, and record the reason.
 
 ## Source-by-source structural anatomy
 
@@ -202,3 +203,25 @@ A benchmark-like rewrite therefore retains validated standard modules and insert
 8. **Architecture replacement:** an established reference backbone is split or redesigned without a demonstrated dependency reason.
 9. **Equation narration:** prose restates symbols line by line but never explains the relevant coupling.
 10. **Unqualified assumptions:** ignored download delay, fixed mobility, sufficient battery, or perfect control information is asserted without scope or source.
+
+## Reference scale
+
+These are order-of-magnitude defaults for the scale statement (protocol S in the shared contract), measured on four evolutionary-algorithm UAV-MEC papers in an IEEE Transactions layout. They are a weak prior for any other family. Deviate when the venue limits length, an extra independent boundary needs its own unit, or the target family has no benchmark, and record the reason.
+
+**How these numbers were counted.** Prose paragraphs of at least 20 words, page-break fragments merged, with equations, tables, captions, and figure code excluded but the explanatory text that follows each equation included. Words are alphabetic tokens without citation brackets or inline math. Counts are good to about 20% because the split between equation text and prose is not exact. Equation numbers are the count of tagged display equations and are approximate.
+
+| Measure | Demand-aware | Dispersed | Terrain-aware | Fusion |
+|---|---:|---|---:|---:|
+| System model and formulation, prose words | about 2100 | about 2300 (system model about 700, formulation about 1600) | about 3200 | about 2200 |
+| Lettered subsections | 5 | 0 in the system model, 2 in the formulation | 5 | 6 |
+| Opening overview paragraph, words | 159 | 281 | 184 | 239 |
+| Numbered equations (approximate) | 29 | 10 | not counted | not counted |
+
+Reading the table: expect roughly 2,000–3,200 words and five or six subsections for a system model that includes the formulation, and an opening overview paragraph of about 160–280 words. The Dispersed opening paragraph also introduces the five-step workflow.
+
+**Counterexamples: align to structure and scale, not to sentences**
+
+- The Dispersed paper has a standalone System Model section of about 700 words before its Problem Formulation. That is the allowed exception for actors with different execution semantics. It is not evidence that a standalone overview subsection is normal.
+- Only the Demand-aware opening paragraph states initial positions. Do not claim that all four reference papers declare the initial state in the opening paragraph.
+- The Terrain-aware opening paragraph contains one forward pointer, to the later channel-model subsection. This is the model for the one-pointer default, not a license for several.
+- The reference papers carry extraction noise and wording slips. Never copy a sentence from them.

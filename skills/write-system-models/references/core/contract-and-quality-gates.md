@@ -84,6 +84,16 @@ Use this local pattern:
 
 Do not force every paragraph to use every role. Keep one dependency chain together and start a new paragraph when the physical operation changes.
 
+### Section opening and subsection structure
+
+Default: open the section with one overview paragraph and go straight to the first module. Do not add a standalone `system description`, `overview`, or `setting` subsection. The paragraph names the controller and actors, the time convention, the functional cycle, the initial state, and the module list, and defines only the sets, indices, and time grid that two or more modules use. Module-specific symbols and constraints appear at their module. Deviate when actors obey different execution semantics, in which case a workflow-level System Model section may precede the mathematical model; record the reason. [G-SM-open]
+
+Default: title each subsection with a generic model name (`Communication Model`, `Energy Model`). Deviate when the venue requires descriptive titles, and record the reason. [G-SM-title]
+
+Default: use at most one forward pointer per section, and name the section that defines the quantity. Deviate when two quantities cannot be ordered otherwise, and record the reason. [G-SM-fwd]
+
+Apply the term first-use and antecedent tests of the reader and terminology contract to every subsection title, module name, and module reference in the opening paragraph, rather than restating them here.
+
 ## 5. Timing and state gates
 
 For a dynamic model, answer all questions:
@@ -98,6 +108,8 @@ For a dynamic model, answer all questions:
 8. What is the initial state?
 9. Are conditional branches mutually exclusive and exhaustive?
 10. What happens after success, failure, return, deadline, or horizon end?
+
+Default: declare the initial state (question 8) in the opening paragraph or in the first module, before any recursion that uses it. Deviate when an inherited model already defines it; cite that model and record the reason. [G-SM-init]
 
 Fail if a policy depends on future arrivals, measurements, or outcomes not available at its decision instant. Fail if two simultaneous operations consume the same resource without an allocation rule. Fail if a quantity is counted both when reserved and when realized.
 
