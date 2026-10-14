@@ -51,16 +51,20 @@ Copy all paragraph-opening sentences into one block. Repair their logic and orde
 
 Sentence count is a soft constraint; number of rhetorical jobs is a hard constraint.
 
-| Paragraph function | Must answer | Normally excludes | Typical sentences |
+The sentence column gives default ranges, not fixed counts. Declare the range for the manuscript in the scale statement of [the reader and terminology contract](reader-and-terminology-contract.md). A range taken from reference measurements covers every measured reference paragraph, so a range such as `4–7` is a default, not an upper bound. Deviate when the venue limits length or an extra independent boundary needs its own sentence, and record the reason.
+
+| Paragraph function | Must answer | Normally excludes | Default sentences |
 |---|---|---|---:|
 | Background and position | What matters and why | Method details, long application lists | 3–5 |
 | Hotspot and difficulty | What is currently difficult and where this paper focuses | Every possible challenge | 3–5 |
 | Research classification | Criterion, categories, and relevant capability | Author lists, internal algorithms | 4–7 |
 | Synthesis and scenario motivation | Shared boundary and why it requires this scenario | A second literature review | 3–5 |
-| Scenario description | Actors, trigger, sequence, completion boundary | Formulas, symbols, every protocol branch | 4–6 |
-| Problem form | Joint decisions, objective conflict, hard constraints | Full mathematical formulation | 3–6 |
-| Algorithm motivation and method | Structural difficulty, general-solver boundary, module mapping | Pseudocode, training hyperparameters | 4–7 |
+| Scenario description | Controller, functional cycle, decision types, main coupling | Trigger and timing rules, formulas, protocol branches | 4–13, depending on merging |
+| Problem form | Joint decisions, objective conflict, hard constraints | Full mathematical formulation | 3–11, depending on merging |
+| Algorithm motivation and method | Structural difficulty, general-solver boundary, module mapping | Pseudocode, training hyperparameters | 5–11 |
 | Contribution item | New object/action and bounded effect | Background restatement, inflated result | 1–2 |
+
+Default merge rule: the scenario, its decisions, and their coupling form one paragraph; objectives, conflicts, constraints, and problem form follow in the next. Merge the two when the result keeps one rhetorical job and stays inside the declared range, and record the merge. Compression order when over range: drop restated background, then drop second-order consequences, then merge the two paragraphs.
 
 Split or compress when:
 
@@ -231,17 +235,24 @@ When B changes with task execution, platform motion, or the previous decision, X
 Therefore, this paper considers scenario C, in which B evolves jointly with decisions X and Y.
 ```
 
-### Minimum complete scenario information
+### Scenario paragraph pattern
 
-Include only:
+Write the scenario as one paragraph in this order (see the scale statement for length):
 
-- **Actors:** relevant devices, platforms, controllers, processes, or tasks;
-- **Trigger:** event initiating an update, cycle, transfer, failure response, or replanning;
-- **Main sequence:** necessary operations in time order;
-- **Completion boundary:** success, failure, departure, or next-cycle condition;
-- **Decisions:** what the controller chooses and at which timescale.
+1. One sentence naming the system and its controller.
+2. One sentence listing the recurring functional cycle as four or five parallel verbs (`adjusts its position, responds to requests, collects data, fuses it, and returns the result`).
+3. One sentence of the form `To accomplish these operations, the controller jointly decides N types of decisions.`
+4. Each decision in plain words with a purpose clause (`planning the trajectory to improve link quality`), never a variable-like name.
+5. One sentence on the main coupling between decisions.
 
-Move state symbols, set definitions, physical formulas, protocol branches, repair operations, and pseudocode to later sections. If a detail does not help explain why the decisions are necessary, omit it from the scenario paragraph.
+State a trigger, waiting rule, or completion boundary here only when the later timing model cannot be followed without it; otherwise leave it to the System Model. Apply the reader-question test to every verb in the cycle. Move state symbols, set definitions, physical formulas, protocol branches, repair operations, and pseudocode to later sections. If a detail does not help explain why the decisions are necessary, omit it from the scenario paragraph.
+
+### Decisions, objectives, and conflicts
+
+- Name each decision by what it does in the system, and gloss it in plain words when it is first listed (a short `i.e.` clause is enough). Do not use a variable-like compound before the reader knows why the quantity exists.
+- Name each objective in domain words with its owner and a one-clause meaning (`the average waiting time of the users`; `energy consumption, which determines operational sustainability`).
+- Default: explain a conflict with one causal step per direction. Raising A requires X, which raises B; lowering B requires limiting X, which lowers A. Leave second- and third-order consequences to the model or the experiments. Deviate when the closest literature needs a two-step chain to make the conflict understandable, and record the reason.
+- Explain a trade-off or gap in one paragraph only; later mentions are one clause.
 
 ### State concrete engineering difficulties
 
@@ -289,7 +300,7 @@ The Introduction states only first-order modules. Give each module at most one s
 - introducing an acronym first and reverse-engineering the motivation;
 - calling PPO, a Transformer, attention, or multi-agent control itself the scenario innovation.
 
-Claims involving NP-hardness, convergence, optimality, guaranteed safety, or reduced complexity require model, proof, or experimental evidence.
+Claims involving NP-hardness, convergence, optimality, guaranteed safety, or reduced complexity require model, proof, or experimental evidence. Tag each with a claim type from the reader and terminology contract before keeping it.
 
 ## Language and expression
 
@@ -386,10 +397,14 @@ Revise rather than deliver if any item occurs:
 12. A reference number repeats in the Introduction without an explicit, defensible independent-role exception.
 13. The same reference appears twice in one paragraph.
 14. A duplicate is hidden by replacing it with a weaker or inaccurate source.
+15. The scenario paragraph narrates a trigger-to-completion timeline instead of a functional cycle.
+16. A decision, objective, or constraint is named by a coined compound before its function is stated.
+17. The same trade-off or gap is explained in full in two paragraphs.
+18. A definite expression has no antecedent in the same paragraph, the preceding paragraph, or standard field terminology.
 
 ### Scoring table
 
-Score each item from 0 to 2: 0 missing/incorrect, 1 present but vague, 2 clear and evidenced. Require at least 24/28 and no hard failure.
+Score each item from 0 to 2: 0 missing/incorrect, 1 present but vague, 2 clear and evidenced. Require at least 86% of the maximum score (28 of 32) and no hard failure.
 
 | Item | Two-point standard |
 |---|---|
@@ -398,7 +413,7 @@ Score each item from 0 to 2: 0 missing/incorrect, 1 present but vague, 2 clear a
 | Classification | One criterion, MECE categories, motivation relevance |
 | Status synthesis | Existing capability and shared limiting condition are explicit |
 | Scenario motivation | The scenario follows naturally from that condition |
-| Scenario completeness | Actors, trigger, sequence, boundary, and decisions are sufficient |
+| Scenario completeness | Controller, functional cycle, decision types, and coupling are sufficient; trigger and boundary appear only when needed |
 | Problem form | Decision coupling, objective conflict, and hard constraints are clear without full modeling |
 | Algorithm motivation | Exact failure of a general method under the scenario structure |
 | Module mapping | Every core module maps to one prior difficulty |
@@ -407,6 +422,8 @@ Score each item from 0 to 2: 0 missing/incorrect, 1 present but vague, 2 clear a
 | Citation economy | Minimal clusters; one primary role per source; zero unjustified repeats |
 | Introduction/RW boundary | Category-level evidence stays here; paper-level evidence moves to Related Work |
 | Expression | Concrete actors and causal relations replace vague or inflated prose |
+| Terminology and antecedents | Decisions and objectives use plain-word names; every coined term is defined by function; every definite expression has an antecedent |
+| Scale | Paragraph and sentence counts fall inside the declared scale range, or each deviation is recorded |
 
 ### Final reverse audit
 
@@ -418,5 +435,6 @@ Trace backward from the algorithm paragraph:
 4. Is that boundary supported by a coherent classification or difficulty set?
 5. Does each cited source have one verified role in that chain?
 6. Can any repeated citation be removed by assigning it to the narrowest supported claim?
+7. Is any trade-off or gap explained in full in two paragraphs, and does every entry in the proposition ledger have exactly one home paragraph?
 
 The Introduction is closed only when every answer points to the preceding layer and the citation audit is clean.

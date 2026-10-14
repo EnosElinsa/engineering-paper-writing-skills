@@ -12,19 +12,30 @@ Design and write an experimental section as a chain of questions, controlled com
 ## Required resources and routing
 
 1. Always read [the core contract and quality gates](references/core/contract-and-quality-gates.md) in full.
-2. For population-based, Pareto, constrained, or dynamic evolutionary optimization, read [the evolutionary-algorithm route](references/methods/evolutionary-algorithms.md).
-3. For value-based, policy-gradient, actor-critic, single-agent, or multi-agent learning, read [the reinforcement-learning route](references/methods/reinforcement-learning.md).
-4. Read [the MEC domain pack](references/domains/mec.md) only for MEC or directly adjacent edge-computing systems.
-5. When several routes apply, read all relevant references and audit each evidence channel separately.
+2. Always read [the reader and terminology contract](references/core/reader-and-terminology-contract.md).
+3. For population-based, Pareto, constrained, or dynamic evolutionary optimization, read [the evolutionary-algorithm route](references/methods/evolutionary-algorithms.md).
+4. For value-based, policy-gradient, actor-critic, single-agent, or multi-agent learning, read [the reinforcement-learning route](references/methods/reinforcement-learning.md).
+5. Read [the MEC domain pack](references/domains/mec.md) only for MEC or directly adjacent edge-computing systems.
+6. When several routes apply, read all relevant references and audit each evidence channel separately.
 
 ## Workflow
+
+### 0. Choose the mode
+
+- Results mode: result artifacts exist; follow Steps 1-7.
+- Design mode: no results exist. Write the protocol, not the outcome.
+  - Keep the claim-to-experiment ledger. Give each claim a hypothesis id, a falsifying outcome, and the maximum conclusion it could support.
+  - Fix the analysis plan before any run: statistical unit, aggregation hierarchy, test and pairing key, the criterion for "stable", and its tolerance.
+  - Use protocol wording ("is compared with", "is measured by"). Result verbs and numbers not taken from the configuration are forbidden (shows, outperforms, achieves, demonstrates, validates, is robust).
+  - Leave result slots out of the prose and list them as pending in the ledger.
+  - Title the section "Experimental Design" or equivalent, not "Results".
 
 ### 1. Build the claim-to-experiment ledger
 
 | Paper claim | Experiment question | Controlled comparison | Metric and direction | Artifact | Required evidence | Status |
 |---|---|---|---|---|---|---|
 
-Include effectiveness, component contribution, efficiency, scalability, convergence, feasibility, robustness, generalization, and deployment claims. Remove or bound claims without an adequate experiment.
+Include effectiveness, component contribution, efficiency, scalability, convergence, feasibility, robustness, generalization, and deployment claims. Record the aggregation hierarchy and pairing key for every statistical claim. Remove or bound claims without an adequate experiment.
 
 ### 2. Establish the evaluation contract
 
@@ -62,10 +73,19 @@ The domain pack may add physical metrics, scenario controls, feasibility events,
 
 Apply the core evidence, fairness, reproducibility, statistics, paragraph, and claim gates, then all selected method and domain gates. Verify that every claim maps to evidence, every artifact has a purpose, all exact values match, exceptions are reported, explanations do not exceed experimental isolation, and conclusions name the tested range.
 
+## Reader gates (check before delivering)
+
+1. Every coined term is defined by function at first use (T); no variable-like names for decisions or objectives.
+2. Every definite expression has an antecedent (A); every action has a purpose or a cost (Q).
+3. Each proposition has one home (D); each universal or negative claim is tagged and supported (C).
+4. Length is inside the declared scale range, or the deviation is recorded (S).
+5. Ledgers and notes stay out of the manuscript (H).
+
 ## Output constraints
 
 - Match notation, terminology, tense, labels, and venue style.
 - Preserve correct data and configuration; do not manufacture missing results.
+- Keep ledgers, term tables, and audit notes out of the manuscript text and appendices unless the user asks for them.
 - When drafting, return the complete requested unit or section.
 - When auditing, report evidence failures by claim and severity before proposing a replacement experiment map.
 - Do not alter the method, system model, bibliography, figures, tables, raw data, or manuscript files outside the authorized scope.

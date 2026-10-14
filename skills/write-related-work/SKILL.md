@@ -12,8 +12,9 @@ Use Related Work as the evidence layer of the paper's motivation. Organize prior
 ## Required resources and routing
 
 1. Always read [the core contract and quality gates](references/core/contract-and-quality-gates.md) in full.
-2. Read [the MEC domain pack](references/domains/mec.md) only for mobile edge computing, UAV-MEC, HAP-UAV, vehicular edge computing, dispersed edge computing, or directly adjacent MEC settings.
-3. If no domain pack matches, derive the classification axes and terminology from the target manuscript and verified literature. Do not import MEC taxonomies into another field.
+2. Always read [the reader and terminology contract](references/core/reader-and-terminology-contract.md).
+3. Read [the MEC domain pack](references/domains/mec.md) only for mobile edge computing, UAV-MEC, HAP-UAV, vehicular edge computing, dispersed edge computing, or directly adjacent MEC settings.
+4. If no domain pack matches, derive the classification axes and terminology from the target manuscript and verified literature. Do not import MEC taxonomies into another field.
 
 ## Governing distinction
 
@@ -46,7 +47,7 @@ Every subsection needs one explicit comparison axis. Every boundary must follow 
 
 Use the smallest set of axes that mirrors the paper's argument. Typical axes include system architecture, the closest physical or service mechanism, problem formulation, and solver family. Add an axis only when it supports a distinct boundary. A shared keyword or publication chronology is not enough.
 
-Within one subsection, keep the criterion stable and make the categories mutually distinguishable and collectively adequate for the evidence actually covered. Do not claim a universal taxonomy unless the search supports it.
+Within one subsection, keep the criterion stable and make the categories mutually distinguishable and collectively adequate for the evidence actually covered. Do not claim a universal taxonomy unless the search supports it. For a solver-family subsection, declare one axis and apply the self-test in the core solver-family rule.
 
 ### 4. Draft category paragraphs
 
@@ -70,6 +71,8 @@ End each subsection with:
 
 End the section by combining those residual boundaries into the smallest defensible gap. Prefer bounded formulations such as “these mechanisms have not been jointly evaluated in the reviewed settings.” Avoid “no work,” “the first,” and universal absence claims without a search record that can support them.
 
+When the closing paragraph restates the Introduction's gap, follow the closing-gap rule in the core contract.
+
 ### 6. Run the audit
 
 Apply the core classification, evidence, gap, citation, paragraph, and resolution gates, followed by the selected domain gates. Confirm that:
@@ -81,10 +84,19 @@ Apply the core classification, evidence, gap, citation, paragraph, and resolutio
 - the final gap maps to actual model or method needs;
 - the section neither duplicates the Introduction nor leaks method details.
 
+## Reader gates (check before delivering)
+
+1. Every coined term is defined by function at first use (T); no variable-like names for decisions or objectives.
+2. Every definite expression has an antecedent (A); every action has a purpose or a cost (Q).
+3. Each proposition has one home (D); each universal or negative claim is tagged and supported (C).
+4. Length is inside the declared scale range, or the deviation is recorded (S).
+5. Ledgers and notes stay out of the manuscript (H).
+
 ## Output constraints
 
 - Preserve citation keys, terminology, and target-venue conventions.
 - When drafting, provide the finished section rather than a literature-search diary.
+- Keep ledgers, term tables, and audit notes out of the manuscript text and appendices unless the user asks for them.
 - When auditing, report failures by subsection and paragraph role, then provide a corrected evidence map or revision.
 - Do not alter bibliography entries or manuscript sections outside the authorized scope.
 

@@ -12,8 +12,9 @@ Build an Introduction as a causal argument rather than a compressed literature r
 ## Required resources and routing
 
 1. Always read [the core contract and quality gates](references/core/contract-and-quality-gates.md) in full.
-2. Read [the MEC domain pack](references/domains/mec.md) only when the manuscript concerns mobile edge computing, UAV-MEC, HAP-UAV, vehicular edge computing, dispersed edge computing, or a directly adjacent MEC setting.
-3. If no domain pack matches, apply the generic workflow and derive domain facts only from the manuscript and supplied sources. Do not treat MEC examples as universal content.
+2. Always read [the reader and terminology contract](references/core/reader-and-terminology-contract.md).
+3. Read [the MEC domain pack](references/domains/mec.md) only when the manuscript concerns mobile edge computing, UAV-MEC, HAP-UAV, vehicular edge computing, dispersed edge computing, or a directly adjacent MEC setting.
+4. If no domain pack matches, apply the generic workflow and derive domain facts only from the manuscript and supplied sources. Do not treat MEC examples as universal content.
 
 ## Workflow
 
@@ -23,7 +24,7 @@ Read the abstract, current Introduction, Related Work, system model, method, con
 
 - application importance and concrete operating problem;
 - decisive limitation in the closest research line;
-- scenario, trigger, actors, and completion boundary;
+- scenario cycle, actors, and decision types (trigger and completion boundary only when needed);
 - coupled decisions, objectives, and hard constraints;
 - structure that weakens a standard solver;
 - proposed module that addresses each stated difficulty;
@@ -33,10 +34,10 @@ Do not draft past an unresolved item. Mark it as an evidence or model gap instea
 
 ### 2. Build a citation-role ledger
 
-| Claim | Exact source passage | Introduction role | Used elsewhere here? | Keep, merge, or move |
-|---|---|---|---|---|
+| Claim | Exact source passage | Introduction role | Used elsewhere here? | Proposition | Home paragraph | Keep, merge, or move |
+|---|---|---|---|---|---|---|
 
-Verify each claim in the source itself. Assign each source one primary role in the Introduction, use the smallest sufficient citation cluster, and place citations immediately after the proposition they support. If a source appears more than once, retain the repetition only when it supports materially independent claims and record that reason. Detailed paper-by-paper comparisons belong in Related Work.
+Verify each claim in the source itself. Assign each source one primary role in the Introduction, use the smallest sufficient citation cluster, and place citations immediately after the proposition they support. If a source appears more than once, retain the repetition only when it supports materially independent claims and record that reason. Detailed paper-by-paper comparisons belong in Related Work. Explain a trade-off or gap in one paragraph only; every other mention is one clause.
 
 ### 3. Draft the center-sentence spine
 
@@ -77,9 +78,18 @@ Use two to four contributions spanning the paper's actual novelty layers, such a
 
 Run the core center-sentence, classification, evidence, citation, paragraph, and module-mapping gates. Then run the selected domain gates. Revise until the Introduction is causal, source-grounded, non-redundant, and clearly separated from Related Work.
 
+## Reader gates (check before delivering)
+
+1. Every coined term is defined by function at first use (T); no variable-like names for decisions or objectives.
+2. Every definite expression has an antecedent (A); every action has a purpose or a cost (Q).
+3. Each proposition has one home (D); each universal or negative claim is tagged and supported (C).
+4. Length is inside the declared scale range, or the deviation is recorded (S).
+5. Ledgers and notes stay out of the manuscript (H).
+
 ## Output constraints
 
 - Match the manuscript's language, terminology, notation, and citation format.
 - Deliver only the requested prose or audit by default.
+- Keep ledgers, term tables, and audit notes out of the manuscript text and appendices unless the user asks for them.
 - In an audit, lead with the center-sentence spine and the highest-impact causal or evidence failures.
 - Do not modify Related Work, the system model, the method, or the bibliography unless the user authorizes those edits.

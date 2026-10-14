@@ -12,8 +12,9 @@ Write the model in the order the system operates and formulate a problem that cl
 ## Required resources and routing
 
 1. Always read [the core contract and quality gates](references/core/contract-and-quality-gates.md) in full.
-2. Read [the MEC domain pack](references/domains/mec.md) only for mobile edge computing, UAV-MEC, HAP-UAV, vehicular edge computing, dispersed edge computing, or directly adjacent MEC systems.
-3. If no domain pack matches, infer the operational workflow and physical checks from the target architecture and authoritative sources. Do not reuse MEC equations or module order by analogy alone.
+2. Always read [the reader and terminology contract](references/core/reader-and-terminology-contract.md).
+3. Read [the MEC domain pack](references/domains/mec.md) only for mobile edge computing, UAV-MEC, HAP-UAV, vehicular edge computing, dispersed edge computing, or directly adjacent MEC systems.
+4. If no domain pack matches, infer the operational workflow and physical checks from the target architecture and authoritative sources. Do not reuse MEC equations or module order by analogy alone.
 
 ## Highest-priority rule: inherit before extending
 
@@ -80,9 +81,18 @@ The model defines physical state, observations, decisions, objectives, feasibili
 
 Apply the core inheritance, symbol, causality, timing, dimensional, constraint, traceability, and formulation gates, followed by the selected domain gates. Check headings, first sentences, first symbol occurrences, dependency order, units, one complete interval, decision-to-objective paths, and exact closure between local constraints and the final display.
 
+## Reader gates (check before delivering)
+
+1. Every coined term is defined by function at first use (T); no variable-like names for decisions or objectives.
+2. Every definite expression has an antecedent (A); every action has a purpose or a cost (Q).
+3. Each proposition has one home (D); each universal or negative claim is tagged and supported (C).
+4. Length is inside the declared scale range, or the deviation is recorded (S).
+5. Ledgers and notes stay out of the manuscript (H).
+
 ## Output constraints
 
 - Match the manuscript's notation, language, and section architecture.
+- Keep ledgers, term tables, and audit notes out of the manuscript text and appendices unless the user asks for them.
 - In an audit, distinguish architecture, causal or state, equation or notation, and formulation failures.
 - Make the smallest change that resolves a demonstrated dependency or correctness problem.
 - Do not redesign a valid model merely because another organization is possible.

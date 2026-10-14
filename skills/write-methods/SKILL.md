@@ -12,10 +12,11 @@ Explain a method as an executable solution to the previously formulated problem.
 ## Required resources and routing
 
 1. Always read [the core contract and quality gates](references/core/contract-and-quality-gates.md) in full.
-2. For population-based, Pareto, constrained, or dynamic evolutionary optimization, read [the evolutionary-algorithm route](references/methods/evolutionary-algorithms.md).
-3. For MDP or POMDP, value-based, policy-gradient, actor-critic, single-agent, or multi-agent learning, read [the reinforcement-learning route](references/methods/reinforcement-learning.md).
-4. Read [the MEC domain pack](references/domains/mec.md) only when the target problem is MEC or a directly adjacent edge-computing system.
-5. When several routes apply, read all applicable references and state which component each route governs.
+2. Always read [the reader and terminology contract](references/core/reader-and-terminology-contract.md).
+3. For population-based, Pareto, constrained, or dynamic evolutionary optimization, read [the evolutionary-algorithm route](references/methods/evolutionary-algorithms.md).
+4. For MDP or POMDP, value-based, policy-gradient, actor-critic, single-agent, or multi-agent learning, read [the reinforcement-learning route](references/methods/reinforcement-learning.md).
+5. Read [the MEC domain pack](references/domains/mec.md) only when the target problem is MEC or a directly adjacent edge-computing system.
+6. When several routes apply, read all applicable references and state which component each route governs.
 
 ## Workflow
 
@@ -71,10 +72,19 @@ Define size parameters before using them. Derive time and space complexity by ne
 
 Apply the core traceability, novelty, executability, feasibility, deployment, complexity, and claim gates. Then apply every relevant method-family route and the selected domain pack. Verify exact correspondence among the model, equations, pseudocode, implementation description, and claimed evidence.
 
+## Reader gates (check before delivering)
+
+1. Every coined term is defined by function at first use (T); no variable-like names for decisions or objectives.
+2. Every definite expression has an antecedent (A); every action has a purpose or a cost (Q).
+3. Each proposition has one home (D); each universal or negative claim is tagged and supported (C).
+4. Length is inside the declared scale range, or the deviation is recorded (S).
+5. Ledgers and notes stay out of the manuscript (H).
+
 ## Output constraints
 
 - Match the manuscript's notation, terminology, language, and citation style.
 - Preserve correct standard machinery and identify it as inherited.
+- Keep ledgers, term tables, and audit notes out of the manuscript text and appendices unless the user asks for them.
 - When auditing, report contract failures before stylistic issues.
 - Do not change the system model, experiments, bibliography, or code unless authorized.
 
