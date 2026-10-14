@@ -65,13 +65,13 @@ Follow contribution order when it creates a clearer story. Do not preserve this 
 
 ### Baseline and ablation controls
 
-Default: state for every baseline, in one table, the information available at decision time, the decision timing, the tuning budget and rule, the training data and compute, and the implementation source. A baseline with less information or a smaller budget does not isolate method quality. Deviate when a baseline is a published result that cannot be rerun, and record what is unknown.
+Default: state for every baseline, in one table, the information available at decision time, the decision timing, the tuning budget and rule, the training data and compute, and the implementation source. A baseline with less information or a smaller budget does not isolate method quality. Deviate when a baseline is a published result that cannot be rerun, and record what is unknown. [G-EX-base]
 
-Default: for each ablation variant state what changes, plus capacity (parameter count), training budget, tuning budget, and seeds. If removing a component changes capacity, add a capacity-matched control or disclose the change. Deviate only when capacity is not defined for the method, and record the reason. The reinforcement-learning route adds training-specific checks.
+Default: for each ablation variant state what changes, plus capacity (parameter count), training budget, tuning budget, and seeds. If removing a component changes capacity, add a capacity-matched control or disclose the change. Deviate only when capacity is not defined for the method, and record the reason. [G-EX-abl] The reinforcement-learning route adds training-specific checks.
 
 ### Metric definition paragraphs
 
-Default: define metrics one evidence role per paragraph (algorithm quality, physical outcome, feasibility, cost) and at most three metrics per paragraph. For each metric give definition, direction, unit, aggregation, and failure semantics. Deviate when two roles share one definition, and record the reason.
+Default: define metrics one evidence role per paragraph (algorithm quality, physical outcome, feasibility, cost) and at most three metrics per paragraph. For each metric give definition, direction, unit, aggregation, and failure semantics. Deviate when two roles share one definition, and record the reason. [G-EX-metric]
 
 ### Artifact level
 
@@ -197,8 +197,8 @@ Distinguish a relative percentage from a percentage-point change. Moving from 70
 - State the test, comparison family, and outcome before using `statistically significant`.
 - Do not convert a nonsignificant difference into equivalence without an equivalence design.
 - Do not infer stability from a mean, one curve, or a selected run.
-- Define `stable` with a window and a tolerance fixed before the run (for example, the across-seed mean changes by less than a stated tolerance over the last stated fraction of the budget). The values are examples, not norms.
-- Default: aggregate over seeds or independent runs within each instance first, then run paired tests over instances, with n equal to the number of instances and pairs formed by the pairing key. Do not treat the seeds of one instance as independent instances. This rule is stricter than the four benchmark evolutionary-algorithm papers, which report 30 independent runs with means and standard deviations only and no paired test. Do not cite them as support, and do not relax the rule to match them. Deviate for a single-instance study, and state that inference then covers run-to-run variability only.
+- Define `stable` with a window and a tolerance fixed before the run (for example, the across-seed mean changes by less than a stated tolerance over the last stated fraction of the budget). The values are examples, not norms. [G-EX-stable]
+- Default: aggregate over seeds or independent runs within each instance first, then run paired tests over instances, with n equal to the number of instances and pairs formed by the pairing key. Do not treat the seeds of one instance as independent instances. Do not cite reference papers as support for a weaker design, and do not relax the rule to match them. Deviate for a single-instance study, and state that inference then covers run-to-run variability only. Measured run counts and tests in the reference papers are in the domain pack for the scale statement. [G-EX-agg]
 - Do not compare overlapping smoothed bands as though they were a formal significance test.
 
 ### Select evidence rather than transcribing it
@@ -237,7 +237,7 @@ Always report competing explanations or exceptions that remain plausible. A mech
 
 ### Robustness claims
 
-State the perturbation, its magnitude, and whether it was present in training or tuning. A claim of robustness without these three items is a claim about nominal performance. Do not call a smooth nominal curve robust.
+State the perturbation, its magnitude, and whether it was present in training or tuning. A claim of robustness without these three items is a claim about nominal performance. Do not call a smooth nominal curve robust. [G-EX-robust]
 
 ## Style, wording, and transitions
 
@@ -256,7 +256,7 @@ Use these as rhetorical patterns, not mandatory sentence templates.
 
 Use precise operations and observations: `varies`, `holds fixed`, `samples`, `averages`, `compares`, `reduces`, `increases`, `maintains`, `violates`, `converges`, `generalizes`, `recovers`, and `requires`.
 
-Avoid promotional or empty verbs: `outperforms greatly`, `proves effectiveness`, `fully validates`, `works well`, and `achieves excellent performance`. Colloquial or promotional wording is a defect in any manuscript language.
+Avoid promotional or empty verbs: `outperforms greatly`, `proves effectiveness`, `fully validates`, `works well`, and `achieves excellent performance`. Colloquial or promotional wording is a defect in any manuscript language. [G-EX-style]
 
 ### Transitions
 
@@ -358,7 +358,7 @@ Do not finalize the section unless all applicable gates pass:
 - [ ] No paragraph performs two independent rhetorical jobs without a split.
 - [ ] No caption, axis description, or conclusion is unnecessarily repeated.
 - [ ] Missing evidence is disclosed rather than invented.
-- [ ] The mode is declared; a design-mode section contains protocol wording only, no result verbs, and lists pending result slots.
+- [ ] The mode is declared; a design-mode section contains protocol wording only, no result verbs, and lists pending result slots. [G-EX-mode]
 - [ ] Every statistical claim names its aggregation hierarchy and pairing key, and tests are paired over instances after aggregating seeds, or the deviation is recorded.
 - [ ] Every baseline has an information and budget entry; every ablation states capacity, training, tuning, and seeds.
 - [ ] No metric paragraph defines more than three metrics or mixes evidence roles without a recorded reason.

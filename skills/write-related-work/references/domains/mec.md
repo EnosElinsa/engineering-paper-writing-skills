@@ -14,6 +14,7 @@
 10. [Paragraph-level story test](#paragraph-level-story-test)
 11. [How this differs from the Introduction benchmark](#how-this-differs-from-the-introduction-benchmark)
 12. [Benchmark-consistent failure patterns](#benchmark-consistent-failure-patterns)
+13. [Reference scale and citation recovery](#reference-scale-and-citation-recovery)
 
 ## MEC Related Work contract
 
@@ -187,3 +188,44 @@ If a paragraph can be copied unchanged between the two sections, at least one se
 6. **Closest-work tunnel vision:** one neighboring paper occupies most of the section and obscures the broader class boundary.
 7. **Solver-name list:** algorithms are enumerated without explaining which target dependency or feasibility condition they fail to preserve.
 8. **Unsupported novelty language:** "first," "no existing work," or "all prior studies" appears without comprehensive evidence.
+
+## Reference scale and citation recovery
+
+These are default ranges for the scale statement (protocol S in the shared contract). They were measured on four evolutionary-algorithm UAV-MEC papers in an IEEE Transactions layout and are a weak prior for any other family. Deviate when the venue limits length, an extra independent boundary needs its own unit, or the target family has no benchmark, and record the reason.
+
+**How these numbers were counted.** A paragraph is a blank-line-delimited prose block of at least 20 words, with page-break fragments merged and page furniture, figure code, headings, captions, and tables dropped. Words are alphabetic tokens without citation brackets. Sentences are split at final punctuation before a capital letter and are good to plus or minus one. A tally that keeps page footers, splits a paragraph at a page break, or counts figure source code inflates the section totals by tens of words, so apply the rule before comparing. Treat every figure as good to about 5%.
+
+| Measure | Demand-aware | Dispersed | Terrain-aware | Fusion | Range |
+|---|---:|---:|---:|---:|---|
+| Lettered subsections | 2 | 0 (thematic paragraphs) | 3 (including a critical analysis) | 2 | 0–3 |
+| Paragraphs of at least 20 words | 5 | 5 | 9 | 6 | 5–9 |
+| Paragraphs of at least 60 words | 4 | 5 | 6 | 5 | 4–6 |
+| Words | 683 | 968 | 893 | 550 | 550–968 |
+| Sentences | 26 | 36 | 42 | 22 | 22–42 |
+| Words per paragraph | 33, 225, 205, 103, 117 | 230, 151, 184, 284, 119 | 42, 28, 156, 126, 137, 26, 109, 119, 150 | 30, 87, 107, 113, 131, 82 | 26–284 |
+| Unique sources cited | 17 | 17 | 16 | 12 | 12–17 |
+| Closing paragraph (words) | 117, gap | 119, comparison with the above works | 150, critical analysis | 82, gap | 82–150 |
+
+**Reading the table**
+
+1. The paragraphs that carry the category evidence run 80 to 285 words, most of them between 100 and 230. Subsection announcements run 26 to 42 words and are the first thing to cut under the compression order.
+2. The default range is 550–968 words in 4–6 paragraphs of at least 60 words, plus up to three short announcement paragraphs.
+3. The closing paragraph restates the gap once (Demand-aware, Fusion) or compares the target setting with the reviewed lines (Dispersed, Terrain-aware).
+
+**Recovery of Introduction citations in Related Work.** Same expansion rule as the counting rule above, applied to the unique sources of each Introduction.
+
+| Paper | Introduction sources | Cited again in Related Work | Not cited again | Classification sources recovered |
+|---|---:|---|---:|---|
+| Demand-aware | 18 | 4 | 14 | Sequential deployment and both fixed-deployment sources: all recovered |
+| Dispersed | 10 | 0 | 10 | No classification, only background and challenge sources: none recovered |
+| Terrain-aware | 24 | 6 | 18 | Three path-loss classes, five sources: three recovered, two missing |
+| Fusion | 22 | 7 | 15 | Six sources behind the vehicle-to-vehicle, vehicle-to-infrastructure, and hybrid categories: all recovered; background and UAV-advantage sources not recovered |
+
+Category labels also agree across the two sections in the Fusion paper (the three platform categories) and in the Demand-aware paper (sequential and fixed deployment). This is the evidence for the citation-level rule in the core file: it is a default for classification sources only, and background or application sources are exempt.
+
+**Counterexamples: align to structure and scale, not to sentences**
+
+- The Dispersed Related Work has no recovery of Introduction citations and no lettered subsections. Do not use it as evidence that recovery is optional for a classified Introduction.
+- The Terrain-aware Related Work omits two of the five classification sources. Treat this as a lapse, not a pattern.
+- The Fusion closing paragraph restates the Introduction gap in different words and adds a consequence. That is the allowed restatement in the core closing-gap rule, not a license to copy.
+- The reference papers carry extraction noise and wording slips. Never copy a sentence from them.

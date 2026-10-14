@@ -7,6 +7,7 @@
 3. [Scenario and baseline controls](#scenario-and-baseline-controls)
 4. [Physical evidence and interpretation](#physical-evidence-and-interpretation)
 5. [Writing gates](#writing-gates)
+6. [Reference scale](#reference-scale)
 
 ## Evidence base
 
@@ -41,7 +42,7 @@ Vary the load and resource dimensions that activate the claimed difficulty, such
 
 Use physical metrics that close the model claims: latency or completion time, energy, cost, utility or throughput, reliability or success rate, coverage, served workload, constraint violation, and return or terminal feasibility as applicable.
 
-Reward, scalar fitness, hypervolume, IGD, or another algorithmic metric cannot alone establish better MEC service. Pair it with the physical objectives and active constraints on held-out or independently generated instances.
+Reward, scalar fitness, hypervolume, IGD, or another algorithmic metric cannot alone establish better MEC service. Pair it with the physical objectives and active constraints on held-out or independently generated instances. In each of the four evolutionary-algorithm benchmark papers, the paragraph that defines the comparison metrics defines two algorithm-quality metrics only, such as inverted generational distance with hypervolume or success rate with hypervolume. Their physical outcomes (for example regional deployment effects, line-of-sight probability, transmission rate, and collected data size) are analyzed in separate subsections. A service-continuity study therefore needs its physical-outcome metrics in a paragraph of their own, with definition, direction, unit, aggregation, and failure semantics.
 
 Mechanism explanations must follow the model:
 
@@ -66,3 +67,21 @@ Fail and revise if:
 - scalability is claimed without varying a relevant entity, load, horizon, or resource dimension;
 - the explanation contradicts the System Model's causal relations;
 - online suitability is claimed without decision latency, inference cost, or fallback evidence.
+
+## Reference scale
+
+These are order-of-magnitude defaults for the scale statement (protocol S in the shared contract), measured on the experiment sections of four evolutionary-algorithm UAV-MEC papers in an IEEE Transactions layout. They are a weak prior for any other solver family or domain, including reinforcement learning. Deviate when the venue limits length, an extra independent boundary needs its own unit, or the target family has no benchmark, and record the reason.
+
+**How these numbers were counted.** Prose paragraphs of at least 20 words, page-break fragments merged, with tables, captions, figure code, and equations excluded. Words are alphabetic tokens without citation brackets or inline math. Counts are good to about 20%.
+
+| Measure | Demand-aware | Dispersed | Terrain-aware | Fusion |
+|---|---:|---:|---:|---:|
+| Experiment section, prose paragraphs | 10 | 16 | 15 | 20 |
+| Experiment section, prose words | about 1100 | about 1700 | about 900 | about 1900 |
+| Lettered subsections | 4 | 6 | 3 | 7 |
+
+Reading the table: expect roughly 900–1,900 words, 10–20 prose paragraphs, and three to seven subsections. Some reference papers move further experiments to a supplementary document, so the counts understate the full study.
+
+**Run protocol and statistics in the references.** Three of the four papers report 30 independent runs per algorithm and instance (counted from their experimental-setting statements), with means and standard deviations. The Fusion paper adds a Wilcoxon rank-sum test at the 0.001 level, which is an unpaired test. The Terrain-aware paper computes its statistics over 100 solutions of the final population and states no run count in the main text. None of the four runs a paired test over instances after aggregating seeds. The core statistical rule is therefore stricter than these references, and the references are not evidence for a weaker design.
+
+The reference papers carry extraction noise and wording slips. Align to structure and scale, not to sentences.

@@ -7,11 +7,12 @@ This file adapts `write-introductions` to MEC-family papers. Its rules are disti
 1. [MEC Introduction contract](#mec-introduction-contract)
 2. [Evidence base](#evidence-base)
 3. [Shared narrative architecture](#shared-narrative-architecture)
-4. [Citation-use evidence](#citation-use-evidence)
-5. [Source-by-source anatomy](#source-by-source-anatomy)
-6. [Introduction versus Related Work](#introduction-versus-related-work)
-7. [Typical failures in migration and rotation papers](#typical-failures-in-migration-and-rotation-papers)
-8. [Transferable conclusions](#transferable-conclusions)
+4. [Reference scale](#reference-scale)
+5. [Citation-use evidence](#citation-use-evidence)
+6. [Source-by-source anatomy](#source-by-source-anatomy)
+7. [Introduction versus Related Work](#introduction-versus-related-work)
+8. [Typical failures in migration and rotation papers](#typical-failures-in-migration-and-rotation-papers)
+9. [Transferable conclusions](#transferable-conclusions)
 
 ## MEC Introduction contract
 
@@ -67,6 +68,52 @@ This is a functional order, not a seven-paragraph template. The dispersed-comput
 | Terrain-aware | Channel-inference families plus a coequal flight-safety line | Existing channel models omit complex terrain while safe trajectories often fix the destination | Search behavior depends on task-appropriate operators |
 | Dispersed computing | Parallel/serial processing, redundancy, and multi-objective tradeoffs | Heterogeneous volunteer devices require delay, price, and reliability to be considered together | Feasibility, convergence, and diversity must be handled jointly |
 | HAP-UAV | Fixed-ground, mobile-ground, and aerial-mothership infrastructure | Preplanned mothership operations cannot adapt spatial resources to evolving mission state | Historical states cannot determine a feasible region shaped by the previous decision |
+
+## Reference scale
+
+These are default ranges for the scale statement (protocol S in the shared contract). They were measured on four evolutionary-algorithm UAV-MEC papers in an IEEE Transactions layout, so they are a weak prior for any other family. Deviate when the venue limits length, an extra independent boundary needs its own unit, or the target family has no benchmark, and record the reason.
+
+**How these numbers were counted.** A paragraph is a blank-line-delimited prose block of at least 20 words, with page-break fragments merged and page furniture, figure code, headings, captions, tables, and equations dropped. Words are alphabetic tokens without citation brackets or inline math. Sentences are split at final punctuation before a capital letter and are good to plus or minus one. Extraction noise matters at this precision: the terrain-aware Introduction repeats one sentence in its fourth body paragraph and a phrase in its first, so its counts include about 35 duplicated words. Treat every figure as good to about 5%.
+
+| Measure | Demand-aware | Dispersed | Terrain-aware | Fusion | Range |
+|---|---:|---:|---:|---:|---|
+| Body paragraphs (no contributions, no roadmap) | 6 | 4 | 5 | 8 | 4–8 |
+| Body words | 844 | 1050 | 874 | 1199 | 844–1199 |
+| Words per body paragraph, mean (min–max) | 141 (73–190) | 263 (209–298) | 175 (111–241) | 150 (56–280) | 56–298 |
+| Sentences per body paragraph (min–max) | 3–8 | 8–14 | 5–11 | 3–11 | 3–14 |
+| First paragraph, background and position (words / sentences) | 73 / 3 | 209 / 8 | 132 / 5 | 103 / 4 | 73–209 / 3–8 |
+| Contributions: items / words | 3 / 125 | 3 / 246 | 3 / 177 | 3 / 159 | 3 items; 125–246 words; 2–5 sentences per item |
+| Roadmap paragraph (words) | 57 | 77 | 56 | 59 | 56–77 |
+| Whole Introduction (body, contributions, roadmap; words) | 1026 | 1373 | 1107 | 1417 | 1026–1417 |
+| Scenario paragraph (words / sentences) | 145 / 4 | 293 / 13 | 218 / 7 | 195 / 7 | 145–293 / 4–13 |
+| Objectives, conflicts, constraints paragraph (words / sentences) | merged into the scenario paragraph | merged | merged | 246 / 11 | single sample |
+| Algorithm-motivation paragraph (words / sentences) | 190 / 7 | 250 / 9 | 111 / 5 | 280 / 11 | 111–280 / 5–11 |
+| Citation occurrences / unique sources | 19 / 18 | 10 / 10 | 29 / 24 | 23 / 22 | 10–29 / 10–24 |
+
+**Reading the table**
+
+1. The scenario and objectives are split into two paragraphs only in the Fusion paper. The other three papers merge them, and the merged paragraph carries the problem formulation as well (the Dispersed merged paragraph runs 293 words and 13 sentences). The split is therefore the default and a merge is a recorded exception, as in the core merge rule.
+2. The terrain-aware scenario-like paragraph describes the channel model and the optimization problem. Its system description sits in the first contribution item, so do not read 218 words as a scenario benchmark.
+3. A range taken from reference measurements covers every measured paragraph, so `5–11` sentences for the algorithm paragraph is a default and not an upper bound. Point-style sentence counts of four to seven fall below the measured 5, 7, 9, and 11.
+4. Introduction citations that support a classification category are the ones Related Work reuses. Three of the four papers recover them in Related Work, and the Dispersed paper has no classification to recover. The Related Work pack holds the recovery table.
+
+**Counterexamples: align to structure and scale, not to sentences**
+
+- The Demand-aware Introduction names one specific paper and its method in an example sentence of the second body paragraph. That is Related Work resolution. Treat it as a flaw of the reference, not a pattern.
+- The Dispersed Introduction has no standalone classification and uses a single 293-word paragraph for scenario, conflict, constraints, and problem form. Use it as an upper bound on merging, not as a target.
+- The reference papers carry extraction noise and wording slips. The terrain-aware Introduction repeats a sentence, and the Dispersed paper has a duplicated word in its algorithm section and a stock phrase ("Last but not least") in its Introduction. Never copy them.
+
+**Sentence anatomy of the Fusion scenario paragraph** (195 words, 7 sentences). It is an example of the scenario pattern in the core file, described in our own words:
+
+| Sentence | Function | Content in brief |
+|---|---|---|
+| 1 | System and controller | A UAV acts as an aerial fusion platform that serves vehicles through a cyclic process |
+| 2 | Functional cycle | Five parallel verbs: adjust position, respond to requests, collect observations, fuse them, return the result |
+| 3 | Decision count | To do this the UAV jointly decides five kinds of decisions |
+| 4 | Decisions in plain words | The five decisions, each named by what it does, some with a purpose clause such as improving communication quality |
+| 5 | Main coupling | Position changes alter the channel, which couples trajectory with resource allocation |
+| 6 | Extra coupling | Altitude changes the line-of-sight probability |
+| 7 | Dynamics | Movement changes the topology and channel over time, so the optimization must be dynamic |
 
 ## Citation-use evidence
 

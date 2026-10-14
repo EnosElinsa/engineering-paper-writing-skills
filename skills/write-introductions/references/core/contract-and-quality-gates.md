@@ -51,20 +51,20 @@ Copy all paragraph-opening sentences into one block. Repair their logic and orde
 
 Sentence count is a soft constraint; number of rhetorical jobs is a hard constraint.
 
-The sentence column gives default ranges, not fixed counts. Declare the range for the manuscript in the scale statement of [the reader and terminology contract](reader-and-terminology-contract.md). The ranges below come from four evolutionary-algorithm UAV-MEC benchmark papers and are a weak prior outside that family. A range taken from reference measurements covers every measured reference paragraph, so a range such as `5–11` is a default, not an upper bound. Deviate when the venue limits length or an extra independent boundary needs its own sentence, and record the reason.
+Declare the length range for the paragraphs from the scale statement (protocol S in [the reader and terminology contract](reader-and-terminology-contract.md)): with supplied references, measure them; without references, use the domain pack as a weak prior and say so. Every range is a default. Deviate when the venue limits length or an extra independent boundary needs its own sentence, and record the reason. [G-INT-scale]
 
-| Paragraph function | Must answer | Normally excludes | Default sentences |
-|---|---|---|---:|
-| Background and position | What matters and why | Method details, long application lists | 3–5 |
-| Hotspot and difficulty | What is currently difficult and where this paper focuses | Every possible challenge | 3–5 |
-| Research classification | Criterion, categories, and relevant capability | Author lists, internal algorithms | 4–7 |
-| Synthesis and scenario motivation | Shared boundary and why it requires this scenario | A second literature review | 3–5 |
-| Scenario description | Controller, functional cycle, decision types, main coupling | Trigger and timing rules, formulas, protocol branches | 4–13, depending on merging |
-| Problem form | Joint decisions, objective conflict, hard constraints | Full mathematical formulation | 3–11, depending on merging |
-| Algorithm motivation and method | Structural difficulty, general-solver boundary, module mapping | Pseudocode, training hyperparameters | 5–11 |
-| Contribution item | New object/action and bounded effect | Background restatement, inflated result | 1–2 |
+| Paragraph function | Must answer | Normally excludes |
+|---|---|---|
+| Background and position | What matters and why | Method details, long application lists |
+| Hotspot and difficulty | What is currently difficult and where this paper focuses | Every possible challenge |
+| Research classification | Criterion, categories, and relevant capability | Author lists, internal algorithms |
+| Synthesis and scenario motivation | Shared boundary and why it requires this scenario | A second literature review |
+| Scenario description | Controller, functional cycle, decision types, main coupling | Trigger and timing rules, formulas, protocol branches |
+| Problem form | Joint decisions, objective conflict, hard constraints | Full mathematical formulation |
+| Algorithm motivation and method | Structural difficulty, general-solver boundary, module mapping | Pseudocode, training hyperparameters |
+| Contribution item | New object/action and bounded effect | Background restatement, inflated result |
 
-Default merge rule: the scenario, its decisions, and their coupling form one paragraph; objectives, conflicts, constraints, and problem form follow in the next. Merge the two when the result keeps one rhetorical job and stays inside the declared range, and record the merge. Compression order when over range: drop restated background, then drop second-order consequences, then merge the two paragraphs.
+Default merge rule: the scenario, its decisions, and their coupling form one paragraph; objectives, conflicts, constraints, and problem form follow in the next. Merge the two when the result keeps one rhetorical job and stays inside the declared range, and record the merge. [G-INT-merge] Compression order when over range: drop restated background, then drop second-order consequences, then merge the two paragraphs.
 
 Split or compress when:
 
@@ -237,10 +237,10 @@ Therefore, this paper considers scenario C, in which B evolves jointly with deci
 
 ### Scenario paragraph pattern
 
-Default: write the scenario as one paragraph in this order (see the scale statement for length). Deviate when the venue or the model needs a different split, such as merging the scenario with the objectives, and record the reason.
+Default: write the scenario as one paragraph in this order (see the scale statement for length). Deviate when the venue or the model needs a different split, such as merging the scenario with the objectives, and record the reason. [G-INT-scenario]
 
 1. One sentence naming the system and its controller.
-2. One sentence listing the recurring functional cycle as parallel verbs, about four to five in the reference papers (`adjusts its position, responds to requests, collects data, fuses it, and returns the result`).
+2. One sentence listing the recurring functional cycle as parallel verbs (`adjusts its position, responds to requests, collects data, fuses it, and returns the result`).
 3. One sentence of the form `To accomplish these operations, the controller jointly decides N types of decisions.`
 4. Each decision in plain words with a purpose clause (`planning the trajectory to improve link quality`), never a variable-like name.
 5. One sentence on the main coupling between decisions.
@@ -249,10 +249,10 @@ State a trigger, waiting rule, or completion boundary here only when the later t
 
 ### Decisions, objectives, and conflicts
 
-- Default: name each decision by what it does in the system, and gloss it in plain words when it is first listed (a short `i.e.` clause is enough). Do not use a variable-like compound before the reader knows why the quantity exists. Deviate when a standard term of the field is already known to the reader, and record the reason.
-- Default: name each objective in domain words with its owner and a one-clause meaning (`the average waiting time of the users`; `energy consumption, which determines operational sustainability`). Deviate when the venue requires the symbolic name first, and record the reason.
-- Default: explain a conflict with one causal step per direction. Raising A requires X, which raises B; lowering B requires limiting X, which lowers A. Leave second- and third-order consequences to the model or the experiments. Deviate when the closest literature needs a two-step chain to make the conflict understandable, and record the reason.
-- Default: explain a trade-off or gap in one paragraph; later mentions are one clause. Deviate when a second paragraph adds an independent fact, and record the reason.
+- Default: name each decision by what it does in the system, and gloss it in plain words when it is first listed (a short `i.e.` clause is enough). Do not use a variable-like compound before the reader knows why the quantity exists. Deviate when a standard term of the field is already known to the reader, and record the reason. [G-INT-name]
+- Default: name each objective in domain words with its owner and a one-clause meaning (`the average waiting time of the users`; `energy consumption, which determines operational sustainability`). Deviate when the venue requires the symbolic name first, and record the reason. [G-INT-obj]
+- Default: explain a conflict with one causal step per direction. Raising A requires X, which raises B; lowering B requires limiting X, which lowers A. Leave second- and third-order consequences to the model or the experiments. Deviate when the closest literature needs a two-step chain to make the conflict understandable, and record the reason. [G-INT-conflict]
+- Default: explain a trade-off or gap in one paragraph; later mentions are one clause. Deviate when a second paragraph adds an independent fact, and record the reason. [G-INT-home]
 
 ### State concrete engineering difficulties
 
@@ -397,10 +397,10 @@ Revise rather than deliver if any item occurs:
 12. A reference number repeats in the Introduction without an explicit, defensible independent-role exception.
 13. The same reference appears twice in one paragraph.
 14. A duplicate is hidden by replacing it with a weaker or inaccurate source.
-15. The scenario paragraph narrates a trigger-to-completion timeline instead of a functional cycle.
-16. A decision, objective, or constraint is named by a coined compound before its function is stated.
-17. The same trade-off or gap is explained in full in two paragraphs, unless the second paragraph adds an independent fact (recorded).
-18. A definite expression has no antecedent in the same paragraph, the preceding paragraph, or standard field terminology.
+15. The scenario paragraph narrates a trigger-to-completion timeline instead of a functional cycle. [G-INT-15]
+16. A decision, objective, or constraint is named by a coined compound before its function is stated. [G-INT-16]
+17. The same trade-off or gap is explained in full in two paragraphs, unless the second paragraph adds an independent fact (recorded). [G-INT-17]
+18. A definite expression has no antecedent in the same paragraph, the preceding paragraph, or standard field terminology. [G-INT-18]
 
 ### Scoring table
 
@@ -422,8 +422,8 @@ Score each item from 0 to 2: 0 missing/incorrect, 1 present but vague, 2 clear a
 | Citation economy | Minimal clusters; one primary role per source; zero unjustified repeats |
 | Introduction/RW boundary | Category-level evidence stays here; paper-level evidence moves to Related Work |
 | Expression | Concrete actors and causal relations replace vague or inflated prose |
-| Terminology and antecedents | Decisions and objectives use plain-word names; every coined term is defined by function; every definite expression has an antecedent |
-| Scale | Paragraph and sentence counts fall inside the declared scale range, or each deviation is recorded |
+| Terminology and antecedents | Decisions and objectives use plain-word names; every coined term is defined by function; every definite expression has an antecedent [G-INT-term] |
+| Scale | Paragraph and sentence counts fall inside the declared scale range, or each deviation is recorded [G-INT-score-scale] |
 
 ### Final reverse audit
 
