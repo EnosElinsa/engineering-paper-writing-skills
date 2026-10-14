@@ -70,17 +70,17 @@ This is a functional order, not a seven-paragraph template. The dispersed-comput
 
 ## Citation-use evidence
 
-A mechanical audit expanded IEEE-style citation ranges and counted each numbered source within the benchmark Introductions:
+A mechanical audit expanded IEEE-style citation ranges and counted each numbered source within the benchmark Introductions. Counting rule: expand every range, count each bracketed number once per occurrence, and take the unique count over the Introduction. An excess occurrence is an occurrence beyond the first for the same number:
 
 | Introduction | Expanded occurrences | Unique sources | Excess occurrences | Repeated sources |
 |---|---:|---:|---:|---:|
-| Demand-aware multi-UAV MEC | 9 | 9 | 0 | 0 |
+| Demand-aware multi-UAV MEC | 19 | 18 | 1 | 1 |
 | UAV multi-source fusion | 23 | 22 | 1 | 1 |
 | Terrain-aware UAV-MEC | 29 | 24 | 5 | 5 |
 | Dispersed computing | 10 | 10 | 0 | 0 |
 | HAP-UAV planning | 17 | 17 | 0 | 0 |
 
-Three of the five benchmarks use every source once. The fusion paper reuses one source for two distinct claims. The terrain-aware paper first cites a five-paper cluster to establish a taxonomy and then repeats members of that cluster while describing individual categories; this is logically defensible but unnecessarily dense. It should not be copied as a citation habit.
+Two of the five benchmarks (dispersed computing and HAP-UAV) use every source once. The demand-aware paper reuses reference [5] once, in two different paragraphs, and the fusion paper reuses one source for two distinct claims. The terrain-aware paper first cites a five-paper cluster to establish a taxonomy and then repeats members of that cluster while describing individual categories; this is logically defensible but unnecessarily dense. It should not be copied as a citation habit.
 
 The transferable standard is therefore stricter than occasional benchmark artifacts:
 
@@ -112,7 +112,7 @@ The bundled audit script detects numerical reuse. It cannot establish whether a 
 - The Introduction cites field-level claims without explaining author-level algorithms or variable sets.
 - Scenario coupling appears before the paper announces its particular optimization problem.
 - The algorithm paragraph first establishes why feasible search is difficult, then states what reconstruction does.
-- All nine cited sources receive one Introduction role.
+- Eighteen of the nineteen citation occurrences receive their own Introduction role; reference [5] appears twice, once for UAV platforms and once for evolutionary optimization, and a stricter draft would assign it to one claim.
 
 ### 2. UAV-enabled multi-source fusion
 
