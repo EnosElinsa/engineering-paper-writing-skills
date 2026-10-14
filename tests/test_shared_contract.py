@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import json
 import pathlib
 import unittest
 
@@ -32,6 +33,16 @@ class SharedContractTests(unittest.TestCase):
             text = (ROOT / "skills" / skill / "SKILL.md").read_text(encoding="utf-8")
             self.assertIn(f"]({CONTRACT})", text, f"{skill} does not link the contract")
 
+    def test_every_manifest_copy_matches_its_shared_source(self) -> None:
+        manifest = json.loads((ROOT / "shared-files.json").read_text(encoding="utf-8"))
+        for entry in manifest["files"]:
+            source = ROOT / entry["source"]
+            relative = pathlib.PurePosixPath(entry["source"]).relative_to("shared")
+            expected = source.read_bytes()
+            for skill in entry["targets"]:
+                copy = ROOT / "skills" / skill / "references" / relative
+                self.assertTrue(copy.is_file(), f"{skill} is missing {relative}")
+                self.assertEqual(expected, copy.read_bytes(), f"{skill} {relative} differs from its shared source")
     def test_contract_has_no_forbidden_pattern(self) -> None:
         text = self._copy(SECTION_SKILLS[0]).read_text(encoding="utf-8")
         for label, pattern in FORBIDDEN_PATTERNS:

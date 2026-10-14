@@ -72,15 +72,15 @@ Fail and revise if:
 
 These are order-of-magnitude defaults for the scale statement (protocol S in the shared contract), measured on the experiment sections of four evolutionary-algorithm UAV-MEC papers in an IEEE Transactions layout. They are a weak prior for any other solver family or domain, including reinforcement learning. Deviate when the venue limits length, an extra independent boundary needs its own unit, or the target family has no benchmark, and record the reason.
 
-**How these numbers were counted.** Prose paragraphs of at least 20 words, page-break fragments merged, with tables, captions, figure code, and equations excluded. Words are alphabetic tokens without citation brackets or inline math. Counts are good to about 20%.
+**How these numbers were counted.** Prose paragraphs of at least 20 words, page-break fragments merged, with tables, captions, figure code, and equations excluded. Words are alphabetic tokens without citation brackets or inline math. Counts are good to about 20%. The Dispersed paragraph count depends on how short fragments are merged, so it is given as a range.
 
 | Measure | Demand-aware | Dispersed | Terrain-aware | Fusion |
 |---|---:|---:|---:|---:|
-| Experiment section, prose paragraphs | 10 | 16 | 15 | 20 |
+| Experiment section, prose paragraphs | 10 | 16 to 19 | 12 | 19 |
 | Experiment section, prose words | about 1100 | about 1700 | about 900 | about 1900 |
 | Lettered subsections | 4 | 6 | 3 | 7 |
 
-Reading the table: expect roughly 900–1,900 words, 10–20 prose paragraphs, and three to seven subsections. Some reference papers move further experiments to a supplementary document, so the counts understate the full study.
+Reading the table: expect roughly 900–1,900 words, 10–19 prose paragraphs, and three to seven subsections. Some reference papers move further experiments to a supplementary document, so the counts understate the full study.
 
 **Run protocol and statistics in the references.** Three of the four papers report 30 independent runs per algorithm and instance (counted from their experimental-setting statements), with means and standard deviations. The Fusion paper adds a Wilcoxon rank-sum test at the 0.001 level, which is an unpaired test. The Terrain-aware paper computes its statistics over 100 solutions of the final population and states no run count in the main text. None of the four runs a paired test over instances after aggregating seeds. The core statistical rule is therefore stricter than these references, and the references are not evidence for a weaker design.
 

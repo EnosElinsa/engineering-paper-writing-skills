@@ -83,10 +83,10 @@ These are order-of-magnitude defaults for the scale statement (protocol S in the
 
 | Measure | Demand-aware | Dispersed | Terrain-aware | Fusion |
 |---|---:|---:|---:|---:|
-| Algorithm section, prose paragraphs | 12 | 22 | 20 | 18 |
+| Algorithm section, prose paragraphs | 16 | 24 | 21 | 17 |
 | Algorithm section, prose words | about 1200 | about 3000 | about 1600 | about 1200 |
 | Lettered subsections | 4 | 4 | 3 | 3 |
 
-Reading the table: expect roughly 1,200–3,000 words, 12–22 prose paragraphs, and three or four subsections, with the upper end set by a method that has a second population and a repair procedure. Three of the four papers open the section with a short roadmap that names the formulated problem and the block order, which is the default in the core opening rule. The remaining paper opens at a specific difficulty and is the allowed exception when the Introduction did not state that difficulty.
+Reading the table: expect roughly 1,200–3,000 words, 16–24 prose paragraphs, and three or four subsections, with the upper end set by a method that has a second population and a repair procedure. Three of the four papers open the section with a short roadmap that names the formulated problem and the block order, which is the default in the core opening rule. The remaining paper opens at a specific difficulty and is the allowed exception when the Introduction did not state that difficulty.
 
 The reference papers carry extraction noise and wording slips. Align to structure and scale, not to sentences.

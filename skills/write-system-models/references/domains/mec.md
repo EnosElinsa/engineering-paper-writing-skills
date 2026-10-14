@@ -212,16 +212,16 @@ These are order-of-magnitude defaults for the scale statement (protocol S in the
 
 | Measure | Demand-aware | Dispersed | Terrain-aware | Fusion |
 |---|---:|---|---:|---:|
-| System model and formulation, prose words | about 2100 | about 2300 (system model about 700, formulation about 1600) | about 3200 | about 2200 |
+| System model and formulation, prose words | about 1250 | about 1830 (system model about 680, formulation about 1160) | about 2800 | about 1520 |
 | Lettered subsections | 5 | 0 in the system model, 2 in the formulation | 5 | 6 |
 | Opening overview paragraph, words | 159 | 281 | 184 | 239 |
 | Numbered equations (approximate) | 29 | 10 | not counted | not counted |
 
-Reading the table: expect roughly 2,000–3,200 words and five or six subsections for a system model that includes the formulation, and an opening overview paragraph of about 160–280 words. The Dispersed opening paragraph also introduces the five-step workflow.
+Reading the table: expect roughly 1,250–2,800 words and five or six subsections for a system model that includes the formulation, and an opening overview paragraph of about 160–280 words. The Dispersed opening paragraph also introduces the five-step workflow.
 
 **Counterexamples: align to structure and scale, not to sentences**
 
-- The Dispersed paper has a standalone System Model section of about 700 words before its Problem Formulation. That is the allowed exception for actors with different execution semantics. It is not evidence that a standalone overview subsection is normal.
+- The Dispersed paper has a standalone System Model section of about 680 words before its Problem Formulation. That is the allowed exception for actors with different execution semantics. It is not evidence that a standalone overview subsection is normal.
 - Only the Demand-aware opening paragraph states initial positions. Do not claim that all four reference papers declare the initial state in the opening paragraph.
 - The Terrain-aware opening paragraph contains one forward pointer, to the later channel-model subsection. This is the model for the one-pointer default, not a license for several.
 - The reference papers carry extraction noise and wording slips. Never copy a sentence from them.
