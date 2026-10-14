@@ -141,7 +141,7 @@ The example names the mechanism, input, order, output, boundary of the guarantee
 
 ### 5.2 Paragraph roles
 
-- **Opening paragraph:** link the problem to the method family and preview the section.
+- **Opening paragraph:** say which formulated problem is solved (cite its equation), list the blocks in order, and point to the preliminaries. Do not restate the Introduction's list of obstacles. A module subsection may describe a difficulty only with operational detail the Introduction lacks, such as a failing move or a dependency order; that narrative lives in the subsection that answers it.
 - **Interface paragraph:** explain what information or decision each representation component carries.
 - **Framework paragraph:** describe the executor, phases, information flow, and returned artifact.
 - **Mechanism paragraph:** give the scenario-specific transformation and its reason.
@@ -360,7 +360,7 @@ Mark each gate `PASS`, `FAIL`, or `NOT APPLICABLE`.
 
 ### 12.1 Shared gates
 
-1. **Problem-link gate:** the opening names the exact formulated problem and solver-relevant difficulty.
+1. **Problem-link gate:** the opening identifies the formulated problem (with its equation) and the block order; difficulty narrative lives in the module subsection that answers it and does not restate the Introduction's list of obstacles.
 2. **Interface gate:** every optimized decision is represented, generated, or delegated explicitly.
 3. **Information gate:** every algorithm input is available to its executor at the stated time.
 4. **Dependency gate:** formulas and mechanisms appear after their inputs and before their consumers.
@@ -374,8 +374,9 @@ Mark each gate `PASS`, `FAIL`, or `NOT APPLICABLE`.
 12. **Complexity gate:** the scope and all repeatedly invoked modules are counted.
 13. **Claim gate:** feasibility, optimality, robustness, convergence, and real-time claims match evidence.
 14. **Resolution gate:** standard theory is concise and scenario-specific mechanisms receive the detail.
-15. **Section-boundary gate:** no duplicated System Model, Related Work, or experiment-only material remains.
+15. **Section-boundary gate:** no duplicated Introduction, System Model, Related Work, or experiment-only material remains.
 16. **Center-sentence gate:** paragraph openings alone form a complete method story.
+17. **Term first-use gate:** every non-standard term (for example, `token` for a candidate element) is defined by function in the sentence that first uses it, before any heading, caption, equation label, or pseudocode label.
 
 ### 12.2 Delivery rule
 

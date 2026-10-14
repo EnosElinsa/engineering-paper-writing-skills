@@ -7,12 +7,14 @@
 3. [Recommended section patterns](#recommended-section-patterns)
 4. [Sentence roles](#sentence-roles)
 5. [Density rules](#density-rules)
-6. [Language and style](#language-and-style)
-7. [Citation fidelity gates](#citation-fidelity-gates)
-8. [Structural hard gates](#structural-hard-gates)
-9. [Center-sentence audit](#center-sentence-audit)
-10. [Gap-to-module audit](#gap-to-module-audit)
-11. [Final compression pass](#final-compression-pass)
+6. [Solver-family subsections](#solver-family-subsections)
+7. [Closing gap paragraph](#closing-gap-paragraph)
+8. [Language and style](#language-and-style)
+9. [Citation fidelity gates](#citation-fidelity-gates)
+10. [Structural hard gates](#structural-hard-gates)
+11. [Center-sentence audit](#center-sentence-audit)
+12. [Gap-to-module audit](#gap-to-module-audit)
+13. [Final compression pass](#final-compression-pass)
 
 ## Pre-draft evidence table
 
@@ -36,6 +38,13 @@ Build a second matrix:
 |---|---|---|---|---|
 
 The Related Work may add detail, but it must not silently change the classification axis or gap asserted in the Introduction. If the evidence contradicts the Introduction, revise the claim rather than forcing the citations.
+
+Add a citation-level matrix:
+
+| Introduction category sentence | Citations | Related Work subsection and category label | Present? |
+|---|---|---|---|
+
+Default: every source that supports a classification category in the Introduction reappears under the same category label in Related Work. Background and application sources are exempt. Category labels are identical in the Introduction, the Related Work headings, and the closing gap. Deviate when a source is intentionally kept at category level only, and record each exception and its reason.
 
 ## Recommended section patterns
 
@@ -115,12 +124,28 @@ Tie the limitation to problem structure:
 - One paragraph has one primary class-level claim; subordinate center sentences are allowed only when they refine that claim.
 - One cited work normally receives one sentence or one clause.
 - Use two to four evidence units per category paragraph as a default, not a quota.
-- Keep the whole section near the benchmark scale of four to seven substantive paragraphs unless additional independent boundaries genuinely require more.
+- Declare the range from the scale statement (reference measurement: 5–7 substantive paragraphs, about 635–987 English words). Default: stay inside it; deviate when additional independent boundaries genuinely require more, and record the reason. When more than 20% over the upper bound, apply the compression order of the reader and terminology contract: merge papers that share a predicate, drop paper-level numbers, cut announcement sentences, and keep one expanded closest work.
 - Group papers sharing a mechanism instead of repeating the same predicate.
 - Expand the closest work only enough to establish the exact overlap and mismatch.
 - Assign each closest-work limitation to one primary subsection. Reuse the citation elsewhere only for a different analytical fact, not to repeat the same comparison.
 - Do not report architecture layers, hyperparameters, data sets, or numerical gains unless they define the comparison.
 - Let citations support sentences; do not let citation counts determine paragraph length.
+
+## Solver-family subsections
+
+Declare one axis per solver-family subsection, chosen as the single difficulty the paper's method addresses (for example, hybrid-action reinforcement learning: how hard constraints are enforced; dynamic evolutionary optimization: how the population responds to change). Other dimensions (action representation, state encoding, decision process) appear as one-clause attributes of a work, not as parallel categories.
+
+Self-test: can every cited work be placed in exactly one category by reading only what it does on that axis? If not, change the axis or split the subsection.
+
+Hard gate: a subsection whose categories mix two or more of {action representation, constraint handling, state encoding, decision process} fails.
+
+Evidence status: this rule is extrapolated from the MECE principle and from the dynamic-evolutionary-algorithm subsection of the multi-source fusion benchmark paper, which is organized on one axis. It is not measured from a reinforcement-learning subsection of any benchmark paper.
+
+## Closing gap paragraph
+
+Default: restate the Introduction's gap once, in at most three sentences and in different words, and add what the Introduction cannot: paper-level evidence or the consequence in the target setting. Deviate when a venue requires a standalone summary, and record the reason.
+
+Fail if any sentence shares a run of eight or more identical consecutive words with the Introduction. The eight-word threshold is a heuristic, not a measured value; use it to find copied sentences, not to reject a legitimate shared technical phrase.
 
 ## Language and style
 
@@ -146,6 +171,7 @@ Fail the section if any answer is `no`:
 4. Are closest-work differences based on comparable objects, decisions, and assumptions?
 5. Are all citation keys valid in the manuscript bibliography?
 6. Does the temporal wording match the source status (published, early access, preprint, or draft)?
+7. Does every sentence with a universal or negative claim carry a claim-type tag (L, D, R, K) from the reader and terminology contract? A D-type claim states its premise and is not cited; for the penalty-term example, cross-reference the constraint-handling semantics table in the write-methods skill instead of citing a paper.
 
 ## Structural hard gates
 
@@ -159,7 +185,10 @@ Fail and revise if any of the following occurs:
 - the final paragraph describes the proposed algorithm in implementation detail;
 - an algorithm subsection lists method names without identifying the target structural mismatch;
 - one closest paper consumes disproportionate space without changing the class-level conclusion.
-- the same closest-work description or limitation is repeated under multiple axes.
+- the same closest-work description or limitation is repeated under multiple axes;
+- a solver-family subsection mixes two or more axes (see Solver-family subsections);
+- a closing-gap sentence shares a run of eight or more identical consecutive words with the Introduction;
+- a source that supports a classification category in the Introduction is missing from the same category in Related Work with no recorded exception.
 
 ## Center-sentence audit
 

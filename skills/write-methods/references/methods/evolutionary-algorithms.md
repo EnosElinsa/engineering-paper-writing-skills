@@ -191,7 +191,7 @@ Saying that the algorithm `dynamically selects operators` without this loop is n
 
 The Method section uses:
 
-1. an unusually strong opening that maps two problem difficulties to two method components;
+1. an unusually strong opening that maps two problem difficulties to two method components (use this pattern only when the Introduction did not state these difficulties at that resolution; otherwise follow the opening-paragraph rule in the core contract);
 2. **Representation of Encoding Scheme**;
 3. **Proposed Constrained Multi-Objective Evolutionary Algorithm Framework**;
 4. **Dual-Population Cooperative Mechanism**;
@@ -306,7 +306,7 @@ These are selected only when the target problem and baseline require them.
 The opening paragraph should:
 
 1. name the problem number/type;
-2. state the exact evolutionary difficulty;
+2. state the evolutionary difficulty in one clause only when the Introduction did not give it at this resolution, and do not restate the Introduction's list of obstacles;
 3. name the adopted baseline family;
 4. preview representation, framework, proposed mechanisms, output, and complexity.
 

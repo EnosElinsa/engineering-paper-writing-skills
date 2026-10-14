@@ -26,8 +26,8 @@ The experimental section does not merely describe figures. It tests the paper's 
 
 Build the ledger before deciding subsection titles or writing prose:
 
-| Claim | Experiment question | Comparison or independent variable | Held fixed | Metric and statistical unit | Artifact | Falsifying outcome | Maximum supported conclusion |
-|---|---|---|---|---|---|---|---|
+| Claim | Experiment question | Comparison or independent variable | Held fixed | Metric and statistical unit | Aggregation hierarchy | Pairing key | Artifact | Falsifying outcome | Maximum supported conclusion |
+|---|---|---|---|---|---|---|---|---|---|
 
 Use one claim per row. If two mechanisms are claimed independently, give them separate rows even when one ablation table tests both.
 
@@ -37,8 +37,11 @@ Apply these rules:
 - Name the comparison or manipulated factor precisely; `different settings` is insufficient.
 - Record controls that prevent an alternative explanation, such as equal computation budgets or identical environment realizations.
 - Name the statistical unit: seed, independent run, episode, time slot, user, instance, or nondominated set.
+- Name the aggregation hierarchy (for example, seeds within an instance, then instances) and the pairing key that links compared methods (same instance, same seed set, same environment realization). Leave both empty only for descriptive claims.
 - State what result would weaken or falsify the claim. This prevents post-hoc success criteria.
 - Write the narrowest conclusion that would remain valid if an untested dimension changed.
+
+In design mode (no result artifact exists yet), the ledger lists each result slot as pending, with a hypothesis id, and the prose describes only the protocol; see Step 0 of the skill workflow.
 
 An empty artifact cell marks an unsupported claim. An artifact with no ledger row is exploratory evidence and must be labeled as exploratory, assigned a claim, or removed.
 
@@ -59,6 +62,16 @@ The global sequence normally performs these functions:
 7. test sensitivity, scale, unseen conditions, failures, uncertainty, or cost.
 
 Follow contribution order when it creates a clearer story. Do not preserve this list mechanically when a function is absent.
+
+### Baseline and ablation controls
+
+Default: state for every baseline, in one table, the information available at decision time, the decision timing, the tuning budget and rule, the training data and compute, and the implementation source. A baseline with less information or a smaller budget does not isolate method quality. Deviate when a baseline is a published result that cannot be rerun, and record what is unknown.
+
+Default: for each ablation variant state what changes, plus capacity (parameter count), training budget, tuning budget, and seeds. If removing a component changes capacity, add a capacity-matched control or disclose the change. Deviate only when capacity is not defined for the method, and record the reason. The reinforcement-learning route adds training-specific checks.
+
+### Metric definition paragraphs
+
+Default: define metrics one evidence role per paragraph (algorithm quality, physical outcome, feasibility, cost) and at most three metrics per paragraph. For each metric give definition, direction, unit, aggregation, and failure semantics. Deviate when two roles share one definition, and record the reason.
 
 ### Artifact level
 
@@ -83,7 +96,7 @@ The opening sentence names the experiment question or purpose. The remaining sen
 
 `question -> tested claim -> variants or independent variable -> controls -> run/aggregation protocol -> metric -> figure/table pointer`
 
-Include only experiment-specific configuration. Cross-reference shared settings instead of repeating them. If no result artifact is yet available, stop after identifying the missing evidence.
+Include only experiment-specific configuration. Cross-reference shared settings instead of repeating them. If no result artifact is yet available, write this block only (design mode), list the evidence block as pending in the ledger, and do not draft its prose.
 
 Do not announce the outcome in this block. Result language in the contract obscures the boundary between design and interpretation and encourages confirmation bias.
 
@@ -184,6 +197,8 @@ Distinguish a relative percentage from a percentage-point change. Moving from 70
 - State the test, comparison family, and outcome before using `statistically significant`.
 - Do not convert a nonsignificant difference into equivalence without an equivalence design.
 - Do not infer stability from a mean, one curve, or a selected run.
+- Define `stable` with a window and a tolerance fixed before the run (for example, the across-seed mean changes by less than a stated tolerance over the last stated fraction of the budget). The values are examples, not norms.
+- Default: aggregate over seeds or independent runs within each instance first, then run paired tests over instances, with n equal to the number of instances and pairs formed by the pairing key. Do not treat the seeds of one instance as independent instances. This rule is stricter than the four benchmark evolutionary-algorithm papers, which report 30 independent runs with means and standard deviations only and no paired test. Do not cite them as support, and do not relax the rule to match them. Deviate for a single-instance study, and state that inference then covers run-to-run variability only.
 - Do not compare overlapping smoothed bands as though they were a formal significance test.
 
 ### Select evidence rather than transcribing it
@@ -218,6 +233,10 @@ Use `demonstrates the contribution of`, `results from`, or `is driven by` only w
 
 Use `guarantees`, `proves`, or `ensures` only when a theorem, construction, or exhaustive condition establishes the scope. Empirical evidence alone does not prove optimality, universal feasibility, or convergence to a global optimum.
 
+### Robustness claims
+
+State the perturbation, its magnitude, and whether it was present in training or tuning. A claim of robustness without these three items is a claim about nominal performance. Do not call a smooth nominal curve robust.
+
 Always report competing explanations or exceptions that remain plausible. A mechanism-based explanation should connect the manipulated factor to an intermediate system effect and then to the measured metric.
 
 ## Style, wording, and transitions
@@ -237,7 +256,7 @@ Use these as rhetorical patterns, not mandatory sentence templates.
 
 Use precise operations and observations: `varies`, `holds fixed`, `samples`, `averages`, `compares`, `reduces`, `increases`, `maintains`, `violates`, `converges`, `generalizes`, `recovers`, and `requires`.
 
-Avoid promotional or empty verbs: `outperforms greatly`, `proves effectiveness`, `fully validates`, `works well`, and `achieves excellent performance`.
+Avoid promotional or empty verbs: `outperforms greatly`, `proves effectiveness`, `fully validates`, `works well`, and `achieves excellent performance`. Colloquial or promotional wording is a defect in any manuscript language.
 
 ### Transitions
 
@@ -339,3 +358,10 @@ Do not finalize the section unless all applicable gates pass:
 - [ ] No paragraph performs two independent rhetorical jobs without a split.
 - [ ] No caption, axis description, or conclusion is unnecessarily repeated.
 - [ ] Missing evidence is disclosed rather than invented.
+- [ ] The mode is declared; a design-mode section contains protocol wording only, no result verbs, and lists pending result slots.
+- [ ] Every statistical claim names its aggregation hierarchy and pairing key, and tests are paired over instances after aggregating seeds, or the deviation is recorded.
+- [ ] Every baseline has an information and budget entry; every ablation states capacity, training, tuning, and seeds.
+- [ ] No metric paragraph defines more than three metrics or mixes evidence roles without a recorded reason.
+- [ ] `Stable` is defined by a window and tolerance fixed before the run.
+- [ ] Every robustness claim states the perturbation, its magnitude, and its presence in training.
+- [ ] No colloquial or promotional wording remains.
