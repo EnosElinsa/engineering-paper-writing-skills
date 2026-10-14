@@ -137,9 +137,9 @@ Declare one axis per solver-family subsection, chosen as the single difficulty t
 
 Self-test: can every cited work be placed in exactly one category by reading only what it does on that axis? If not, change the axis or split the subsection.
 
-Hard gate: a subsection whose categories mix two or more of {action representation, constraint handling, state encoding, decision process} fails. [G-RW-axis]
+Hard gate: a subsection whose categories mix two or more of {action representation, constraint handling, state encoding, decision process} fails. This gate has no deviation clause by design: change the axis or split the subsection instead. [G-RW-axis]
 
-Evidence status: this rule is extrapolated from the MECE principle and from the dynamic-evolutionary-algorithm subsection of the multi-source fusion benchmark paper, which is organized on one axis. It is not measured from a reinforcement-learning subsection of any benchmark paper.
+Evidence status: this rule is extrapolated from the MECE principle and from the dynamic-evolutionary-algorithm subsection of one benchmark paper, which is organized on one axis. It is not measured from a reinforcement-learning subsection of any benchmark paper.
 
 ## Closing gap paragraph
 

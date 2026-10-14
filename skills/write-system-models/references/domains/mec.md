@@ -212,7 +212,7 @@ These are order-of-magnitude defaults for the scale statement (protocol S in the
 
 | Measure | Demand-aware | Dispersed | Terrain-aware | Fusion |
 |---|---:|---|---:|---:|
-| System model and formulation, prose words | about 1250 | about 1830 (system model about 680, formulation about 1160) | about 2800 | about 1520 |
+| System model and formulation, prose words | about 1250 | about 1830 (system model about 680, formulation about 1160) | about 2500–2800 | about 1520 |
 | Lettered subsections | 5 | 0 in the system model, 2 in the formulation | 5 | 6 |
 | Opening overview paragraph, words | 159 | 281 | 184 | 239 |
 | Numbered equations (approximate) | 29 | 10 | not counted | not counted |

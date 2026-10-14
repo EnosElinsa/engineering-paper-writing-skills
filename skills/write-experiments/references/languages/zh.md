@@ -13,7 +13,7 @@ Author rules. The manuscript owner decided these; apply them as written. [G-ZH-r
 
 Review defaults, edit to taste. The review author extrapolated these from the rules above, so the manuscript owner may delete or change any of them.
 
-- Avoid 其实, 挺, 比较, 非常, and 很. State a measured claim or delete the word.
+- Avoid 其实, 挺, 非常, and 很, and avoid 比较 as a degree adverb (the verb in 与…比较 is fine). State a measured claim or delete the word.
 - Avoid 的话 as a conditional marker. Use 若 or 当.
 
 Keep one core causal relation per sentence. Use the written academic register throughout.
