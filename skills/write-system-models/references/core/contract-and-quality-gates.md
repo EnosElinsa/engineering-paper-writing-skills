@@ -52,6 +52,7 @@ Hard rules:
 - all index ranges are explicit;
 - units are compatible across every sum, ratio, and update;
 - binary, integer, and continuous domains are stated;
+- when a decision vector stores fixed components (for example, a position whose altitude is fixed), the text states which components are decided and the number of independent decision variables;
 - a notation table may summarize but cannot be the first definition of a symbol used in prose or equations.
 
 ## 3. Causal dependency graph
@@ -87,6 +88,8 @@ Do not force every paragraph to use every role. Keep one dependency chain togeth
 ### Section opening and subsection structure
 
 Default: open the section with one overview paragraph and go straight to the first module. Do not add a standalone `system description`, `overview`, or `setting` subsection. The paragraph names the controller and actors, the time convention, the functional cycle, the initial state, and the module list, and defines only the sets, indices, and time grid that two or more modules use. Module-specific symbols and constraints appear at their module. Deviate when actors obey different execution semantics, in which case a workflow-level System Model section may precede the mathematical model; record the reason. [G-SM-open]
+
+Default: when the role split among the actors rests on a modeling premise (why one entity only deploys and recovers while another collects or serves), state that premise and its reason in the opening paragraph, marked with `is assumed to` when it is an assumption. The Introduction then needs at most one clause on it. Deviate when an inherited model already fixes the roles; cite that model.
 
 Default: title each subsection with a generic model name (`Communication Model`, `Energy Model`). Deviate when the venue requires descriptive titles, and record the reason. [G-SM-title]
 
@@ -217,7 +220,13 @@ Use center sentences that name the modeled operation:
 
 Use `we assume` for a modeling assumption, `we define` for notation, `is given by` for an adopted relation, and `we introduce/design` only for a genuine scenario-specific modeling component.
 
-Avoid vague claims such as `for simplicity` without stating the consequence. Avoid surveying multiple papers inside a model paragraph. One source citation is usually enough to ground an adopted equation or assumption.
+Avoid vague claims such as `for simplicity` without stating the consequence. State what a simplifying assumption affects and what it does not: an obstacle-free flight model does not make the communication links obstacle-free when the channel model accounts for blockage.
+
+### Modeled, evaluated, and excluded quantities
+
+Default: a quantity that can bound feasibility and that a reader or reviewer can ask about (the energy or endurance of a supporting platform, a shared buffer, a backhaul link) is either modeled in the formulation or evaluated separately with a cited model and reported with the results. An unsupported sufficiency assumption does not replace that model. When the quantity is evaluated outside the formulation, state once that it does not enter the objectives or constraints and that incorporating it is future work; do not add arguments for its sufficiency. Deviate when the quantity is provably non-binding under the stated parameters, and give that argument. [G-SM-scope]
+
+Default: parameterize a physical platform from representative specifications of its class and cite the source (`a heavy-lift multirotor whose mass and rotor configuration follow representative manufacturer specifications`). Name a commercial product only when a claim depends on that product. Deviate when the venue or a reviewer asks for the product, and record the reason. Avoid surveying multiple papers inside a model paragraph. One source citation is usually enough to ground an adopted equation or assumption.
 
 After an equation, explain physical meaning, coupling, or a boundary case. Do not simply translate each symbol into prose a second time.
 
@@ -234,4 +243,5 @@ Run in this order:
 7. trace each decision to objectives and constraints;
 8. compare the final formulation against the local constraints;
 9. remove duplicated explanations and algorithm leakage;
-10. compare against the inheritance ledger to ensure the rewrite did not redesign validated modules without cause.
+10. compare against the inheritance ledger to ensure the rewrite did not redesign validated modules without cause;
+11. list every quantity that can bound feasibility and check that each is modeled, evaluated separately, or excluded with one stated reason, without a sufficiency argument.

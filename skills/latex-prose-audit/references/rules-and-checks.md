@@ -243,6 +243,20 @@ similar curves; it does not establish identical search dynamics. Use `may be
 explained by`, `is consistent with`, or `reflects` when a mechanism was not
 isolated.
 
+#### 4.4 Exact logical strength and stated scope
+
+A hedge is correct only when the claim is uncertain. When a consequence
+follows from the paper's definitions, state it exactly.
+
+- Avoid: `Historical information may be insufficient to restore feasibility.`
+- Prefer: `Adapting candidates from historical information alone does not
+  guarantee feasibility under the updated constraints.`
+
+A result read from selected runs, one instance set, or one parameter range
+names that scope in the sentence (`in the selected runs`, `on the tested
+instances`). Flag a closing value judgment (`shows the practical value of`)
+that no defined criterion supports.
+
 ## Category B: sentence-level English
 
 ### Rule 5: verb choice and collocation
@@ -316,6 +330,10 @@ the tested uncertainty levels`.
 
 State the baseline and denominator. Preserve reported precision and do not
 create more significant digits than the source supports.
+
+Flag vague quantity words (`few`, `most`, `negligible`, `almost all`,
+`rarely`) when the artifact contains the measured value, and replace them
+with the bound (`the mean rate remains below 3\% on all instances`).
 
 #### 6.3 Modifier attachment and noun stacks
 
@@ -391,7 +409,16 @@ actor and result visible in each clause.
 - `practical viability and practical applicability` -> choose one;
 - `improves and enhances performance` -> choose the measurable verb;
 - repeated metric values in the takeaway after the data sentence -> state the
-  conceptual conclusion only.
+  conceptual conclusion only;
+- `the replacement rate parameter $p_r$` -> `the replacement rate $p_r$`;
+- `focuses exclusively on` when nothing else could be included -> `focuses on`;
+- `In this equation, $X$ is ...` after a display -> `where $X$ is ...`;
+- a sentence that restates a table's values or the previous sentence -> delete.
+
+Name one quantity with one term in every document of the submission
+(manuscript, supplement, response letter). Two names for one quantity
+(`repositioning energy` and `flight energy`) are a High finding even when
+each is correct in isolation.
 
 #### 9.3 Avoid empty lead-ins
 

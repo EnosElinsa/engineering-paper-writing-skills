@@ -145,6 +145,13 @@ Evidence status: this rule is extrapolated from the MECE principle and from the 
 
 Default: restate the Introduction's gap once, in at most three sentences and in different words, and add what the Introduction cannot: paper-level evidence or the consequence in the target setting. Deviate when a venue requires a standalone summary, and record the reason. [G-RW-gap]
 
+Default: write the gap as a mechanism chain in the target problem: what the reviewed methods use to adapt or decide; what determines the constraints or the state in the target problem; which executed decisions change that state; and what therefore cannot be guaranteed. State a consequence that follows from the definitions exactly (`does not guarantee feasibility under the updated constraints`), not with a hedge (`may be insufficient to restore feasibility`). Deviate when the gap is empirical and the evidence is partial; then bound it to the reviewed studies. [G-RW-chain]
+
+- Avoid: `Historical information may therefore be insufficient under the current constraints.`
+- Prefer: `In the target problem, the constraints of each cycle depend on the current state. Decisions executed in the preceding cycle change the available resources and the remaining time, which alters the feasible region of the next cycle. Consequently, adapting candidates from historical information alone does not guarantee feasibility under the updated constraints.`
+
+Default: when the gap paragraph contrasts an alternative solver family (for example, learned policies against population-based search), give two or three reasons tied to the target problem (fixed reward weights versus changing objective preferences; generalization to operating conditions absent from training) and cite each reason that is not a consequence of a definition. Do not claim general superiority, and do not use an argument that applies equally to the proposed method. Deviate when a venue asks for a broader comparison; place it in its own subsection.
+
 Fail if any sentence shares a run of eight or more identical consecutive words with the Introduction. The eight-word threshold is a heuristic, not a measured value; use it to find copied sentences, not to reject a legitimate shared technical phrase.
 
 ## Language and style
@@ -188,7 +195,8 @@ Fail and revise if any of the following occurs:
 - the same closest-work description or limitation is repeated under multiple axes; [G-RW-dup]
 - a solver-family subsection mixes two or more axes (see Solver-family subsections);
 - a closing-gap sentence shares a run of eight or more identical consecutive words with the Introduction (heuristic threshold);
-- a source that supports a classification category in the Introduction is missing from the same category in Related Work with no recorded exception.
+- a source that supports a classification category in the Introduction is missing from the same category in Related Work with no recorded exception;
+- the closing gap hedges a consequence that follows from the definitions, or asserts it without the mechanism chain that produces it.
 
 ## Center-sentence audit
 

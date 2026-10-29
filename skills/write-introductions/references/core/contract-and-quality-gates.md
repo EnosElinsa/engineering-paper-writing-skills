@@ -153,7 +153,10 @@ Title relevance, a search snippet, or another paper's description is not suffici
 - fixed workload values, known handover time, hardware details, or experiment numbers;
 - sequential explanations of two or more papers;
 - complete mechanism workflows, multiple advantages/disadvantages, or failure cases;
-- paper-level novelty comparisons.
+- paper-level novelty comparisons;
+- a contrast with an alternative solver paradigm (for example, learned policies against search) that takes more than one clause.
+
+Modeling premises that justify an actor's role (why one entity does not perform a task) belong in the opening paragraph of the System Model. The Introduction keeps at most one clause on them.
 
 ### Citation placement
 

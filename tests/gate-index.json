@@ -282,6 +282,90 @@
           "id": "G-SH-H"
         }
       ]
+    },
+    "18": {
+      "summary": "Unmeasured intermediate step narrated as a result",
+      "gates": [
+        {
+          "file": "skills/write-experiments/references/core/contract-and-quality-gates.md",
+          "id": "G-EX-chain"
+        }
+      ]
+    },
+    "19": {
+      "summary": "Nonsignificant comparison written as support for the proposed design",
+      "gates": [
+        {
+          "file": "skills/write-experiments/references/core/contract-and-quality-gates.md",
+          "id": "G-EX-null"
+        }
+      ]
+    },
+    "20": {
+      "summary": "Idealized reference value called a bound",
+      "gates": [
+        {
+          "file": "skills/write-experiments/references/core/contract-and-quality-gates.md",
+          "id": "G-EX-ref"
+        }
+      ]
+    },
+    "21": {
+      "summary": "Component gain reported as an overall advantage",
+      "gates": [
+        {
+          "file": "skills/write-experiments/references/core/contract-and-quality-gates.md",
+          "id": "G-EX-offset"
+        }
+      ]
+    },
+    "22": {
+      "summary": "Hedged gap without the mechanism chain",
+      "gates": [
+        {
+          "file": "skills/write-related-work/references/core/contract-and-quality-gates.md",
+          "id": "G-RW-chain"
+        }
+      ]
+    },
+    "23": {
+      "summary": "Sufficiency assumption in place of a requested model",
+      "gates": [
+        {
+          "file": "skills/write-system-models/references/core/contract-and-quality-gates.md",
+          "id": "G-SM-scope"
+        },
+        {
+          "file": "skills/write-revision-responses/references/core/response-contract-and-quality-gates.md",
+          "id": "G-RV-model"
+        }
+      ]
+    },
+    "24": {
+      "summary": "Response without its argument, with a partial quote and a pointer",
+      "gates": [
+        {
+          "file": "skills/write-revision-responses/references/core/response-contract-and-quality-gates.md",
+          "id": "G-RV-p1"
+        },
+        {
+          "file": "skills/write-revision-responses/references/core/response-contract-and-quality-gates.md",
+          "id": "G-RV-quote"
+        }
+      ]
+    },
+    "25": {
+      "summary": "Directional claim and quoted copy left stale after a rerun",
+      "gates": [
+        {
+          "file": "skills/write-revision-responses/references/core/response-contract-and-quality-gates.md",
+          "id": "G-RV-rerun"
+        },
+        {
+          "file": "skills/write-revision-responses/references/core/response-contract-and-quality-gates.md",
+          "id": "G-RV-sync"
+        }
+      ]
     }
   }
 }

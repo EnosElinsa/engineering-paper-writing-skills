@@ -1,0 +1,4 @@
+interface:
+  display_name: "Revision Response Writer"
+  short_description: "Turn review comments into checkable revisions and a consistent response letter"
+  default_prompt: "Use $write-revision-responses to plan, draft, or audit this journal revision and its response letter."

@@ -11,7 +11,7 @@ from scripts.validate_skills import shared_destination
 
 ROOT = pathlib.Path(__file__).resolve().parents[1]
 GATE_ID_RE = re.compile(r"\[(G-[A-Z]+-[A-Za-z0-9-]+)\]")
-CASE_COUNT = 17
+CASE_COUNT = 25
 
 
 def _load_index() -> dict:

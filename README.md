@@ -21,6 +21,7 @@ Mobile edge computing is the first formally supported domain pack. The generic s
 | `write-system-models` | Architecture inheritance, operational flow, symbols, timing, constraints, and formulation closure | `domains/mec.md` |
 | `write-methods` | Model-to-algorithm traceability, novelty boundaries, executable semantics, deployment, and complexity | evolutionary algorithms, reinforcement learning, and `domains/mec.md` |
 | `write-experiments` | Evaluation contracts, fair comparisons, evidence-to-claim writing, statistics, ablations, and robustness | evolutionary algorithms, reinforcement learning, and `domains/mec.md` |
+| `write-revision-responses` | Comment ledgers, model-or-test answers to requests, response-letter structure, verbatim quotation, highlighting policy, cross-document synchronization after reruns, integration of co-author edits, and change reports | domain-independent |
 | `latex-prose-audit` | LaTeX-aware sentence-level prose, semantic roles, articles, notation, mathematical phrasing, references, and source integrity | domain-independent |
 
 Each skill is independently installable. The section skills always load their generic core, then load only the applicable method and domain references.
@@ -52,6 +53,8 @@ skills/
     references/methods/reinforcement-learning.md
     references/domains/mec.md
   write-experiments/
+  write-revision-responses/
+    references/core/response-contract-and-quality-gates.md
   latex-prose-audit/
 shared/
   core/reader-and-terminology-contract.md
@@ -69,7 +72,7 @@ A future domain is added as a matching `references/domains/<domain>.md` adapter 
 
 ## Install with Codex
 
-Ask Codex to install all six paths from this public repository:
+Ask Codex to install all seven paths from this public repository:
 
 ```text
 Install these skills from EnosElinsa/engineering-paper-writing-skills:
@@ -78,6 +81,7 @@ skills/write-related-work
 skills/write-system-models
 skills/write-methods
 skills/write-experiments
+skills/write-revision-responses
 skills/latex-prose-audit
 ```
 

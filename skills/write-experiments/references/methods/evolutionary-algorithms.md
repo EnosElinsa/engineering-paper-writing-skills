@@ -134,6 +134,8 @@ HV evaluates dominated objective-space volume relative to a reference point. Hig
 - how an empty feasible set is represented;
 - whether the reference point remains fixed within a comparison.
 
+In the manuscript, state the property the reference point satisfies (for example, it exceeds the maximum of each objective over the nondominated solutions of all compared algorithms, instances, and runs). Give the numerical construction rule only when a reader needs it to reproduce the values. When a rerun changes the point, keep it fixed across all compared results of the new batch and report the old and new values where the change is disclosed.
+
 Do not interpret HV without checking that the reference point and normalization make the compared values commensurate.
 
 ### Feasibility measures

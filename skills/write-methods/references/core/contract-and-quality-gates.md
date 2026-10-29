@@ -66,7 +66,7 @@ Use structural difficulties, not adjectives. Examples include:
 | Model decision/state | Domain and time index | Method representation | Transformation/decoder | Evaluated quantity | Final consumer |
 |---|---|---|---|---|---|
 
-Every optimized model decision must appear here. If a decision is produced by a deterministic subroutine instead of the main solver, name the subroutine and its inputs. Do not silently drop decisions from the formulation.
+Every optimized model decision must appear here. If a decision is produced by a deterministic subroutine instead of the main solver, name the subroutine and its inputs. Do not silently drop decisions from the formulation. When the representation stores fixed components (a fixed coordinate of a position), state which components are optimized and the resulting number of independent variables.
 
 ### 3.3 Constraint-ownership ledger
 
@@ -212,7 +212,8 @@ Hard-gate failures include:
 - saying a repair produces a feasible solution while leaving an unchecked constraint that can still be violated;
 - projecting bounds but implying coupled equalities or logical constraints are also enforced;
 - rounding a continuous relaxation without resolving coupling among the resulting discrete variables;
-- applying a mask whose required information is unavailable to the executing agent.
+- applying a mask whose required information is unavailable to the executing agent;
+- describing an adjustment or repair without saying what happens to a candidate that remains infeasible (kept, reverted to its pre-repair form, or discarded) and how the subsequent selection treats it. When sequential rules modify coupled decisions, say that a later rule may violate a constraint satisfied earlier, so the procedure does not guarantee that every adjusted candidate is feasible.
 
 ## 8. Pseudocode and prose alignment
 
@@ -322,6 +323,8 @@ Training complexity and inference complexity answer different deployment questio
 ### 10.4 Complexity language
 
 Use `dominates when ...`, `per generation`, `per decision step`, and `over the horizon` with explicit conditions. Avoid `the complexity is low` without a comparator and scope.
+
+Cite the primary source for the cost of each standard step (nondominated sorting, crowding distance, variation operators) at the sentence that states it. State the complete expression with its scope, and name the dominant term together with its condition; do not absorb a term through an inequality (`since log J < ζ`) that is not part of the stated assumptions. Explain a worst-case evaluation cost by the operation that causes it (`checking this condition requires examining all J regions for each returning entity`).
 
 ## 11. Citations, claims, and novelty language
 

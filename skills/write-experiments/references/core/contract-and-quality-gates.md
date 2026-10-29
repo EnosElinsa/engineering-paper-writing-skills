@@ -73,6 +73,8 @@ Default: for each ablation variant state what changes, plus capacity (parameter 
 
 Default: define metrics one evidence role per paragraph (algorithm quality, physical outcome, feasibility, cost) and at most three metrics per paragraph. For each metric give definition, direction, unit, aggregation, and failure semantics. Deviate when two roles share one definition, and record the reason. [G-EX-metric]
 
+Default: define a reported metric that differs from an optimized objective at its first use, in one sentence of composition and one sentence of difference (`The total energy is the unweighted sum of A, B, and C consumed over the mission. Unlike the objective in Eq. (n), it excludes the reserved energy D.`). Later experiments refer back to that definition (`calculated as defined in Section X`) instead of restating it. Deviate when two documents must be readable independently, and record the reason.
+
 ### Artifact level
 
 Give each figure or table one primary evidentiary role. Examples include:
@@ -99,6 +101,8 @@ The opening sentence names the experiment question or purpose. The remaining sen
 Include only experiment-specific configuration. Cross-reference shared settings instead of repeating them. If no result artifact is yet available, write this block only (design mode), list the evidence block as pending in the ledger, and do not draft its prose.
 
 Do not announce the outcome in this block. Result language in the contract obscures the boundary between design and interpretation and encourages confirmation bias.
+
+Default: title an experiment subsection by its operation, object, and varied factor (`Comparison of Selection Strategies under Different Objective Preferences`, `Evaluation of Scalability on Larger-Scale Problem Instances`), not by a topic word (`Impact of X`, `X Study`, `Investigation of the Schemes`). The opening sentence then names the compared variants and the question (`This experiment compares A, B, and C to examine how D affects E and F.`; `To investigate the effects of D on E and F, a comparative study is conducted under two settings: one in which ... and one in which ...`). Deviate when the venue prescribes headings, and record the reason. [G-EX-title]
 
 ### Block 2: Evidence to claim
 
@@ -196,10 +200,15 @@ Distinguish a relative percentage from a percentage-point change. Moving from 70
 - State the confidence level when reporting an interval.
 - State the test, comparison family, and outcome before using `statistically significant`.
 - Do not convert a nonsignificant difference into equivalence without an equivalence design.
+- A nonsignificant difference between the proposed design and an alternative supports only that the alternative provides no statistically significant improvement on the tested instances. It does not support the proposed design over the alternative (`These results support the proposed setting` fails; `The alternative setting provides no statistically significant improvement in A or B on the tested instances` passes). [G-EX-null]
 - Do not infer stability from a mean, one curve, or a selected run.
 - Define `stable` with a window and a tolerance fixed before the run (for example, the across-seed mean changes by less than a stated tolerance over the last stated fraction of the budget). The values are examples, not norms. [G-EX-stable]
 - Default: aggregate over seeds or independent runs within each instance first, then run paired tests over instances, with n equal to the number of instances and pairs formed by the pairing key. Do not treat the seeds of one instance as independent instances. Do not cite reference papers as support for a weaker design, and do not relax the rule to match them. Deviate for a single-instance study, and state that inference then covers run-to-run variability only. Measured run counts and tests in the reference papers are in the domain pack for the scale statement. [G-EX-agg]
 - Do not compare overlapping smoothed bands as though they were a formal significance test.
+
+### Reference values versus bounds
+
+A value computed under idealized assumptions (complete collection, an ideal channel, unlimited resources, independent subproblems) is a reference value. Call it a bound only when a proof establishes its direction relative to the true optimum. Report the obtained value as a ratio or difference to the reference, list the idealizations once, and make no claim about the distance to the optimum or about which side of the optimum the reference lies on. [G-EX-ref]
 
 ### Select evidence rather than transcribing it
 
@@ -234,6 +243,16 @@ Use `demonstrates the contribution of`, `results from`, or `is driven by` only w
 Use `guarantees`, `proves`, or `ensures` only when a theorem, construction, or exhaustive condition establishes the scope. Empirical evidence alone does not prove optimality, universal feasibility, or convergence to a global optimum.
 
 Always report competing explanations or exceptions that remain plausible. A mechanism-based explanation should connect the manipulated factor to an intermediate system effect and then to the measured metric.
+
+### Scope, partial evidence, and offsetting quantities
+
+- When an artifact reports selected runs (the median run, a representative seed, one realization), put the selection into the result sentence (`In the selected runs reported in Table X, ...`), not only into the caption.
+- A causal chain whose intermediate quantity was not measured is a hypothesis (`the saved energy leaves more battery for data collection, which raises utility`). Measure the intermediate quantity, or keep the measured endpoints and at most the one mechanism the model directly implies. [G-EX-chain]
+- When a result improves one component of a cost or benefit, name the component that can offset it and report the net effect, or state that the net effect is not established (`lower A does not necessarily imply lower total B, which also depends on C`). Do not let a favorable component imply overall superiority. [G-EX-offset]
+- A metric whose direction differs across instances is reported per instance (`higher on P1, similar on P2, lower on P3`) or not discussed. It is never summarized as an advantage.
+- Replace vague quantity words (`few`, `most`, `negligible`, `almost all`) with the measured bound when the artifact contains it (`the mean violation rate remains below 3% on all instances`).
+- Delete closing value judgments (`shows the practical value of`, `demonstrates the superiority of`) unless a practical criterion was defined and tested. A bounded statement of what was compared replaces them (`The results show a trade-off between A and B`).
+- A model-based estimate reported outside the optimization states which decisions it did not constrain and what it does not verify (`This estimate does not establish a system-wide saving or verify the endurance of the platform`).
 
 ### Robustness claims
 
@@ -339,6 +358,11 @@ Classify failures:
 | Call a smooth curve robust | Robustness was not tested | Reserve robustness for explicit perturbation evidence |
 | End with generic superiority | Adds no scientific insight | State what the evidence supports under which conditions |
 | Hide failed or infeasible cases | Distorts scope and reproducibility | Define and report failure semantics |
+| Title a subsection `Impact of X` or `X Study` | Hides the comparison and the varied factor | Name the operation, object, and factor |
+| Narrate an unmeasured intermediate step as a result | Presents a hypothesis as evidence | Measure the step or keep only the measured endpoints |
+| Report one improved component as an overall gain | An offsetting component may cancel it | Report the net effect or state that it is not established |
+| Write `the results support our choice` after a nonsignificant comparison | Absence of a difference is not support | State that the alternative gives no significant improvement |
+| Call an idealized value a bound or optimality gap | The direction relative to the optimum is unproven | Call it a reference value and report the ratio |
 
 ## Hard quality gates
 
@@ -365,3 +389,7 @@ Do not finalize the section unless all applicable gates pass:
 - [ ] `Stable` is defined by a window and tolerance fixed before the run.
 - [ ] Every robustness claim states the perturbation, its magnitude, and its presence in training.
 - [ ] No colloquial or promotional wording remains.
+- [ ] Every experiment subsection title names the operation, object, and varied factor, and its opening sentence names the compared variants and the question.
+- [ ] Results from selected runs say so in the result sentence; no unmeasured intermediate step is narrated as a result; every component gain names its offsetting component or the net effect.
+- [ ] Nonsignificant comparisons are not written as support for the proposed design; idealized values are called reference values, not bounds.
+- [ ] Every derived metric that differs from an objective is defined once, with its difference from the objective, and referred back to afterwards.

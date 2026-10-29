@@ -62,6 +62,8 @@ For every retained number, record the artifact, panel or row, metric direction, 
 
 Use “significant,” “stable,” “robust,” “generalizes,” and causal verbs only when the stated analysis supports those meanings.
 
+Name the run selection in the result sentence when an artifact reports selected runs. When one component of a cost or benefit improves, report the net effect or name the offsetting component. Do not narrate an unmeasured intermediate step as a result, do not write a nonsignificant comparison as support for the proposed design, and call values computed under idealized assumptions reference values, not bounds.
+
 ### 6. Apply method-family and domain checks
 
 Evolutionary studies must reconcile evaluation budgets, population and generation settings, independent runs, feasibility failures, reference fronts or points, Pareto metrics, convergence, and statistical comparisons.
