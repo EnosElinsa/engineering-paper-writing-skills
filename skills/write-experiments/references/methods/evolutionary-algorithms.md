@@ -260,6 +260,14 @@ Test each contribution-bearing mechanism against the full method. If two mechani
 
 Vary one parameter over a justified range while holding other factors fixed. Report both the favorable region and degradation boundary. A flat response within the tested range supports low sensitivity there; it does not prove universal insensitivity.
 
+Default: write each parameter's result paragraph in three steps, and use the same three steps for every parameter. [G-EX-sens]
+
+1. Observation: how the metrics change across the tested values, with the instance scope.
+2. Sensitivity: whether any value causes a consistent degradation across instances (`No consistent performance degradation is observed across the tested values`), or which value does.
+3. Choice: whether the default value lies in the stable range (`Therefore, the default value provides stable performance for the subsequent experiments`).
+
+Drop per-value percentages from the prose when the table or figure already shows them.
+
 ### Scalability
 
 Increase decision dimension, users, UAVs, areas, tasks, or time horizon. Report solution quality, feasibility, evaluation budget, and runtime. If the budget is held fixed as dimension grows, state that the experiment tests performance under a fixed computational allowance rather than equal convergence.

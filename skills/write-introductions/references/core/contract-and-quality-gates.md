@@ -361,6 +361,8 @@ Next opening: Allowing allocations to follow measured demand requires the contro
 
 This is clearer than `Based on the above analysis` unless only one immediately preceding problem exists.
 
+Default: the Introduction follows one main line. Each body paragraph opens from the gap or conclusion of the previous paragraph, and no paragraph starts a parallel research line with `On the other hand` or `In addition, another line of research`. Background paragraphs stay general; trigger, threshold, and protocol details belong in the scenario paragraph. Deviate when the problem genuinely has two coequal difficulties that merge before the scenario is proposed, and state the merge explicitly. [G-INT-line]
+
 ## Contributions
 
 Use this order when applicable:

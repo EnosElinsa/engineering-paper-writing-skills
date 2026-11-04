@@ -306,6 +306,8 @@ Count at least:
 
 Give the baseline cost, added mechanism cost, combined expression, and dominance condition. Do not delete an added term merely because it is often smaller.
 
+Cite the standard source for the cost of every inherited step (non-dominated sorting, the crossover and mutation operators, the archive update), and write the complete expression of each step before the total. Drop a term only under a stated condition (`when N log N < D`), never by an informal argument that it is absorbed. [G-ME-cplx]
+
 ### 10.3 Reinforcement-learning decomposition
 
 Separate:

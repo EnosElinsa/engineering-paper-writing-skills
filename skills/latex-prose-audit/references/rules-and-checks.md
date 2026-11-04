@@ -522,7 +522,35 @@ Use the sequence `quantity and purpose -> display -> new-symbol definitions ->
 next use`. Prefer `X is calculated as` or `Eq.~(8) defines X`; avoid `The
 equation calculates X` when the equation is not an actor. Displayed equations
 are part of the sentence: use a comma when the sentence continues and a period
-when it ends.
+when it ends. When the team house style applies, end the lead-in clause with a
+colon and use its attested lead-ins (`... as follows:`, `... is given by:`).
+
+Check every display and its prose: [G-AUD-eq]
+
+- the `where` clause defines the new symbols in the order in which they appear
+  in the display, and several short definitions share one `where` clause;
+- auxiliary quantities are defined in that clause, not in a later paragraph;
+- one equation number carries one quantity; a shared number is acceptable only
+  for a stack of parallel cases (such as a set transition);
+- every symbol used in a display has a definition, by formula or in the `where`
+  clause, at its first use; a new symbol follows the paper's notation style
+  (upright labels in superscripts, the existing device for a related quantity);
+- after the display, explain the physical meaning, a coupling, or a boundary
+  case; do not translate each symbol into prose a second time;
+- do not open the explanation of a display or a definition with `Thus` or
+  `Therefore`.
+
+#### 11.1a Symbols in prose
+
+When prose names a model quantity, give its symbol and, at the first mention in
+a section, its equation. At the first mention of a set, explain it with
+`namely` (`the available subset $\mathbb{S}_t$, namely the UAVs that can
+receive a new assignment`); later mentions use the set symbol only, without
+restating what the set already says. When a sentence refers to quantities
+defined in several equations, name them instead of writing `these quantities`.
+A quantity that combines an object and what it carries is named once (`the
+total mass of the vehicle and the payload it has collected`) and that name is
+used throughout. [G-AUD-sym]
 
 #### 11.2 Algorithms
 

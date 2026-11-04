@@ -531,6 +531,81 @@
           "id": "G-ZH-rhythm"
         }
       ]
+    },
+    "39": {
+      "summary": "Gap argued with the paper own design choice",
+      "gates": [
+        {
+          "file": "shared/core/reader-and-terminology-contract.md",
+          "id": "G-SH-gap"
+        }
+      ]
+    },
+    "40": {
+      "summary": "Introduction opens a parallel research line",
+      "gates": [
+        {
+          "file": "skills/write-introductions/references/core/contract-and-quality-gates.md",
+          "id": "G-INT-line"
+        }
+      ]
+    },
+    "41": {
+      "summary": "Overall comparison first and supplement pointers scattered",
+      "gates": [
+        {
+          "file": "skills/write-experiments/references/core/contract-and-quality-gates.md",
+          "id": "G-EX-order"
+        },
+        {
+          "file": "skills/write-experiments/references/core/contract-and-quality-gates.md",
+          "id": "G-EX-supp"
+        }
+      ]
+    },
+    "42": {
+      "summary": "Result sentences mix artifacts and parallel sections differ in shape",
+      "gates": [
+        {
+          "file": "skills/write-experiments/references/core/contract-and-quality-gates.md",
+          "id": "G-EX-src"
+        },
+        {
+          "file": "skills/write-experiments/references/core/contract-and-quality-gates.md",
+          "id": "G-EX-shape"
+        }
+      ]
+    },
+    "43": {
+      "summary": "Sensitivity result without the stable-range conclusion",
+      "gates": [
+        {
+          "file": "skills/write-experiments/references/methods/evolutionary-algorithms.md",
+          "id": "G-EX-sens"
+        }
+      ]
+    },
+    "44": {
+      "summary": "Complexity analysis without sources and with an absorbed term",
+      "gates": [
+        {
+          "file": "skills/write-methods/references/core/contract-and-quality-gates.md",
+          "id": "G-ME-cplx"
+        }
+      ]
+    },
+    "45": {
+      "summary": "Display definitions out of order and quantities without symbols",
+      "gates": [
+        {
+          "file": "skills/latex-prose-audit/references/rules-and-checks.md",
+          "id": "G-AUD-eq"
+        },
+        {
+          "file": "skills/latex-prose-audit/references/rules-and-checks.md",
+          "id": "G-AUD-sym"
+        }
+      ]
     }
   }
 }

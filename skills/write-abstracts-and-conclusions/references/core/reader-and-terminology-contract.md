@@ -33,6 +33,8 @@ For every operation in a scenario, mechanism, or protocol description, the text 
 
 A sentence containing "cannot", "always", "all", "none", or "no existing work" needs a tag before it is kept. [G-SH-C]
 
+Gap facts. A gap, limitation, or motivation claim rests on facts of the problem and of the cited work: what the cited studies assume, fix, or omit, and what that assumption costs in the target setting. The paper's own design choices (a mechanism, an encoding, a synchronization scheme, a learner) are not gap facts. Do not argue that existing work lacks the proposed design. Argue which assumption fails and what the failure costs. The same rule applies to the columns of a related-work comparison table. [G-SH-gap]
+
 ## D. One proposition, one home
 
 Keep a proposition ledger: proposition | home paragraph | other mentions. Default: explain a trade-off, gap, or limitation fully in one paragraph; other mentions are one clause (contributions, roadmap) or, in Related Work, at most three sentences that add paper-level evidence or a consequence the Introduction lacks, in different words. Deviate when a second paragraph adds an independent fact, and record the reason. [G-SH-D]

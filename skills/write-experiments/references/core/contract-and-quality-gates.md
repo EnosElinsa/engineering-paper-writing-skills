@@ -63,6 +63,10 @@ The global sequence normally performs these functions:
 
 Follow contribution order when it creates a clearer story. Do not preserve this list mechanically when a function is absent.
 
+Default: when the scenario or the model is itself a contribution, place the experiments that show its behavior (a trade-off between solution-selection strategies, the effect of platform mobility, the effect of regional characteristics) before the overall algorithm comparison. The reader first sees that the problem produces a meaningful trade-off, and only then how the algorithms compare on it. Deviate when the scenario is standard and only the algorithm is new, and record the reason. [G-EX-order]
+
+Default: when further experiments move to a supplementary document, end the setup subsection with one paragraph that gives their location as one continuous range of sections and lists the experiments in the order they appear there (`Due to space limitations, the additional experiments are presented in Sections S-IV–S-XII of the supplementary document. These experiments include ...`). In the result subsections, place each further pointer where its content is used, and do not repeat a modeling detail that the pointed section already states. [G-EX-supp]
+
 ### Baseline and ablation controls
 
 Default: state for every baseline, in one table, the information available at decision time, the decision timing, the tuning budget and rule, the training data and compute, and the implementation source. A baseline with less information or a smaller budget does not isolate method quality. Deviate when a baseline is a published result that cannot be rerun, and record what is unknown. [G-EX-base]
@@ -87,6 +91,8 @@ Give each figure or table one primary evidentiary role. Examples include:
 - a sensitivity plot establishes dependence within a tested parameter range.
 
 Do not make three artifacts repeat the same `better than baselines` claim. If two artifacts answer different parts of one question, say which part each answers.
+
+Each result sentence cites the one figure or table it is read from. When a statement draws on two artifacts, split it by source. Prose that introduces a table names what the table compares and does not recite its values. [G-EX-src]
 
 ## The experiment evidence unit
 
@@ -164,6 +170,8 @@ Read only the opening sentences of all paragraphs. They must form a complete evi
 - the conclusion introduces a new mechanism not established earlier.
 
 Paragraph length is a consequence of rhetorical load. Three to six sentences is a useful default for an ordinary unit, but the hard rule is one coherent job, not a sentence quota.
+
+Default: a result paragraph runs observation with its scope, then any caveat or exception, and ends with its conclusion sentence. Parallel subsections (one per parameter, per variant, or per supplementary experiment) share one paragraph shape and one order of metrics, and every one of them ends with a scoped conclusion. Deviate when one subsection reports an exception that the others lack, and keep the shared order for the rest. [G-EX-shape]
 
 ## Quantitative evidence discipline
 
@@ -393,3 +401,7 @@ Do not finalize the section unless all applicable gates pass:
 - [ ] Results from selected runs say so in the result sentence; no unmeasured intermediate step is narrated as a result; every component gain names its offsetting component or the net effect.
 - [ ] Nonsignificant comparisons are not written as support for the proposed design; idealized values are called reference values, not bounds.
 - [ ] Every derived metric that differs from an objective is defined once, with its difference from the objective, and referred back to afterwards.
+- [ ] Scenario-behavior experiments precede the overall comparison when the scenario is a contribution, or the deviation is recorded.
+- [ ] Supplementary experiments are listed once, as one continuous range, at the end of the setup subsection.
+- [ ] Each result sentence cites one artifact; table-introducing prose does not recite values.
+- [ ] Parallel subsections share one paragraph shape and each ends with a scoped conclusion.
