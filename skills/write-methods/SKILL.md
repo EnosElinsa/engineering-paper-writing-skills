@@ -81,7 +81,7 @@ Apply the core traceability, novelty, executability, feasibility, deployment, co
 2. Every definite expression has an antecedent (A); every action has a purpose or a cost (Q).
 3. Each proposition has one home (D); each universal or negative claim is tagged and supported (C).
 4. Length is inside the declared scale range, or the deviation is recorded (S).
-5. Sentence rhythm and connectives are inside the house-style band, or the deviation is recorded (R).
+5. Sentence rhythm and connectives are inside the house-style band, or each remaining flag and its reason are listed in the delivery note, not in the manuscript (R).
 6. Ledgers and notes stay out of the manuscript (H).
 
 ## Output constraints

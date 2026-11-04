@@ -41,13 +41,14 @@ Author actions take `this study` as the subject or use the passive. [G-STY-voice
 - `The periodic planning is formulated as ...`, `A dynamic constrained multi-objective evolutionary algorithm based on ... is proposed.`
 - Use `we` only in future-work sentences of the Conclusion (`Building on this extended model, we will develop ...`). Do not use `our`.
 - Use one self-reference noun in every section, including the roadmap: `this study`.
+- Reserve `this study` for the sentences in which the paper itself acts: the contribution items, the scenario and algorithm sentences of the Introduction, the roadmap, and the opening of the Conclusion. Elsewhere, use the passive or make the algorithm or a modeled actor the subject. The reference Introductions use `this study` or `this paper` 1.5–6.4 times per 1000 words.
 - In running prose, the proposed method is `the proposed algorithm` (or `the proposed mechanism` for a component). Use its acronym where it is compared by name with baselines, in tables, and in figure legends. The reference papers use `the proposed` 2.5–6.8 times per 1000 words.
 - Other valid agents are the algorithm and the modeled actors (controller, platform, vehicle, server). A section, table, or figure takes only reporting verbs (`Section II reviews ...`, `Table III presents ...`, `Fig. 3 shows ...`).
 - Response letters keep the first person (`We have revised Section V-C ...`).
 
 ## 3. Sentence rhythm
 
-Default: keep the body and every section inside the band below. A deviation needs a recorded reason in the scale statement. [G-STY-rhythm]
+Default: keep the body and every section inside the band below. A deviation needs a reason, recorded in the scale statement of the delivery note and never in the manuscript. [G-STY-rhythm]
 
 Counting rule: the counting rule of the reader and terminology contract, with inline math counted as one word in sentence lengths, sentences under four words (run-in labels such as `Step 1.`) excluded, and the abstract excluded from the body.
 
@@ -78,6 +79,7 @@ How to use the band:
 - A draft below the band has been over-split. Apply the merges of Section 4 before cutting content. Drafts written under the one-claim rule alone fell to a mean of 16–20 words with 20%–30% of sentences under 12 words.
 - A draft above the band stacks claims. Split it with the rules of Section 4.
 - Most sentences carry 15–30 words. Keep sentences under 12 words for a short result or a definition, and never write three in a row.
+- The 90th percentile and the two shares describe the body of a whole paper, measured over at least three of the Introduction, Related Work, model, method, experiment, and Conclusion sections. When one section is drafted or measured alone, check its section mean only. A settings subsection that lists definitions and parameters may hold many long or short sentences. Do not split its definition or list sentences to move a share into the band.
 - The body band is the default to act on. The section bands rest on four papers and vary more between papers than the body band (compare the last two columns of the validation table in Section 15). Treat a section outside its band as a reason to reread that section, and change it only when its sentences show the over-splitting or stacking signals of Section 4.
 
 ## 4. Combining and splitting sentences
@@ -104,6 +106,7 @@ Keep in one sentence, and merge back when they were split:
 Over-splitting signals:
 
 - three or more consecutive sentences under 12 words;
+- two adjacent sentences under 12 words in which the second states the other side of a comparison (`In contrast`, `whereas`) or repeats the subject of the first (the fingerprint script lists these as merge candidates);
 - consecutive sentences with the same subject that each add one attribute;
 - a sentence that only states the consequence of the previous one (`This results in ...`, `This leads to ...`);
 - a run of `Since`, `Therefore`, or `Accordingly` openers created by splitting.
@@ -136,11 +139,14 @@ Rotate connectives the way the reference papers do, and do not let a banned word
 | Hence | 0 | Not used |
 | On one hand, On the other hand | two papers | Not used |
 
+The per-100 ranges are rates over the body of a whole paper. One section is too short for a rate, and some openers cluster in one section: the four reference Introductions open 3.6–9.1 of every 100 sentences with `However`, above the paper-level range. When one section is drafted or measured alone, count instead. Allow one sentence-initial `Since` and one `Accordingly` per 100 sentences of the section, at least one of each, and no `Hence`. Check `However`, `To address`, and the other rates over the whole paper.
+
 Within sentences, the reference papers use `, thereby` and same-subject participle tails 2.1–3.8 times per 1000 words, `while` or `whereas` 2.9–3.5, `due to` 0.5–1.3, `, which` 0.9–2.2, and `, where` 0.6–3.1.
 
 Rules:
 
 - Replace `because` with `since`, `as`, `due to`, `given that`, a `To ...` purpose clause, or a sentence whose subject is the cause (`The limited battery capacity restricts ...`). Do not turn every causal clause into a sentence-initial `Since`.
+- After removing `because` or `so`, check that the cause is still stated. It stays as a `since`, `as`, or `due to` clause, or it becomes the subject of its own sentence. Deleting the clause deletes the reason.
 - Do not open two consecutive sentences with the same connective.
 - Do not use `Thus` or `Therefore` to introduce the explanation of an equation or a definition.
 - After a splitting pass, count the connectives again.
@@ -158,7 +164,7 @@ Promotional modifiers appear 4.0–6.8 times per 1000 words in the reference pap
 
 Do not use these in author prose. Pasted reviewer comments and quoted titles are exempt. [G-STY-ban]
 
-- `because`, `so`, `so that`, `so as to` (Section 5 lists the alternatives);
+- `because`, `so`, `so that`, `so as to` (Section 5 lists the alternatives, which keep the cause stated);
 - `, but` joining two clauses: split the sentence and open the second with `However,`, or use `while` or `whereas` for the two sides of one comparison;
 - semicolons in running prose: split the sentence, or enumerate with `(i) ..., (ii) ...`;
 - a colon joining two independent clauses (a colon may introduce a list or a display);
@@ -185,7 +191,7 @@ Default: use the titles below. Deviate when the venue prescribes other titles, a
 
 - Do not title the experiment section `Performance Evaluation` or `Simulation Results`.
 - Do not put the algorithm acronym into the section title (`Proposed Algorithm`, not `Proposed X-Y Algorithm`).
-- An experiment subsection title names the operation, the object, and the varied factor (`Comparison of Solution-Selection Strategies with Different Objective Preferences`).
+- An experiment subsection title names the operation and the object in about eight words or fewer (the reference experiment subsection titles average 4.3–6.7 words): `Overall Performance Comparison`, `Investigation of the <mechanism>`, `Comparison of <named alternatives>`, `Trade-off Analysis of the Obtained Solutions`. Name the varied factor in the title when it fits, otherwise in the opening sentence of the subsection. Do not use a bare topic phrase such as `Impact of X` or `X Study`, and use `Comparison of ...` rather than `Investigation of ...` when the subsection compares named alternatives.
 
 ## 9. Paragraph openers by section
 
@@ -195,7 +201,7 @@ Use these attested openers before inventing new ones. Counts give the number of 
 |---|---|---|
 | Introduction | `To address this issue/limitation, this study considers/proposes ...` | 3, H |
 | Introduction | `However, both/these/existing approaches ...` | 4, H |
-| Introduction | `Existing <studies> can be categorized into <N> <categories> according to <criterion>, namely, ...` | 1, H |
+| Introduction | `Existing <studies> can be categorized into <N> <groups> according to <criterion>, namely, ...` | 1, H |
 | Introduction | `Motivated by this gap, this study considers ...` | 1, H |
 | Introduction | `In this scenario, the <controller> determines ... in each <cycle>.` | 1, H |
 | Introduction | `Solving the formulated <problem> poses/requires ...` | 2, H |
@@ -228,6 +234,8 @@ Use these attested openers before inventing new ones. Counts give the number of 
 | Conclusion | `The experimental results show that ...` | 2, H |
 | Conclusion | `The ablation studies ...` | 2, H |
 | Conclusion | `Future work will ...` / `Building on ..., we will ...` | 1, H |
+
+Use an opener only in a paragraph that already has its function. Use each Introduction opener at most once per paper, apart from `For example` and `For instance` (`In this scenario, ...` opens a sentence in one of the four reference Introductions). Do not add a paragraph to host an opener. When the reference papers of the target family classify the literature in Related Work, the Introduction adds no classification paragraph. Do not repeat the verb in the count noun (`categorized into two categories`). Write `fall into two groups` or `are classified into two kinds of approach` instead.
 
 Do not open with `Note that`, `It is worth noting that`, `Recently, ...`, or `As is well known`.
 
@@ -262,7 +270,7 @@ Do not write `the highest`, `superior`, or `state-of-the-art` in the result move
 - Write two to four sentences per item: the object, what is jointly optimized or how the mechanism works, and, in the last item only, one result sentence with its scope (`Experimental results on three benchmark problems show that the proposed algorithm achieves ... than five existing <solver family>s.`).
 - No `novel`, `first`, or `superior`; no claim that the experiments do not show.
 
-**Roadmap.** `The remainder of this study is organized as follows.` followed by one sentence per section: `Section II reviews ...`, `Section III presents the system model and the formulation of ...`, `Section IV introduces the proposed algorithm to solve ...`, `Section V presents the experimental studies.`, `Section VI concludes this study.` The reference roadmaps run 56–77 words.
+**Roadmap.** `The remainder of this study is organized as follows.` followed by one sentence per section: `Section II reviews ...`, `Section III presents the system model and the formulation of ...`, `Section IV introduces the proposed algorithm to solve ...`, `Section V presents the experimental studies.`, `Section VI concludes this study.` Keep the roadmap to one sentence per section and 56–77 words in total, the range of the reference roadmaps. Name what each section does, and do not summarize its content (no list of models, mechanisms, or results).
 
 ## 12. Conclusion
 
@@ -279,6 +287,8 @@ Do not restate the contribution list (`Our contributions are threefold`), and do
 **Captions.** A caption is a noun phrase that identifies the artifact and ends with a period. Write it in sentence case in the source (the document class may print table captions in capitals), and give every caption of one kind the same form. [G-STY-cap]
 
 - Name the compared objects, the instances, and the run-selection rule (`at the median run`, `for the median-performing run`).
+- Keep a result-table caption to about 20 words (the reference papers use 6–20). Put metric full names, the run count, and the significance rule in the note below the table.
+- Fill a caption form with the manuscript's own terms. When the setup calls its test settings `cases`, the caption does too, even where the attested form says `instances`.
 - Do not state the result, explain the method, or repeat what the panel labels, legend, or setup paragraph already state. Panel labels such as `(a) CMOP1. (b) CMOP2.` may follow when the class prints no subcaptions.
 - Define every abbreviation that appears in a table header or row label, in the caption or in a note below the table, and explain significance symbols in that note.
 - Algorithm boxes, figures, and tables of one paper share the sentence case and the final period.
@@ -315,7 +325,7 @@ Attested forms, with the number of reference papers (out of four) that use each;
 
 Run `scripts/style_fingerprint.py` (in the skill directory) on the draft when Python is available. For a LaTeX manuscript split into several files, pass the root file: the script inlines `\input`, `\include`, `\subfile`, and `\import` files and warns about missing ones.
 
-- `python scripts/style_fingerprint.py paper.tex` prints section scale, the sentence-length profile, connectives per 100 sentences, within-sentence features per 1000 words, banned constructions with their sentences, runs of short sentences, and flags against the band of Section 3;
+- `python scripts/style_fingerprint.py paper.tex` prints section scale, the sentence-length profile, connectives per 100 sentences, within-sentence features per 1000 words, banned constructions with their sentences, runs of short sentences, adjacent short sentences that could merge, and flags against the band of Section 3. A file with fewer than three main sections is checked against its section means and connective counts only (Sections 3 and 5);
 - `--section exp` restricts the report to one section;
 - `--lang zh` measures a Chinese manuscript in ideographs against the Chinese adapter's weak-prior band and its banned constructions (`--lang auto`, the default, detects the language);
 - `--citations` lists citation keys repeated within a section;
@@ -334,6 +344,8 @@ The numbers were measured on the complete text of four IEEE Transactions papers 
 - *Joint Latency and Charge Cost Minimization for Reliable Task Offloading in Dispersed Computing: A Multi-objective Optimization Approach* (DOI `10.1109/TMC.2026.3679393`);
 - *Terrain-Aware UAV-Enabled Mobile Edge Computing in Urban Environments: A Constrained Multi-Objective Approach With Task-Adaptive Mechanism* (DOI `10.1109/TVT.2025.3604250`);
 - *UAV-Enabled Multi-Source Data Fusion in Vehicular Networks: A Joint Optimization Approach for Reliability and Latency* (DOI `10.1109/TWC.2026.3676831`).
+
+Experiment order. Two of the four reference papers (Demand-aware and Fusion) report their scenario experiments before the overall comparison. The Dispersed and Terrain-aware papers open with the overall comparison and then investigate their mechanisms. The supervisor-approved revision moved its scenario experiments ahead of the overall comparison. These observations support the ordering default of the experiment skill.
 
 The supervisor-practice rows come from two rounds of supervisor edits on a 2026 journal revision by the same team, measured as before-and-after sentence diffs; no sentence of that manuscript is reproduced here. In the only round that contained supervisor edits alone, the changed passages went from 49 to 38 sentences and their mean length rose from 22.3 to 23.9 words, through six merges and two deletions without a single split. All examples in this file are synthetic. Openers and title shapes are short stock phrases, not copied sentences.
 

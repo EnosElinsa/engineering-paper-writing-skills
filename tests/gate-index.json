@@ -646,6 +646,46 @@
           "id": "G-RW-table"
         }
       ]
+    },
+    "50": {
+      "summary": "Introduction opener templates repeated and a classification paragraph added",
+      "gates": [
+        {
+          "file": "shared/styles/team-house-style.md",
+          "id": "G-STY-open"
+        }
+      ]
+    },
+    "51": {
+      "summary": "Single-section shares forced into the body band",
+      "gates": [
+        {
+          "file": "shared/styles/team-house-style.md",
+          "id": "G-STY-rhythm"
+        },
+        {
+          "file": "shared/core/reader-and-terminology-contract.md",
+          "id": "G-SH-R"
+        }
+      ]
+    },
+    "52": {
+      "summary": "Cause lost when because is removed",
+      "gates": [
+        {
+          "file": "shared/styles/team-house-style.md",
+          "id": "G-STY-conn"
+        }
+      ]
+    },
+    "53": {
+      "summary": "Long result-table caption with drifted terms",
+      "gates": [
+        {
+          "file": "shared/styles/team-house-style.md",
+          "id": "G-STY-cap"
+        }
+      ]
     }
   }
 }

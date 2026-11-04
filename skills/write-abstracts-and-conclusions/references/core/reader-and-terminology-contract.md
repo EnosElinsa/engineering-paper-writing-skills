@@ -56,9 +56,9 @@ Counting rule. Paragraph: blank-line-delimited prose block of at least 20 words,
 Scale counts paragraphs and words. Rhythm counts how those words are packed into sentences. A section can sit inside its scale range and still read as a list of short statements. [G-SH-R]
 
 1. Default: when the team house style applies, use its sentence-length band, connective profile, and combining rules. With other supplied references, measure them with the counting rule above (inline math counted as one word in sentence lengths) and record mean, median, 90th percentile, the shares of sentences over 35 and under 12 words, and the sentence-initial connectives per 100 sentences.
-2. Default: keep the draft inside the band. When it falls below, merge before cutting: fold a direct consequence, the second half of a comparison, a short cause, a purpose, or a definition back into the sentence it belongs to. When it rises above, split at the second independent claim.
+2. Default: keep the draft inside the band. The 90th percentile, the two shares, and the connective rates apply to a whole paper. Check one section alone against its section mean and against connective counts. When the draft falls below the band, merge before cutting: fold a direct consequence, the second half of a comparison, a short cause, a purpose, or a definition back into the sentence it belongs to. When it rises above, split at the second independent claim.
 3. Default: after any splitting pass, recount the connectives. A banned word must not be replaced everywhere by one substitute.
-4. Run the bundled fingerprint script on the draft when Python is available, and read every flagged sentence before changing it.
+4. Run the bundled fingerprint script on the draft when Python is available, and read every flagged sentence before changing it. List every flag that remains, with its reason, in the delivery note, not in the manuscript.
 
 Deviate when the venue or the content requires it (a dense list of settings, a definition-heavy model subsection), and record the reason in the scale statement. For a Chinese manuscript, use the weak-prior band in ideographs of [the Chinese manuscript adapter](../languages/zh.md) instead of the English word bands.
 

@@ -63,7 +63,7 @@ The global sequence normally performs these functions:
 
 Follow contribution order when it creates a clearer story. Do not preserve this list mechanically when a function is absent.
 
-Default: when the scenario or the model is itself a contribution, place the experiments that show its behavior (a trade-off between solution-selection strategies, the effect of platform mobility, the effect of regional characteristics) before the overall algorithm comparison. The reader first sees that the problem produces a meaningful trade-off, and only then how the algorithms compare on it. Deviate when the scenario is standard and only the algorithm is new, and record the reason. [G-EX-order]
+Default: when the contribution list has a separate scenario or model item and the main text reports the experiments on that scenario with their own table or figure, place those experiments (a trade-off between solution-selection strategies, the effect of platform mobility, the effect of regional characteristics) before the overall algorithm comparison. The reader first sees that the problem produces a meaningful trade-off, and only then how the algorithms compare on it. Otherwise, open with the overall comparison, as when the scenario experiments report a single number or move to the supplement. Deviate when the argument requires another order, and record the reason. [G-EX-order]
 
 Default: when further experiments move to a supplementary document, end the setup subsection with one paragraph that gives their location as one continuous range of sections and lists the experiments in the order they appear there (`Due to space limitations, the additional experiments are presented in Sections S-IV–S-XII of the supplementary document. These experiments include ...`). In the result subsections, place each further pointer where its content is used, and do not repeat a modeling detail that the pointed section already states. [G-EX-supp]
 
@@ -108,7 +108,7 @@ Include only experiment-specific configuration. Cross-reference shared settings 
 
 Do not announce the outcome in this block. Result language in the contract obscures the boundary between design and interpretation and encourages confirmation bias.
 
-Default: title an experiment subsection by its operation, object, and varied factor (`Comparison of Selection Strategies under Different Objective Preferences`, `Evaluation of Scalability on Larger-Scale Problem Instances`), not by a topic word (`Impact of X`, `X Study`, `Investigation of the Schemes`). The opening sentence then names the compared variants and the question (`This experiment compares A, B, and C to examine how D affects E and F.`; `To investigate the effects of D on E and F, a comparative study is conducted under two settings: one in which ... and one in which ...`). Deviate when the venue prescribes headings, and record the reason. [G-EX-title]
+Default: title an experiment subsection by its operation and object in about eight words or fewer (`Overall Performance Comparison`, `Investigation of the Depot-Relocation Mechanism`, `Comparison of Selection Strategies under Different Objective Preferences`, `Trade-off Analysis of the Obtained Solutions`), not by a bare topic phrase (`Impact of X`, `X Study`). Name the varied factor in the title when it fits, otherwise in the opening sentence. Use `Comparison of ...` rather than `Investigation of the Schemes` when the subsection compares named alternatives. The opening sentence then names the compared variants and the question (`This experiment compares A, B, and C to examine how D affects E and F.`; `To investigate the effects of D on E and F, a comparative study is conducted under two settings: one in which ... and one in which ...`). Deviate when the venue prescribes headings, and record the reason. [G-EX-title]
 
 ### Block 2: Evidence to claim
 
@@ -366,7 +366,8 @@ Classify failures:
 | Call a smooth curve robust | Robustness was not tested | Reserve robustness for explicit perturbation evidence |
 | End with generic superiority | Adds no scientific insight | State what the evidence supports under which conditions |
 | Hide failed or infeasible cases | Distorts scope and reproducibility | Define and report failure semantics |
-| Title a subsection `Impact of X` or `X Study` | Hides the comparison and the varied factor | Name the operation, object, and factor |
+| Title a subsection `Impact of X` or `X Study` | Hides the comparison and the varied factor | Name the operation and object, and the factor in the title or the opening sentence |
+| Pack every setting into a subsection title of 12 or more words | The title becomes a sentence | Keep about eight words and move the setting to the opening sentence |
 | Narrate an unmeasured intermediate step as a result | Presents a hypothesis as evidence | Measure the step or keep only the measured endpoints |
 | Report one improved component as an overall gain | An offsetting component may cancel it | Report the net effect or state that it is not established |
 | Write `the results support our choice` after a nonsignificant comparison | Absence of a difference is not support | State that the alternative gives no significant improvement |
@@ -397,11 +398,11 @@ Do not finalize the section unless all applicable gates pass:
 - [ ] `Stable` is defined by a window and tolerance fixed before the run.
 - [ ] Every robustness claim states the perturbation, its magnitude, and its presence in training.
 - [ ] No colloquial or promotional wording remains.
-- [ ] Every experiment subsection title names the operation, object, and varied factor, and its opening sentence names the compared variants and the question.
+- [ ] Every experiment subsection title names the operation and object in about eight words or fewer, the varied factor appears in the title or the opening sentence, and the opening sentence names the compared variants and the question.
 - [ ] Results from selected runs say so in the result sentence; no unmeasured intermediate step is narrated as a result; every component gain names its offsetting component or the net effect.
 - [ ] Nonsignificant comparisons are not written as support for the proposed design; idealized values are called reference values, not bounds.
 - [ ] Every derived metric that differs from an objective is defined once, with its difference from the objective, and referred back to afterwards.
-- [ ] Scenario-behavior experiments precede the overall comparison when the scenario is a contribution, or the deviation is recorded.
+- [ ] Scenario-behavior experiments precede the overall comparison when the contribution list has a separate scenario item and the main text reports them with their own table or figure, or the deviation is recorded.
 - [ ] Supplementary experiments are listed once, as one continuous range, at the end of the setup subsection.
 - [ ] Each result sentence cites one artifact; table-introducing prose does not recite values.
 - [ ] Parallel subsections share one paragraph shape and each ends with a scoped conclusion.

@@ -23,7 +23,7 @@ Keep one core causal relation per sentence. Use the written academic register th
 Author rules, applied as written. They are the Chinese counterparts of the team house style's author voice, connective, and banned-construction rules. [G-ZH-sent]
 
 - Give every sentence an explicit subject. A mechanism step names its actor (the controller, the algorithm, the UAV) or uses 本文 for an author action.
-- Use 本文 for author actions. Do not use 我们 outside future-work sentences.
+- Use 本文 for author actions, and reserve it for the contribution items, the scenario and algorithm sentences of the Introduction, the roadmap, and the opening of the Conclusion. Elsewhere, make the algorithm or a system actor the subject. Do not use 我们 outside future-work sentences.
 - Do not put a colon inside a prose sentence. A colon may end a lead-in to a list (`……如下：`) or to a display, and it may follow the run-in label of a list item.
 - Do not write meta-language or self-summary sentences that announce a move instead of making it, such as `解决这一问题的直接思路是……` or a bare `上述两点在该场景中均不成立。` State the fact and let the contrast stay implicit.
 - 可见 and 据此 are not connectives. State the result directly, or use 因此 when the sentence follows from the previous one.
@@ -32,7 +32,7 @@ Author rules, applied as written. They are the Chinese counterparts of the team 
 
 ## Sentence rhythm (weak prior)
 
-No Chinese reference paper by the team is available. The band below converts the house-style English band with the default ratio of this adapter, 1.5 to 2.0 ideographs per English word: lower ends are multiplied by 1.5 and upper ends by 2.0. The short and long thresholds use the midpoint ratio 1.75. Shares, sentence counts, and paragraph counts transfer unchanged. Treat a value outside the band as a reason to read the section again, not as a defect. Replace this band with a measured one as soon as a Chinese reference paper by the team exists. [G-ZH-rhythm]
+No Chinese reference paper by the team is available. The band below converts the house-style English band with the default ratio of this adapter, 1.5 to 2.0 ideographs per English word: lower ends are multiplied by 1.5 and upper ends by 2.0. The short and long thresholds use the midpoint ratio 1.75. Shares, sentence counts, and paragraph counts transfer unchanged. Treat a value outside the band as a reason to read the section again, not as a defect. As in the house style, the 90th percentile and the two shares apply to a whole paper, and one section alone is checked against its section mean. Replace this band with a measured one as soon as a Chinese reference paper by the team exists. [G-ZH-rhythm]
 
 <!-- calibrate:begin zh-rhythm -->
 | Body measure | Weak-prior band |

@@ -334,14 +334,16 @@ Control sentence burden:
 
 - Background: `X has emerged as a key enabler of ..., where ...`
 - Narrowing: `However, X remains constrained by ...`
-- Classification: `Existing studies can be categorized into N categories according to ..., namely, ...`
+- Classification: `Existing studies can be classified into N kinds of approach according to ..., namely, ...`
 - Synthesis: `Across these approaches, ...`
 - Scenario: `To address this limitation, this study considers ...`
 - Problem: `In this scenario, the controller jointly determines ...`
 - Algorithm motivation: `Solving the formulated problem poses ...`
 - Method: `To address this challenge, this study proposes ...`
 
-Use these as functional prompts, not fill-in-the-blank prose. Avoid:
+Use these as functional prompts, not fill-in-the-blank prose. Use each prompt at most once per paper, and only in a paragraph that already has its function. When the target papers classify the literature in Related Work, the Introduction adds no classification paragraph.
+
+Avoid:
 
 - `Recently, many researchers have paid increasing attention to ...`
 - `It is worth noting that ...`

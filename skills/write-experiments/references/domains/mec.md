@@ -26,8 +26,6 @@ Report enough of the system configuration to reproduce the physical comparison:
 
 For every metric, state the unit, aggregation population and horizon, direction of improvement, normalization, and handling of infeasible or unfinished cases. Do not silently exclude failed missions, dropped tasks, zero-rate users, unserved areas, or solutions that cannot return safely.
 
-Section order in the reference papers (the evidence behind the core ordering default): the Demand-aware paper reports the impact of regional characteristics on deployment strategies and a trade-off analysis of the obtained solutions before the overall comparison, and the Fusion paper investigates data-collection and resource-allocation schemes, the two key objectives, task completion, and the fusion network before its algorithm comparison. The Dispersed and Terrain-aware papers open with the overall comparison and then investigate their mechanisms; their scenarios are less central to the contribution. The supervisor-approved HAP-UAV revision moved its strategy and platform-mobility experiments ahead of the overall comparison.
-
 ## Scenario and baseline controls
 
 Separate three comparison questions:
