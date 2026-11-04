@@ -6,6 +6,8 @@ Usage:
     python style_fingerprint.py DRAFT.md --section exp
     python style_fingerprint.py DRAFT.md --lang zh
     python style_fingerprint.py DRAFT.tex --citations
+    python style_fingerprint.py DRAFT.tex --scale exp=900-1900 exp.paragraphs=10-19 --terms TERMS.txt
+    python style_fingerprint.py --report MAIN.tex SUPP.tex REPLY.tex --terms TERMS.txt --out report.md
     python style_fingerprint.py DRAFT.tex --json
     python style_fingerprint.py --diff OLD.tex NEW.tex [--show 10]
 
@@ -1190,16 +1192,428 @@ def _md_cell(text: str) -> str:
     return text.replace("|", "\\|").replace("\n", " ")
 
 
-def submission_report(paths: list[pathlib.Path], lang: str = "auto", sentences_per_item: int = 5) -> str:
+# --------------------------------------------------------------------------- document checks
+
+# House rules of Sections 2, 8, 9, 11, and 13 of the team house style, measured once on
+# the four reference papers. Recalibration leaves them alone.
+DOCUMENT_RULES = {
+    "table_caption_words": 22,  # a result-table caption runs about 20 words (reference papers 6-20)
+    "title_words": 10,  # experiment subsection titles of about eight words or fewer (references average 4.3-6.7)
+    "roadmap_words": 77,  # reference roadmaps 56-77 words, the supervisor-approved roadmap 46
+    "this_study_intro_per_1000": (1.5, 6.4),
+}
+
+OPENER_TEMPLATES = {
+    "en": (
+        ("To address this issue/limitation", re.compile(r"^To address this (?:issue|limitation|challenge|problem|gap)\b")),
+        ("Motivated by", re.compile(r"^Motivated by\b")),
+        ("In this scenario", re.compile(r"^In this scenario\b")),
+        ("Solving the formulated", re.compile(r"^Solving the formulated\b")),
+        ("Existing ... can be categorized into", re.compile(
+            r"^Existing\b.{0,80}?\b(?:categori[sz]ed|classified|divided|grouped) into\b")),
+        ("Across these approaches", re.compile(r"^Across these\b")),
+        ("The main contributions", re.compile(r"^The main contributions of this\b")),
+        ("The remainder of this", re.compile(r"^The (?:remainder|rest) of this\b")),
+    ),
+    "zh": (
+        ("为解决这一问题", re.compile(r"^为(?:了)?解决(?:这一|上述|该|此)")),
+        ("在此场景下", re.compile(r"^在(?:此|该|这一)场景(?:下|中)")),
+        ("本文的主要贡献", re.compile(r"^本文的主要贡献")),
+        ("本文其余部分", re.compile(r"^本文其余部分")),
+    ),
+}
+
+COUNT_NOUN = re.compile(
+    r"\b(?:categori[sz]ed into (?:\w+ )?categor(?:y|ies)|classified into (?:\w+ )?class(?:es)?|"
+    r"grouped into (?:\w+ )?groups?|divided into (?:\w+ )?divisions?)\b",
+    re.I,
+)
+ROADMAP_START = re.compile(r"^(?:The (?:remainder|rest) of this (?:paper|study|article|work)|本文其余部分|本文后续)")
+SECTION_NAME = {"en": re.compile(r"\bSections?\b"), "zh": re.compile(r"节")}
+CAPTION_LABELS = {"Fig.": "figure", "Figure": "figure", "图": "figure", "TABLE": "table", "Table": "table",
+                  "表": "table", "Algorithm": "algorithm", "算法": "algorithm"}
+MD_CAPTION = re.compile(r"^\**\s*(Fig\.|Figure|TABLE|Table|Algorithm|图|表|算法)\s*([0-9IVX]+)\s*[.:：]?\s*\**\s*(.*)$")
+REPORTING_START = re.compile(
+    r"^(?:shows?|presents?|lists?|reports?|illustrates?|gives?|compares?|summari[sz]es?|depicts?|displays?|plots?|"
+    r"provides?|is|are|was|were|and|to|in|of|给出|列出|展示|显示|对比|表明|中)\b|^[,，]"
+)
+SCALE_ITEM = re.compile(r"^(\w+)(?:\.(words|paragraphs|paragraph_words))?=(\d+(?:\.\d+)?)-(\d+(?:\.\d+)?)$")
+
+
+def _command_arguments(text: str, command: str) -> list[tuple[int, str]]:
+    """Positions and brace-matched arguments of every \\command[opt]{arg}."""
+    pattern = re.compile(r"\\" + command + r"\*?\s*(?:\[[^\]]*\])?\s*\{")
+    found = []
+    for match in pattern.finditer(text):
+        position, depth = match.end(), 1
+        while position < len(text) and depth:
+            if text[position] == "{":
+                depth += 1
+            elif text[position] == "}":
+                depth -= 1
+            position += 1
+        found.append((match.start(), text[match.end():position - 1]))
+    return found
+
+
+def tex_structure(text: str) -> tuple[list[str], list[tuple[str, int, object]]]:
+    """Top-level titles and the subsection titles and float captions under each of them."""
+    text = re.sub(r"(?<!\\)%.*", "", text)
+    match = re.search(r"\\begin\{document\}(.*?)\\end\{document\}", text, flags=re.S)
+    body = match.group(1) if match else text
+    body = re.split(r"\\bibliography\{|\\begin\{thebibliography\}|\\appendices\b|\\appendix\b|\\begin\{IEEEbiography", body)[0]
+    body = re.sub(r"\\begin\{abstract\}.*?\\end\{abstract\}", " ", body, flags=re.S)
+    floats = [(m.start(), m.end(), m.group(1))
+              for m in re.finditer(r"\\begin\{(figure|table|algorithm)\*?\}.*?\\end\{\1\*?\}", body, flags=re.S)]
+    tokens = [(p, "section", a) for p, a in _command_arguments(body, "section")]
+    tokens += [(p, "title", a) for name in ("subsection", "subsubsection") for p, a in _command_arguments(body, name)]
+    tokens += [(p, "caption", a) for p, a in _command_arguments(body, "caption")]
+    titles: list[str] = []
+    events: list[tuple[str, int, object]] = []
+    top: int | None = None
+    for position, kind, argument in sorted(tokens, key=lambda token: token[0]):
+        if kind == "section":
+            titles.append(clean_tex(argument))
+            top = len(titles) - 1
+        elif top is not None and kind == "title":
+            events.append(("title", top, clean_tex(argument)))
+        elif top is not None:
+            env = next((name for start, end, name in floats if start <= position < end), None)
+            if env:
+                events.append(("caption", top, (env, clean_tex(argument))))
+    return titles, events
+
+
+def _md_caption(line: str) -> tuple[str, str] | None:
+    match = MD_CAPTION.match(line)
+    if not match or len(line) > 400:
+        return None
+    rest = match.group(3).strip()
+    if not rest or REPORTING_START.match(rest):
+        return None
+    return CAPTION_LABELS[match.group(1)], clean_md(rest.rstrip("*").strip())
+
+
+def md_structure(text: str) -> tuple[list[str], list[tuple[str, int, object]]]:
+    """Top-level titles and the subsection titles and captions of a Markdown source."""
+    text = re.sub(r"\$\$.*?\$\$", " ", text, flags=re.S)
+    titles: list[str] = []
+    events: list[tuple[str, int, object]] = []
+    top: int | None = None
+    for raw in text.splitlines():
+        line = raw.strip()
+        if not line:
+            continue
+        match = re.match(r"^#+\s*(.*)$", line)
+        if match:
+            title = match.group(1).strip()
+            sub = re.match(r"^(?:[A-H]\.|\d+\))\s+", title)
+            if REFERENCES_HEADING.search(title) and not sub:
+                titles.append(title)
+                top = None
+            elif sub:
+                if top is not None:
+                    events.append(("title", top, title[sub.end():]))
+            elif re.match(r"^[IVX]+\.\s", title) or classify(title, strict=True):
+                titles.append(title)
+                top = len(titles) - 1
+            continue
+        caption = _md_caption(line) if top is not None else None
+        if caption:
+            events.append(("caption", top, caption))
+    return titles, events
+
+
+def _label_words(text: str, lang: str) -> int:
+    """Words of a caption or heading; alphanumeric tokens such as V2X or DCMOP2 count once."""
+    if lang == "zh":
+        return len(CJK.findall(text))
+    return len([token for token in re.findall(r"[A-Za-z][A-Za-z0-9'\-]*", text) if token != MATH])
+
+
+def _strip_marker(sentence: str) -> str:
+    return re.sub(r"^[\u2022\-*（(]?\s*(?:\d+[)）]|[ivx]+[)）])?\s*", "", sentence.strip())
+
+
+def _caption_issues(kind: str, caption: str, lang: str) -> list[str]:
+    """Form checks of Section 13 of the team house style (English captions only)."""
+    letters = [c for c in caption if c.isalpha()]
+    if lang != "en" or not letters or "".join(letters).isupper():
+        return []  # printed capitals (a converted PDF) carry no case or period information
+    issues = []
+    # Algorithm captions name the procedure without a final period in three reference papers and
+    # in the supervisor-approved draft; figure and table captions end with a period.
+    if kind != "algorithm" and not caption.rstrip().endswith("."):
+        issues.append("no final period")
+    tokens = [t for t in WORD.findall(caption)[1:] if len(t) >= 4 and not _is_acronym(t)]
+    capitalized = [t for t in tokens if t[0].isupper()]
+    if len(capitalized) >= 3 and len(capitalized) > len(tokens) / 2:
+        issues.append("title case")
+    # Note sentences may follow the noun phrase when the class has no table notes; only the
+    # noun phrase is held to the length rule.
+    phrase = re.split(r"(?<=[.!?])\s+(?=[`'\"(]?[A-Z])", caption.strip(), maxsplit=1)[0]
+    count = _label_words(phrase, lang)
+    if kind == "table" and count > DOCUMENT_RULES["table_caption_words"]:
+        issues.append(f"noun phrase of {count} words (a result-table caption runs about 20; move details to the table note)")
+    return issues
+
+
+def read_terms(path: pathlib.Path) -> list[tuple[str, list[str]]]:
+    """Read a term ledger: one group per line, the ledger term first (`case: instance, test instance`)."""
+    groups = []
+    for raw in path.read_text(encoding="utf-8-sig").splitlines():
+        line = raw.split("#", 1)[0].strip()
+        if not line:
+            continue
+        head, _, tail = line.partition(":") if ":" in line else line.partition("：")
+        parts = [head] + re.split(r"[,，;；]", tail) if tail else re.split(r"[,，;；]", head)
+        parts = [part.strip() for part in parts if part.strip()]
+        if len(parts) >= 2:
+            groups.append((parts[0], parts[1:]))
+    return groups
+
+
+def _term_pattern(term: str) -> re.Pattern:
+    if CJK.search(term):
+        return re.compile(re.escape(term))
+    body = r"[\s\-]+".join(re.escape(part) for part in re.split(r"[\s\-]+", term))
+    return re.compile(r"(?<![A-Za-z])" + body + r"(?:s|es)?(?![A-Za-z])", re.I)
+
+
+def _term_counts(texts: dict[str, str], terms: list[str]) -> dict[str, dict[str, int]]:
+    """Occurrences of each term per text; longer terms are counted first and masked."""
+    counts: dict[str, dict[str, int]] = {term: {} for term in terms}
+    for key, text in texts.items():
+        for term in sorted(terms, key=len, reverse=True):
+            pattern = _term_pattern(term)
+            found = len(pattern.findall(text))
+            if found:
+                counts[term][key] = found
+            text = pattern.sub(" \x00 ", text)
+    return counts
+
+
+def parse_scale(items: list[str]) -> dict[tuple[str, str], tuple[float, float]]:
+    """Parse `exp=900-1900`, `exp.paragraphs=10-19`, or `intro.paragraph_words=60-140`."""
+    scale = {}
+    for item in items:
+        match = SCALE_ITEM.match(item.strip())
+        if not match or match.group(1) not in SECTION_ORDER:
+            raise ValueError(f"invalid scale item {item!r}; use SECTION[.words|.paragraphs|.paragraph_words]=LOW-HIGH")
+        low, high = float(match.group(3)), float(match.group(4))
+        scale[(match.group(1), match.group(2) or "words")] = (min(low, high), max(low, high))
+    return scale
+
+
+def _num_text(value: float) -> str:
+    return f"{value:.0f}" if float(value).is_integer() else f"{value:.1f}"
+
+
+def document_audit(path: pathlib.Path, result: dict[str, dict], section: str | None = None,
+                   scale: dict[tuple[str, str], tuple[float, float]] | None = None,
+                   terms: list[tuple[str, list[str]]] | None = None) -> dict:
+    """Captions, subsection titles, roadmap, opener templates, scale, and ledger terms of one file."""
+    lang = result_language(result)
+    profile = LANGUAGES[lang]
+    suffix = path.suffix.lower()
+    text = read_source(path)
+    if suffix == ".tex":
+        titles, events = tex_structure(text)
+    elif suffix in {".md", ".markdown"}:
+        titles, events = md_structure(text)
+    else:
+        titles, events = [], []
+    roles = resolve_roles(titles)
+
+    def kept(top: int) -> bool:
+        return roles[top] is not None and section in (None, roles[top])
+
+    captions = [
+        {"kind": payload[0], "section": roles[top], "text": payload[1], "words": _label_words(payload[1], lang),
+         "issues": _caption_issues(payload[0], payload[1], lang)}
+        for kind, top, payload in events if kind == "caption" and kept(top)
+    ]
+    subsection_titles = [
+        {"section": roles[top], "title": payload, "words": _label_words(payload, lang)}
+        for kind, top, payload in events if kind == "title" and kept(top)
+    ]
+
+    sections, tex = load(path)
+    prose: dict[str, list[str]] = {}
+    for key, paragraphs in sections.items():
+        if key != "abstract" and section in (None, key):
+            prose[key] = prose_paragraphs(paragraphs, tex, lang)
+    grouped = {
+        key: [[s for s in split_sentences(p, lang) if sentence_length(s, lang) >= profile["min_sentence"]] for p in items]
+        for key, items in prose.items()
+    }
+    sentences = [s for groups in grouped.values() for group in groups for s in group]
+    # Opener templates are Introduction rules; text without an Introduction is read whole.
+    opening = [s for group in grouped["intro"] for s in group] if "intro" in grouped else sentences
+    templates = {}
+    for label, pattern in OPENER_TEMPLATES[lang]:
+        hits = [s for s in opening if pattern.search(_strip_marker(s))]
+        if hits:
+            templates[label] = hits
+    count_nouns = [s for s in sentences if COUNT_NOUN.search(s)] if lang == "en" else []
+
+    roadmap = None
+    for group in grouped.get("intro", []):
+        for index, sentence in enumerate(group):
+            if ROADMAP_START.match(_strip_marker(sentence)):
+                part = group[index:]
+                roadmap = {
+                    "words": sum(units(s, lang) for s in part),
+                    "sentences": len(part),
+                    "without_section": [s for s in part[1:] if not SECTION_NAME[lang].search(s)],
+                }
+    this_study = None
+    if lang == "en" and "intro" in result and section in (None, "intro"):
+        this_study = result["intro"]["inline_per_1000"].get("this study/paper", 0.0)
+
+    scale_rows = []
+    for (key, measure_name), (low, high) in (scale or {}).items():
+        if section not in (None, key):
+            continue
+        measured = result.get(key)
+        if not measured:
+            scale_rows.append({"section": key, "measure": measure_name, "low": low, "high": high, "value": None})
+            continue
+        if measure_name == "words":
+            value = float(measured["words"])
+        elif measure_name == "paragraphs":
+            value = float(measured["paragraphs"])
+        else:
+            value = measured["words"] / measured["paragraphs"] if measured["paragraphs"] else 0.0
+        scale_rows.append({"section": key, "measure": measure_name, "low": low, "high": high, "value": value})
+
+    term_rows = []
+    if terms:
+        texts = {key: " ".join(items) for key, items in prose.items()}
+        if captions:
+            texts["captions"] = " ".join(c["text"] for c in captions)
+        for preferred, variants in terms:
+            term_rows.append({"term": preferred, "variants": variants, "counts": _term_counts(texts, [preferred] + variants)})
+
+    return {
+        "language": lang,
+        "captions": captions,
+        "titles": subsection_titles,
+        "roadmap": roadmap,
+        "templates": templates,
+        "count_nouns": count_nouns,
+        "this_study_intro_per_1000": this_study,
+        "scale": scale_rows,
+        "terms": term_rows,
+    }
+
+
+def document_flags(audit: dict) -> list[str]:
+    lang = audit["language"]
+    unit = LANGUAGES[lang]["unit"]
+    flags: list[str] = []
+    for caption in audit["captions"]:
+        if caption["issues"]:
+            flags.append(f"{caption['kind']} caption ({caption['section']}): {'; '.join(caption['issues'])}: "
+                         f"{caption['text'][:70]}")
+    if lang == "en":
+        for title in audit["titles"]:
+            if title["words"] >= DOCUMENT_RULES["title_words"]:
+                flags.append(f"subsection title of {title['words']} words (about eight or fewer): {title['title'][:90]}")
+    roadmap = audit["roadmap"]
+    if roadmap:
+        high = DOCUMENT_RULES["roadmap_words"] if lang == "en" else round(DOCUMENT_RULES["roadmap_words"] * ZH_RATIO[1])
+        if roadmap["words"] > high:
+            flags.append(f"roadmap has {roadmap['words']} {unit} in {roadmap['sentences']} sentences (at most about {high})")
+        if roadmap["without_section"]:
+            flags.append(f"roadmap: {len(roadmap['without_section'])} sentence(s) name no section "
+                         "(one sentence per section, no content summary)")
+    for label, hits in audit["templates"].items():
+        if len(hits) > 1:
+            flags.append(f"opener template '{label}' starts {len(hits)} sentences (at most once per paper)")
+    if audit["count_nouns"]:
+        flags.append(f"{len(audit['count_nouns'])} sentence(s) repeat the verb in the count noun "
+                     "('categorized into two categories')")
+    value = audit["this_study_intro_per_1000"]
+    if value is not None:
+        low, high = DOCUMENT_RULES["this_study_intro_per_1000"]
+        if value > high + 0.5:
+            flags.append(f"intro uses this study/paper {value:.1f} times per 1000 words (reference Introductions {low}-{high})")
+    for row in audit["scale"]:
+        declared = f"{_num_text(row['low'])}-{_num_text(row['high'])}"
+        name = f"{row['section']} {row['measure'].replace('_', ' ')}"
+        if row["value"] is None:
+            flags.append(f"{name}: section not found (declared {declared})")
+        elif row["value"] > row["high"]:
+            flags.append(f"{name} = {_num_text(row['value'])}, {100 * (row['value'] - row['high']) / row['high']:.0f}% "
+                         f"above the declared {declared}")
+        elif row["value"] < row["low"]:
+            flags.append(f"{name} = {_num_text(row['value'])}, {100 * (row['low'] - row['value']) / row['low']:.0f}% "
+                         f"below the declared {declared}")
+    return flags + term_flags(audit["terms"])
+
+
+def term_flags(rows: list[dict]) -> list[str]:
+    flags = []
+    for row in rows:
+        for variant in row["variants"]:
+            where = row["counts"][variant]
+            if where:
+                places = ", ".join(f"{key} {count}" for key, count in where.items())
+                flags.append(f"term '{variant}' appears {sum(where.values())} times ({places}); "
+                             f"the ledger term is '{row['term']}'")
+    return flags
+
+
+def _document_section(audit: dict, terms_by_document: list[tuple[str, dict]]) -> list[str]:
+    """Markdown lines of the document-check section of the report."""
+    unit = LANGUAGES[audit["language"]]["unit"]
+    out = ["**Captions**", ""]
+    out += [
+        f"- {c['kind']} ({c['section']}, {c['words']} {unit}): {_md_cell(c['text'][:160])}"
+        + (f" **[{'; '.join(c['issues'])}]**" if c["issues"] else "")
+        for c in audit["captions"]
+    ] or ["- none found"]
+    out += ["", "**Subsection titles**", ""]
+    out += [f"- {t['section']} ({t['words']} {unit}): {_md_cell(t['title'])}" for t in audit["titles"]] or ["- none found"]
+    roadmap = audit["roadmap"]
+    out += ["", "**Roadmap**", ""]
+    out.append(f"- {roadmap['words']} {unit} in {roadmap['sentences']} sentences" if roadmap else "- not found")
+    out += ["", "**Opener templates**", ""]
+    out += [f"- {label}: {len(hits)}" for label, hits in audit["templates"].items()] or ["- none"]
+    if audit["scale"]:
+        out += ["", "**Declared scale**", ""]
+        for row in audit["scale"]:
+            value = "not found" if row["value"] is None else _num_text(row["value"])
+            out.append(f"- {row['section']} {row['measure'].replace('_', ' ')}: {value} "
+                       f"(declared {_num_text(row['low'])}-{_num_text(row['high'])})")
+    if terms_by_document:
+        out += ["", "**Ledger terms**", "", "| Document | Term | Ledger term? | Occurrences |", "|---|---|---|---|"]
+        for name, document in terms_by_document:
+            for row in document["terms"]:
+                for term in [row["term"]] + row["variants"]:
+                    where = row["counts"][term]
+                    places = ", ".join(f"{k} {v}" for k, v in where.items()) or "0"
+                    out.append(f"| {_md_cell(name)} | {_md_cell(term)} | {'yes' if term == row['term'] else 'no'} | {places} |")
+    return out
+
+
+def submission_report(paths: list[pathlib.Path], lang: str = "auto", sentences_per_item: int = 5,
+                      scale: dict[tuple[str, str], tuple[float, float]] | None = None,
+                      terms: list[tuple[str, list[str]]] | None = None) -> str:
     """Return a Markdown pre-submission report.
 
     The first path is the main manuscript: it gets the full fingerprint, flags, banned
-    constructions, short runs, the paragraph-opening spine, and repeated citations.
-    Every path enters the abbreviation audit, and every further path (supplement,
-    response letter) gets its own banned-construction counts.
+    constructions, short runs, the document checks (captions, subsection titles,
+    roadmap, opener templates, declared scale), the paragraph-opening spine, and
+    repeated citations. Every path enters the abbreviation audit and the ledger-term
+    check, and every further path (supplement, response letter) gets its own
+    banned-construction counts.
     """
     main = paths[0]
     result = fingerprint(main, lang)
+    audit = document_audit(main, result, scale=scale, terms=terms)
+    terms_by_document = [(main.name, audit)] if terms else []
     used = result_language(result)
     profile = LANGUAGES[used]
     unit = profile["unit"]
@@ -1227,7 +1641,7 @@ def submission_report(paths: list[pathlib.Path], lang: str = "auto", sentences_p
             )
 
     out += ["", "## 2. Flags against the house-style band", ""]
-    flags = band_flags(result)
+    flags = band_flags(result) + document_flags(audit)
     out += [f"- {flag}" for flag in flags] or ["- none"]
 
     out += ["", "## 3. Banned constructions", ""]
@@ -1257,7 +1671,13 @@ def submission_report(paths: list[pathlib.Path], lang: str = "auto", sentences_p
     if not any_run:
         out.append("- none")
 
-    out += ["", "## 5. Paragraph-opening sentences", ""]
+    if terms:
+        for path in paths[1:]:
+            terms_by_document.append((path.name, document_audit(path, fingerprint(path, lang), terms=terms)))
+    out += ["", "## 5. Captions, subsection titles, roadmap, and templates", ""]
+    out += _document_section(audit, terms_by_document)
+
+    out += ["", "## 6. Paragraph-opening sentences", ""]
     out.append("Read this list on its own: it should state the argument of each section in order.")
     number = 0
     for entry in spine(main, used):
@@ -1266,11 +1686,11 @@ def submission_report(paths: list[pathlib.Path], lang: str = "auto", sentences_p
             number += 1
             out.append(f"{number}. {_md_cell(opener)}")
 
-    out += ["", "## 6. Citations repeated within a section", ""]
+    out += ["", "## 7. Citations repeated within a section", ""]
     reuse = citation_reuse(main)
     out += [f"- {section}: " + ", ".join(f"{k} x{v}" for k, v in keys.items()) for section, keys in reuse.items()] or ["- none"]
 
-    out += ["", "## 7. Abbreviations", ""]
+    out += ["", "## 8. Abbreviations", ""]
     audit = abbreviation_audit(paths)
     labels = (
         ("used_before_definition", "used before the first definition"),
@@ -1292,7 +1712,7 @@ def submission_report(paths: list[pathlib.Path], lang: str = "auto", sentences_p
             out.append("- every abbreviation has one long form across the documents")
 
     if len(paths) > 1:
-        out += ["", "## 8. Further documents", ""]
+        out += ["", "## 9. Further documents", ""]
         for path in paths[1:]:
             other = fingerprint(path, lang)
             keys = [k for k in other if k != "body"] or ["body"]
@@ -1305,13 +1725,16 @@ def submission_report(paths: list[pathlib.Path], lang: str = "auto", sentences_p
                     counts[name] += len(hits)
             summary = ", ".join(f"{name} {count}" for name, count in counts.most_common()) or "none"
             out.append(f"- **{path.name}**: banned constructions: {summary}")
+            for name, document in terms_by_document[1:]:
+                if name == path.name:
+                    out += [f"  - {flag}" for flag in term_flags(document["terms"])]
     return "\n".join(out) + "\n"
 
 
 # --------------------------------------------------------------------------- output
 
 
-def _print_fingerprint(path: pathlib.Path, result: dict[str, dict], only: str | None) -> None:
+def _print_fingerprint(path: pathlib.Path, result: dict[str, dict], only: str | None, audit: dict | None = None) -> None:
     write = sys.stdout.write
     lang = result_language(result)
     profile = LANGUAGES[lang]
@@ -1353,6 +1776,19 @@ def _print_fingerprint(path: pathlib.Path, result: dict[str, dict], only: str | 
             write(f"    [{key}] merge candidate: {first[:70]} | {second[:70]}\n")
         for opener, sentence in m["repeated_openers"][:2]:
             write(f"    [{key}] repeated opener {opener}: {sentence[:120]}\n")
+    if audit is not None:
+        write("\nDocument checks (captions, subsection titles, roadmap, templates, scale, terms):\n")
+        document = document_flags(audit)
+        if not document:
+            write("  none\n")
+        for flag in document:
+            write(f"  - {flag}\n")
+        for label, hits in audit["templates"].items():
+            if len(hits) > 1:
+                for sentence in hits[:3]:
+                    write(f"    [{label}] {sentence[:140]}\n")
+        for sentence in audit["count_nouns"][:3]:
+            write(f"    [count noun] {sentence[:140]}\n")
 
 
 def _print_diff(report: dict, show: int) -> None:
@@ -1400,6 +1836,17 @@ def main(argv: list[str] | None = None) -> int:
         action="store_true",
         help="Audit abbreviation definitions and uses; pass several files (manuscript, supplement, letter) to compare them",
     )
+    parser.add_argument(
+        "--scale",
+        nargs="+",
+        metavar="SECTION[.MEASURE]=LOW-HIGH",
+        help="Declared scale ranges to check, such as exp=900-1900, exp.paragraphs=10-19, intro.paragraph_words=60-140",
+    )
+    parser.add_argument(
+        "--terms",
+        type=pathlib.Path,
+        help="Term ledger: one group per line, the ledger term first (case: instance, test instance)",
+    )
     parser.add_argument("--json", action="store_true", help="Print machine-readable JSON")
     parser.add_argument("--diff", nargs=2, type=pathlib.Path, metavar=("OLD", "NEW"), help="Classify edits between two versions")
     parser.add_argument("--show", type=int, default=0, help="With --diff, print the first N changed hunks")
@@ -1421,8 +1868,15 @@ def main(argv: list[str] | None = None) -> int:
     for path in args.paths:
         if not path.is_file():
             parser.error(f"file not found: {path}")
+    try:
+        scale = parse_scale(args.scale) if args.scale else None
+    except ValueError as error:
+        parser.error(str(error))
+    if args.terms and not args.terms.is_file():
+        parser.error(f"term ledger not found: {args.terms}")
+    terms = read_terms(args.terms) if args.terms else None
     if args.report:
-        report = submission_report(args.paths, args.lang)
+        report = submission_report(args.paths, args.lang, scale=scale, terms=terms)
         if args.out:
             args.out.write_bytes(report.encode("utf-8"))
             sys.stdout.write(f"Report written to {args.out}\n")
@@ -1465,6 +1919,8 @@ def main(argv: list[str] | None = None) -> int:
                 sys.stdout.write(f"{section}: " + ", ".join(f"{k} x{v}" for k, v in keys.items()) + "\n")
         return 0
     result = fingerprint(args.path, args.lang)
+    audit = document_audit(args.path, result, section=args.section if args.section != "body" else None,
+                           scale=scale, terms=terms)
     if args.json:
         json.dump(
             {
@@ -1472,6 +1928,8 @@ def main(argv: list[str] | None = None) -> int:
                 "scope": measurement_scope(result),
                 "sections": result,
                 "flags": band_flags(result),
+                "document": audit,
+                "document_flags": document_flags(audit),
             },
             sys.stdout,
             indent=2,
@@ -1479,7 +1937,7 @@ def main(argv: list[str] | None = None) -> int:
         )
         sys.stdout.write("\n")
     else:
-        _print_fingerprint(args.path, result, args.section)
+        _print_fingerprint(args.path, result, args.section, audit)
     return 0
 
 

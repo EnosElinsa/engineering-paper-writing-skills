@@ -352,8 +352,8 @@ class ReportTests(unittest.TestCase):
                 self.assertEqual(F.main(["--report", str(main), str(letter), "--out", str(out)]), 0)
             report = out.read_text(encoding="utf-8")
         for heading in ("## 1. Section scale", "## 2. Flags", "## 3. Banned constructions", "## 4. Over-splitting",
-                        "## 5. Paragraph-opening sentences", "## 6. Citations repeated", "## 7. Abbreviations",
-                        "## 8. Further documents"):
+                        "## 5. Captions, subsection titles", "## 6. Paragraph-opening sentences",
+                        "## 7. Citations repeated", "## 8. Abbreviations", "## 9. Further documents"):
             self.assertIn(heading, report)
         self.assertIn("because", report)
         self.assertIn("intro: a x2", report)
@@ -421,6 +421,103 @@ class ScopeAndMergeTests(unittest.TestCase):
         scope, flags = self.flags_for("plain.txt", LONG + " The station moves because the demand changes over the day.\n")
         self.assertEqual(scope, "text")
         self.assertTrue(any(flag.startswith("body: 1 sentence(s) with because") for flag in flags), flags)
+
+
+DOC_TEX = r"""
+\begin{document}
+\section{Introduction}
+In this scenario, the controller assigns every robot to one delivery zone in each planning cycle of the day.
+Existing planners can be categorized into two categories according to the depot model used in each cycle.
+In this scenario, the controller also selects the depot position for the next planning cycle of the day.
+The remainder of this study is organized as follows. Section~\ref{s2} presents the system model.
+The model couples the robots, the zones, and the depot through the remaining battery level of each robot.
+Section~\ref{s3} concludes this study.
+\section{Experimental Studies}
+\subsection{Comparison of the Proposed Algorithm with Five Existing Algorithms on Larger Instances}
+""" + LONG + r"""
+\begin{table}
+\caption{Comparison Results of the Five Algorithms on HV}
+\end{table}
+\begin{table}
+\caption{Comparison results of the five algorithms based on the mean and standard deviation (in parentheses) of HV and IGD over thirty independent runs on the three test instances.}
+\end{table}
+\begin{table}
+\caption{Comparison results of the five algorithms based on HV. The best value is shown in bold. The test instances follow Section~\ref{s2}.}
+\end{table}
+\begin{algorithm}
+\caption{Framework of the proposed algorithm}
+\end{algorithm}
+\end{document}
+"""
+
+
+class DocumentCheckTests(unittest.TestCase):
+    def setUp(self) -> None:
+        self.temp = tempfile.TemporaryDirectory()
+        self.root = pathlib.Path(self.temp.name)
+        self.path = self.root / "doc.tex"
+        self.path.write_text(DOC_TEX, encoding="utf-8")
+
+    def tearDown(self) -> None:
+        self.temp.cleanup()
+
+    def audit(self, path: pathlib.Path | None = None, **options) -> tuple[dict, list[str]]:
+        path = path or self.path
+        audit = F.document_audit(path, F.fingerprint(path), **options)
+        return audit, F.document_flags(audit)
+
+    def test_captions_titles_roadmap_and_templates(self) -> None:
+        audit, flags = self.audit()
+        issues = [caption["issues"] for caption in audit["captions"]]
+        self.assertEqual(len(issues), 4)
+        self.assertIn("no final period", issues[0])
+        self.assertIn("title case", issues[0])
+        self.assertTrue(any("noun phrase of" in issue for issue in issues[1]))
+        self.assertEqual(issues[2], [], "note sentences after a short noun phrase are allowed")
+        self.assertEqual(issues[3], [], "algorithm captions take no final period")
+        self.assertTrue(any(flag.startswith("subsection title of 12 words") for flag in flags), flags)
+        self.assertTrue(any("'In this scenario' starts 2 sentences" in flag for flag in flags), flags)
+        self.assertTrue(any("count noun" in flag for flag in flags), flags)
+        self.assertTrue(any(flag.startswith("roadmap: 1 sentence(s) name no section") for flag in flags), flags)
+
+    def test_markdown_captions_skip_reporting_sentences(self) -> None:
+        path = self.root / "doc.md"
+        path.write_text(
+            "# V. Experimental Studies\n\n" + LONG + "\n\nTABLE II. Test instance configurations with varying problem scales.\n\n"
+            "Table II lists the instances used in every experiment of this section.\n",
+            encoding="utf-8",
+        )
+        audit, _flags = self.audit(path)
+        self.assertEqual([c["text"] for c in audit["captions"]], ["Test instance configurations with varying problem scales."])
+
+    def test_declared_scale(self) -> None:
+        scale = F.parse_scale(["exp=5-10", "exp.paragraphs=1-2", "related=100-200"])
+        _audit, flags = self.audit(scale=scale)
+        self.assertTrue(any(flag.startswith("exp words = ") and "above the declared 5-10" in flag for flag in flags), flags)
+        self.assertFalse(any(flag.startswith("exp paragraphs") for flag in flags), flags)
+        self.assertTrue(any(flag.startswith("related words: section not found") for flag in flags), flags)
+        with self.assertRaises(ValueError):
+            F.parse_scale(["exp:900-1900"])
+
+    def test_ledger_terms(self) -> None:
+        ledger = self.root / "terms.txt"
+        ledger.write_text("# ledger\ncase: test instance, instance\nrobot, vehicle\n", encoding="utf-8")
+        terms = F.read_terms(ledger)
+        self.assertEqual(terms, [("case", ["test instance", "instance"]), ("robot", ["vehicle"])])
+        _audit, flags = self.audit(terms=terms)
+        self.assertTrue(any(flag.startswith("term 'test instance' appears 2 times (captions 2)") for flag in flags), flags)
+        self.assertFalse(any(flag.startswith("term 'instance'") for flag in flags), "a longer term must mask its parts")
+        self.assertFalse(any("'vehicle'" in flag for flag in flags), flags)
+
+    def test_cli_options_reach_the_output(self) -> None:
+        ledger = self.root / "terms.txt"
+        ledger.write_text("case: instance\n", encoding="utf-8")
+        buffer = io.StringIO()
+        with contextlib.redirect_stdout(buffer):
+            self.assertEqual(F.main([str(self.path), "--scale", "exp=5-10", "--terms", str(ledger), "--json"]), 0)
+        data = json.loads(buffer.getvalue())
+        self.assertTrue(any("above the declared" in flag for flag in data["document_flags"]))
+        self.assertTrue(data["document"]["captions"])
 
 
 class DiffTests(unittest.TestCase):
