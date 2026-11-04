@@ -605,6 +605,28 @@ def _opener(sentence: str, connectives: tuple[str, ...]) -> str | None:
     return None
 
 
+MERGE_CUE = {
+    "en": re.compile(r"\b(in contrast|by contrast|on the contrary|conversely|whereas)\b|^(Similarly|Likewise|It|They|Its|Their)\b", re.I),
+    "zh": re.compile(r"相比之下|与之相比|与此相反|^(同样|类似地|它|它们|其|该)"),
+}
+
+
+def _subject_key(sentence: str, lang: str) -> str:
+    """The first two words (or ideographs) after a leading connective phrase."""
+    stripped = re.sub(r"^[^,，]{1,25}[,，]\s*", "", sentence.strip()) if re.match(r"^[^,，]{1,25}[,，]", sentence) else sentence
+    if lang == "zh":
+        return "".join(CJK.findall(stripped)[:2])
+    return " ".join(w.lower() for w in WORD.findall(stripped)[:2])
+
+
+def _merge_candidate(first: str, second: str, lang: str) -> bool:
+    """Two adjacent short sentences that state two sides of one comparison or share a subject."""
+    if MERGE_CUE[lang].search(second.strip()):
+        return True
+    key = _subject_key(first, lang)
+    return bool(key) and key == _subject_key(second, lang)
+
+
 def measure(paragraphs: list[str], lang: str = "en") -> dict:
     profile = LANGUAGES[lang]
     sentences_by_paragraph = [
@@ -628,6 +650,7 @@ def measure(paragraphs: list[str], lang: str = "en") -> dict:
         if hits:
             banned[name] = hits
     short_runs = []
+    merge_pairs = []
     for group in sentences_by_paragraph:
         run: list[str] = []
         for sentence in group + [""]:
@@ -639,6 +662,13 @@ def measure(paragraphs: list[str], lang: str = "en") -> dict:
             if len(run) >= 3:
                 short_runs.append(run)
             run = []
+        for first, second in zip(group, group[1:]):
+            if ROADMAP.match(first) or ROADMAP.match(second):
+                continue
+            if sentence_length(first, lang) >= profile["short"] or sentence_length(second, lang) >= profile["short"]:
+                continue
+            if _merge_candidate(first, second, lang):
+                merge_pairs.append((first, second))
     count = len(sentences)
     return {
         "unit": profile["unit"],
@@ -655,6 +685,7 @@ def measure(paragraphs: list[str], lang: str = "en") -> dict:
         "inline_per_1000": {k: 1000.0 * v / unit_count for k, v in inline.items()} if unit_count else {},
         "banned": banned,
         "short_runs": short_runs,
+        "merge_pairs": merge_pairs,
         "repeated_openers": repeated_openers,
     }
 
@@ -700,19 +731,74 @@ def result_language(result: dict[str, dict]) -> str:
     return "en"
 
 
+# The 90th percentile, the shares of long and short sentences, and connective rates per
+# 100 sentences describe a whole paper. A measurement counts as a whole paper when at
+# least three of these sections are present. One or two sections are checked against
+# their section-mean bands and against connective counts; unclassified text is checked
+# against the body mean and median and against connective counts.
+WHOLE_PAPER_SECTIONS = ("intro", "related", "model", "method", "exp", "concl")
+WHOLE_PAPER_MINIMUM = 3
+COUNTED_CONNECTIVES = ("Since", "Accordingly", "Hence")
+
+SCOPE_NOTES = {
+    "paper": "whole paper; every band applies",
+    "sections": (
+        "one or two sections; section means and connective counts apply, while the 90th percentile, "
+        "the long and short shares, and connective rates apply only to a whole paper"
+    ),
+    "text": "unclassified text; the body mean and median and connective counts apply",
+}
+
+
+def measurement_scope(result: dict[str, dict]) -> str:
+    """Return 'paper', 'sections', or 'text' for a fingerprint result."""
+    present = [key for key in WHOLE_PAPER_SECTIONS if key in result]
+    if len(present) >= WHOLE_PAPER_MINIMUM:
+        return "paper"
+    if present or "future" in result:
+        return "sections"
+    return "text"
+
+
+def _detail_keys(result: dict[str, dict]) -> list[str]:
+    """Sections whose sentences are listed: every section, or the body of unclassified text."""
+    keys = [key for key in result if key != "body"]
+    if "body" in result and not any(key != "abstract" for key in keys):
+        keys.append("body")
+    return keys
+
+
 def band_flags(result: dict[str, dict]) -> list[str]:
     lang = result_language(result)
     profile = LANGUAGES[lang]
     band, tolerance = profile["band"], profile["tolerance"]
     prior = " (weak prior converted from the English band)" if lang == "zh" else ""
     flags: list[str] = []
+    scope = measurement_scope(result)
     body = result.get("body")
+    if body is None:
+        measured = [value for key, value in result.items() if key != "abstract"]
+        body = measured[0] if len(measured) == 1 else None
     if body:
-        for name, (low, high) in band["body"].items():
+        names = tuple(band["body"]) if scope == "paper" else ("mean", "median") if scope == "text" else ()
+        for name in names:
+            low, high = band["body"][name]
             state = _status(body[name], low, high, tolerance[name])
             if state not in {"in", "near"}:
                 flags.append(f"body {name} = {body[name]:.2f} is {state} (band {low}-{high}){prior}")
-        if lang == "en":
+        if scope != "paper":
+            if lang == "en":
+                count = body["sentences"]
+                for connective in COUNTED_CONNECTIVES:
+                    used = body["initial_counts"].get(connective, 0)
+                    high = band["initial_per_100"][connective][1]
+                    allowed = 0 if high == 0 else max(1, int(high * count / 100))
+                    if used > allowed:
+                        flags.append(
+                            f"sentence-initial {connective}: {used} in {count} sentences "
+                            f"(at most {allowed} below a whole paper)"
+                        )
+        elif lang == "en":
             for connective, (low, high) in band["initial_per_100"].items():
                 value = body["initial_per_100"].get(connective, 0.0)
                 if value > high + 0.25:
@@ -750,15 +836,19 @@ def band_flags(result: dict[str, dict]) -> list[str]:
         low, high = band[sentences_key]
         if not low <= measured["sentences"] <= high:
             flags.append(f"{section} has {measured['sentences']} sentences (band {low}-{high})")
-    for section, measured in result.items():
-        if section == "body":
-            continue
+    for section in _detail_keys(result):
+        measured = result[section]
         for name, hits in measured["banned"].items():
             flags.append(f"{section}: {len(hits)} sentence(s) with {name}")
         if measured["short_runs"]:
             flags.append(
                 f"{section}: {len(measured['short_runs'])} run(s) of three or more sentences under "
                 f"{profile['short']} {unit}"
+            )
+        if measured.get("merge_pairs"):
+            flags.append(
+                f"{section}: {len(measured['merge_pairs'])} pair(s) of adjacent sentences under {profile['short']} "
+                f"{unit} that could merge (two sides of one comparison, or one subject)"
             )
         if measured["repeated_openers"]:
             flags.append(
@@ -1118,6 +1208,8 @@ def submission_report(paths: list[pathlib.Path], lang: str = "auto", sentences_p
         f"Language: {used}; lengths in {unit}. Every item is a lead to read, not a verdict. "
         "Pasted reviewer comments and quoted titles are exempt from the banned constructions."
     )
+    out.append("")
+    out.append(f"Scope: {SCOPE_NOTES[measurement_scope(result)]}.")
     missing = MISSING_INCLUDES.get(str(main.resolve().parent), []) if main.suffix.lower() == ".tex" else []
     if missing:
         out.append("")
@@ -1140,9 +1232,8 @@ def submission_report(paths: list[pathlib.Path], lang: str = "auto", sentences_p
 
     out += ["", "## 3. Banned constructions", ""]
     any_banned = False
-    for key, m in result.items():
-        if key == "body":
-            continue
+    for key in _detail_keys(result):
+        m = result[key]
         for name, hits in m["banned"].items():
             any_banned = True
             out.append(f"- **{key}, {name}** ({len(hits)})")
@@ -1152,12 +1243,14 @@ def submission_report(paths: list[pathlib.Path], lang: str = "auto", sentences_p
 
     out += ["", "## 4. Over-splitting signals", ""]
     any_run = False
-    for key, m in result.items():
-        if key == "body":
-            continue
+    for key in _detail_keys(result):
+        m = result[key]
         for run in m["short_runs"][:sentences_per_item]:
             any_run = True
             out.append(f"- **{key}**, short run: " + " / ".join(_md_cell(s[:80]) for s in run))
+        for first, second in m["merge_pairs"][:sentences_per_item]:
+            any_run = True
+            out.append(f"- **{key}**, merge candidate: {_md_cell(first[:100])} / {_md_cell(second[:100])}")
         for opener, sentence in m["repeated_openers"][:sentences_per_item]:
             any_run = True
             out.append(f"- **{key}**, two sentences open with {opener}: {_md_cell(sentence[:120])}")
@@ -1223,7 +1316,9 @@ def _print_fingerprint(path: pathlib.Path, result: dict[str, dict], only: str | 
     lang = result_language(result)
     profile = LANGUAGES[lang]
     unit = profile["unit"]
-    write(f"Style fingerprint: {path.name} (language: {lang}; lengths in {unit})\n\n")
+    write(f"Style fingerprint: {path.name} (language: {lang}; lengths in {unit})\n")
+    checked = result if not only or only == "body" else {only: result[only]} if only in result else {}
+    write(f"Scope: {SCOPE_NOTES[measurement_scope(checked)]}.\n\n")
     write(f"section    paras {unit:>6}  sents  mean  median  p90  >{profile['long']}  <{profile['short']}\n")
     for key in SECTION_ORDER + tuple(k for k in result if k not in SECTION_ORDER):
         if key not in result or (only and key != only):
@@ -1241,20 +1336,21 @@ def _print_fingerprint(path: pathlib.Path, result: dict[str, dict], only: str | 
         write(f"\nWithin-sentence features per 1000 {unit}:\n")
         for name, value in target["inline_per_1000"].items():
             write(f"  {name:<28} {value:5.1f}\n")
-    flags = band_flags(result if not only else {only: result[only]} if only in result else {})
+    flags = band_flags(checked)
     write("\nFlags against the team house-style band:\n")
     if not flags:
         write("  none\n")
     for flag in flags:
         write(f"  - {flag}\n")
-    for key, m in result.items():
-        if key == "body" or (only and key != only):
-            continue
+    for key in _detail_keys(checked):
+        m = checked[key]
         for name, hits in m["banned"].items():
             for sentence in hits[:3]:
                 write(f"    [{key}] {name}: {sentence[:160]}\n")
         for run in m["short_runs"][:2]:
             write(f"    [{key}] short run: {' | '.join(s[:60] for s in run)}\n")
+        for first, second in m["merge_pairs"][:2]:
+            write(f"    [{key}] merge candidate: {first[:70]} | {second[:70]}\n")
         for opener, sentence in m["repeated_openers"][:2]:
             write(f"    [{key}] repeated opener {opener}: {sentence[:120]}\n")
 
@@ -1371,7 +1467,12 @@ def main(argv: list[str] | None = None) -> int:
     result = fingerprint(args.path, args.lang)
     if args.json:
         json.dump(
-            {"language": result_language(result), "sections": result, "flags": band_flags(result)},
+            {
+                "language": result_language(result),
+                "scope": measurement_scope(result),
+                "sections": result,
+                "flags": band_flags(result),
+            },
             sys.stdout,
             indent=2,
             ensure_ascii=False,

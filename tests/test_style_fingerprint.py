@@ -362,6 +362,67 @@ class ReportTests(unittest.TestCase):
         self.assertNotIn("we/our", letter_line)
 
 
+SINCE = "Since the station moves with the demand, the controller assigns every robot to the nearest zone in each cycle."
+HOWEVER = "However, the controller cannot observe the battery level of every robot before the planning cycle starts."
+SHORT = "The robot waits at the hover point for the next task."
+
+
+class ScopeAndMergeTests(unittest.TestCase):
+    def setUp(self) -> None:
+        self.temp = tempfile.TemporaryDirectory()
+        self.root = pathlib.Path(self.temp.name)
+
+    def tearDown(self) -> None:
+        self.temp.cleanup()
+
+    def flags_for(self, name: str, text: str) -> tuple[str, list[str]]:
+        path = self.root / name
+        path.write_text(text, encoding="utf-8")
+        result = F.fingerprint(path)
+        return F.measurement_scope(result), F.band_flags(result)
+
+    def test_comparison_and_shared_subject_pairs_are_merge_candidates(self) -> None:
+        pairs = F.measure([
+            "The mobile depot shortens the return trips. The static depot, in contrast, keeps them long. " + LONG
+            + " The proposed algorithm converges within 300 generations. The proposed algorithm keeps every run feasible."
+            + " The depot moves with the robots. Each robot reports its battery level."
+        ])["merge_pairs"]
+        self.assertEqual(len(pairs), 2)
+        self.assertIn("in contrast", pairs[0][1])
+        self.assertTrue(pairs[1][1].startswith("The proposed algorithm keeps"))
+        zh = F.measure(["移动仓库缩短了机器人的返回路程。相比之下，静态仓库使返回路程保持较长。"], "zh")["merge_pairs"]
+        self.assertEqual(len(zh), 1)
+
+    def test_merge_candidates_reach_flags_and_report(self) -> None:
+        text = "# I. Introduction\n\n" + LONG + " The mobile depot shortens the return trips. The static depot, in contrast, keeps them long. " + LONG + "\n"
+        _scope, flags = self.flags_for("merge.md", text)
+        self.assertTrue(any("could merge" in flag for flag in flags))
+        report = F.submission_report([self.root / "merge.md"])
+        self.assertIn("merge candidate", report)
+
+    def test_paper_level_shares_are_not_flagged_on_one_section(self) -> None:
+        paragraph = " ".join([SHORT] * 8)
+        scope, flags = self.flags_for("one.md", "# I. Introduction\n\n" + paragraph + "\n")
+        self.assertEqual(scope, "sections")
+        self.assertFalse(any(flag.startswith("body ") for flag in flags), flags)
+        self.assertTrue(any(flag.startswith("intro mean sentence length") for flag in flags))
+        whole = "".join(f"# {title}\n\n{paragraph}\n\n" for title in ("I. Introduction", "II. Related Work", "V. Experimental Studies"))
+        scope, flags = self.flags_for("whole.md", whole)
+        self.assertEqual(scope, "paper")
+        self.assertTrue(any(flag.startswith("body share_short") for flag in flags), flags)
+
+    def test_connectives_are_counted_on_one_section(self) -> None:
+        paragraph = " ".join([SINCE, LONG, SINCE, HOWEVER, LONG, HOWEVER, LONG, HOWEVER])
+        _scope, flags = self.flags_for("conn.md", "# I. Introduction\n\n" + paragraph + "\n")
+        self.assertTrue(any(flag.startswith("sentence-initial Since: 2 in 8 sentences") for flag in flags), flags)
+        self.assertFalse(any("However" in flag for flag in flags), flags)
+
+    def test_unclassified_text_lists_banned_constructions(self) -> None:
+        scope, flags = self.flags_for("plain.txt", LONG + " The station moves because the demand changes over the day.\n")
+        self.assertEqual(scope, "text")
+        self.assertTrue(any(flag.startswith("body: 1 sentence(s) with because") for flag in flags), flags)
+
+
 class DiffTests(unittest.TestCase):
     def test_merge_and_split_are_classified(self) -> None:
         old = "The robots return to a distant station. This increases their travel distance. " + LONG
