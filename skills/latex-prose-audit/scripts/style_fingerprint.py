@@ -69,19 +69,19 @@ SECTION_ORDER = ("abstract", "intro", "related", "model", "method", "exp", "futu
 # calibrate:begin band
 TEAM_BAND = {
     "body": {
-        "mean": (21.4, 23.8),
-        "median": (20.0, 22.0),
-        "p90": (32.0, 37.0),
-        "share_long": (0.07, 0.13),
-        "share_short": (0.09, 0.14),
+        "mean": (23.2, 24.8),
+        "median": (21.0, 23.0),
+        "p90": (37.0, 39.0),
+        "share_long": (0.11, 0.15),
+        "share_short": (0.09, 0.11),
     },
     "section_mean": {
         "abstract": (24.8, 30.5),
-        "intro": (19.8, 23.6),
+        "intro": (20.1, 23.6),
         "related": (21.3, 26.3),
-        "model": (20.8, 23.2),
-        "method": (19.7, 25.5),
-        "exp": (22.1, 24.5),
+        "model": (22.7, 27.1),
+        "method": (20.5, 27.0),
+        "exp": (23.1, 24.6),
         "concl": (24.2, 28.0),
     },
     "abstract_words": (210, 250),
@@ -309,6 +309,7 @@ def _remove_environments(text: str) -> str:
 def clean_tex(paragraph: str) -> str:
     text = paragraph
     text = re.sub(r"\\\[.*?\\\]", " ", text, flags=re.S)
+    text = re.sub(r"\\(?:begin|end)\{(?:itemize|enumerate|description)\}(?:\[[^\]]*\])?", " ", text)
     text = re.sub(r"\$\$.*?\$\$", " ", text, flags=re.S)
     text = re.sub(r"\\IEEEPARstart\{([^}]*)\}\{([^}]*)\}", r"\1\2", text)
     for command in ("cite", "citep", "citet", "citealp", "label", "vspace", "hspace", "footnote"):
@@ -324,11 +325,23 @@ def clean_tex(paragraph: str) -> str:
     return re.sub(r"\s+", " ", text).strip()
 
 
+# A block that opens with a lowercase prose word (not a symbol such as r_j or log_2) continues
+# the block before it.
+CONTINUATION = re.compile(r"^(?:\\noindent\s*)?[a-z]{2,}\b(?!\s*[_^{(=])")
+
+
 def _tex_paragraphs(block: str) -> list[str]:
     for command in ("subsubsection", "subsection", "paragraph"):
         block = _strip_command(block, command, keep=False, replacement="\n\n")
-    block = re.sub(r"\\item\b", "\n\n", block)
-    return [part.strip() for part in re.split(r"\n\s*\n", block) if part.strip()]
+    block = re.sub(r"\\item\b", "\n\n" + ITEM_MARK, block)
+    parts: list[str] = []
+    for part in (part.strip() for part in re.split(r"\n\s*\n", block)):
+        # Text that continues after a display (a lowercase where clause) belongs to its lead-in.
+        if parts and CONTINUATION.match(part):
+            parts[-1] += " " + part
+        elif part:
+            parts.append(part)
+    return parts
 
 
 REFERENCES_HEADING = re.compile(r"references|bibliography|acknowledg|参考文献|致谢", re.I)
@@ -432,6 +445,12 @@ def md_blocks(text: str) -> tuple[list[str], list[Block], list[str]]:
         if re.match(r"^(Fig\.|TABLE|Table|Algorithm)\s*[0-9IVX]+", line) and len(line) < 400:
             continue
         if re.match(r"^(图|表|算法)\s*\d", line) and len(line) < 300:
+            continue
+        # A line that starts in lowercase continues the block before it: a where clause after
+        # a display, or a fragment split at a page or column break.
+        if blocks and blocks[-1][0] == top and blocks[-1][2] == heading and CONTINUATION.match(line):
+            previous = blocks[-1]
+            blocks[-1] = (previous[0], previous[1], previous[2], previous[3] + " " + line)
             continue
         blocks.append((top, titles[top], heading, line))
     return titles, blocks, fallback
@@ -560,7 +579,8 @@ def split_sentences(paragraph: str, lang: str = "en") -> list[str]:
     protected = paragraph
     for index, token in enumerate(PROTECT):
         protected = protected.replace(token, token.replace(".", f"<D{index}>"))
-    protected = re.sub(r"\b([A-Z])\.(?=\s[A-Z])", r"\1<INI>", protected)
+    # A capital initial before a period is protected, except a subsection label such as V-A.
+    protected = re.sub(r"(?<!-)\b([A-Z])\.(?=\s[A-Z])", r"\1<INI>", protected)
     parts = re.split(r"(?<=[.!?])\s+(?=[A-Z(\"\u201c])", protected)
     sentences = []
     for part in parts:
@@ -572,8 +592,12 @@ def split_sentences(paragraph: str, lang: str = "en") -> list[str]:
     return sentences
 
 
+# Numbers in e notation (5.83e+04) are one token, not a number and the word e.
+ENOTATION = re.compile(r"\d(?:\.\d+)?[eE][+\-]?\d+")
+
+
 def words(text: str) -> list[str]:
-    return [token for token in WORD.findall(text) if token != MATH]
+    return [token for token in WORD.findall(ENOTATION.sub(" 0 ", text)) if token != MATH]
 
 
 def units(text: str, lang: str = "en") -> int:
@@ -582,13 +606,39 @@ def units(text: str, lang: str = "en") -> int:
 
 
 def sentence_length(sentence: str, lang: str = "en") -> int:
-    return len(CJK.findall(sentence)) if lang == "zh" else len(WORD.findall(sentence))
+    return len(CJK.findall(sentence)) if lang == "zh" else len(WORD.findall(ENOTATION.sub(" 0 ", sentence)))
+
+
+BULLET = re.compile(r"^\s*(?:[\u2022\-*]|\(\d+\)|（\d+）|\d+[.)]|[ivx]+[.)])\s+")
+ITEM_MARK = "\u2063"  # marks a LaTeX \item in raw paragraphs
+CONTRIBUTION_LEAD = re.compile(r"contribution|贡献", re.I)
+# "1) Task Side: ..." opens a paragraph with a run-in heading (an IEEE subsubsection), not a list item.
+RUN_IN = re.compile(r"^\s*\d+\)\s+[A-Z][^.:!?]{0,60}[.:]\s")
 
 
 def prose_paragraphs(paragraphs: list[str], tex: bool, lang: str = "en") -> list[str]:
-    cleaned = [clean_tex(p) if tex else clean_md(p) for p in paragraphs]
+    """Clean prose blocks with the paragraph-counting rule of the reader contract.
+
+    Contribution-list items count as paragraphs of their own. Any other list item joins
+    the paragraph that introduces it, whatever its length.
+    """
     minimum = LANGUAGES[lang]["min_paragraph"]
-    return [p for p in cleaned if units(p, lang) >= minimum or re.match(r"^[\u2022\-*]\s", p)]
+    kept: list[tuple[str, bool]] = []
+    lead = ""
+    for raw in paragraphs:
+        item = raw.lstrip().startswith(ITEM_MARK) or bool(BULLET.match(raw) and not RUN_IN.match(raw))
+        text = clean_tex(raw.replace(ITEM_MARK, " ")) if tex else clean_md(raw)
+        if not item:
+            lead = text
+            kept.append((text, False))
+            continue
+        text = BULLET.sub("", text)
+        contribution = bool(CONTRIBUTION_LEAD.search(lead))
+        if contribution or not kept:
+            kept.append((text, contribution))
+        else:
+            kept[-1] = (kept[-1][0] + " " + text, kept[-1][1])
+    return [text for text, item in kept if item or units(text, lang) >= minimum]
 
 
 def percentile(values: list[int], fraction: float) -> float:
@@ -859,6 +909,50 @@ def band_flags(result: dict[str, dict]) -> list[str]:
     return flags
 
 
+def band_notes(result: dict[str, dict]) -> list[str]:
+    """Measurements outside the house-style band that are not flags at this scope."""
+    lang = result_language(result)
+    profile = LANGUAGES[lang]
+    band, tolerance, unit = profile["band"], profile["tolerance"], profile["unit"]
+    notes: list[str] = []
+    scope = measurement_scope(result)
+    body = result.get("body")
+    if body is None:
+        measured = [value for key, value in result.items() if key != "abstract"]
+        body = measured[0] if len(measured) == 1 else None
+    if body and scope != "paper":
+        judged = ("mean", "median") if scope == "text" else ()
+        for name, (low, high) in band["body"].items():
+            if name in judged or low <= body[name] <= high:
+                continue
+            if name.startswith("share"):
+                shown, span = f"{body[name]:.0%}", f"{low:.0%}-{high:.0%}"
+            else:
+                shown, span = f"{body[name]:.1f}", f"{low:g}-{high:g}"
+            notes.append(f"{name} = {shown} is outside the whole-paper band {span} (not judged below a whole paper)")
+        if lang == "en":
+            count = body["sentences"]
+            for connective in COUNTED_CONNECTIVES:
+                high = band["initial_per_100"][connective][1]
+                allowed = 0 if high == 0 else max(1, int(high * count / 100))
+                used = body["initial_counts"].get(connective, 0)
+                if used and used == allowed:
+                    notes.append(f"sentence-initial {connective}: {used} in {count} sentences reaches the single-section "
+                                 f"limit, which is not a quota (a whole paper allows {high:g} per 100 sentences)")
+    for section, (low, high) in band["section_mean"].items():
+        measured = result.get(section)
+        if measured and measured["sentences"] >= 5 and _status(measured["mean"], low, high, tolerance["section"]) == "near":
+            notes.append(f"{section} mean sentence length = {measured['mean']:.1f} is outside the band {low}-{high}, "
+                         f"within the {tolerance['section']:g}-{unit} tolerance (no flag)")
+    for section, measured in result.items():
+        if section in {"abstract", "concl"} or (section == "body" and scope != "text") or measured["sentences"] < 20:
+            continue
+        if measured["share_short"] < 0.05:
+            notes.append(f"{section}: {measured['share_short']:.0%} of sentences under {profile['short']} {unit}; "
+                         "reread whether short results and definitions were merged into long sentences")
+    return notes
+
+
 # --------------------------------------------------------------------------- citations
 
 
@@ -872,6 +966,7 @@ def citation_reuse(path: pathlib.Path) -> dict[str, dict[str, int]]:
                 for group in re.findall(r"\\cite[a-zA-Z]*\*?(?:\[[^\]]*\])?\{([^}]*)\}", paragraph):
                     counts.update(item.strip() for item in group.split(",") if item.strip())
                 continue
+            paragraph = re.sub(r"\$[^$]*\$", " ", paragraph)  # an interval such as $[0,1]$ is not a citation
             # IEEE range across brackets: [7]-[10] means 7 through 10.
             paragraph = re.sub(r"\[\s*(\d+)\s*\]\s*[\u2013\-]\s*\[\s*(\d+)\s*\]", r"[\1-\2]", paragraph)
             for group in re.findall(r"\[(\s*\d+(?:\s*[,\u2013\-]\s*\d+)*\s*)\]", paragraph):
@@ -1197,21 +1292,26 @@ def _md_cell(text: str) -> str:
 # House rules of Sections 2, 8, 9, 11, and 13 of the team house style, measured once on
 # the four reference papers. Recalibration leaves them alone.
 DOCUMENT_RULES = {
-    "table_caption_words": 22,  # a result-table caption runs about 20 words (reference papers 6-20)
+    "table_caption_words": 22,  # noun phrase of a result-table caption: about 20 words (reference papers 6-20)
+    "table_caption_total_words": 30,  # whole caption with its note sentences: a note above this
     "title_words": 10,  # experiment subsection titles of about eight words or fewer (references average 4.3-6.7)
     "roadmap_words": 77,  # reference roadmaps 56-77 words, the supervisor-approved roadmap 46
     "this_study_intro_per_1000": (1.5, 6.4),
 }
 
+# Introduction openers of Section 9, each used at most once per paper. `To address ...,
+# this study <verb>` is counted per verb: the scenario and method prompts of the
+# Introduction contract are two openers.
 OPENER_TEMPLATES = {
     "en": (
-        ("To address this issue/limitation", re.compile(r"^To address this (?:issue|limitation|challenge|problem|gap)\b")),
+        ("To address this/these ...", re.compile(
+            r"^To address (?:this|these|the) \w+(?: \w+)?,\s*this study (?P<verb>\w+)\b|"
+            r"^To address (?:this|these|the) (?:issues?|limitations?|challenges?|problems?|gaps?|difficult(?:y|ies))\b")),
         ("Motivated by", re.compile(r"^Motivated by\b")),
         ("In this scenario", re.compile(r"^In this scenario\b")),
         ("Solving the formulated", re.compile(r"^Solving the formulated\b")),
         ("Existing ... can be categorized into", re.compile(
             r"^Existing\b.{0,80}?\b(?:categori[sz]ed|classified|divided|grouped) into\b")),
-        ("Across these approaches", re.compile(r"^Across these\b")),
         ("The main contributions", re.compile(r"^The main contributions of this\b")),
         ("The remainder of this", re.compile(r"^The (?:remainder|rest) of this\b")),
     ),
@@ -1237,7 +1337,8 @@ REPORTING_START = re.compile(
     r"^(?:shows?|presents?|lists?|reports?|illustrates?|gives?|compares?|summari[sz]es?|depicts?|displays?|plots?|"
     r"provides?|is|are|was|were|and|to|in|of|给出|列出|展示|显示|对比|表明|中)\b|^[,，]"
 )
-SCALE_ITEM = re.compile(r"^(\w+)(?:\.(words|paragraphs|paragraph_words))?=(\d+(?:\.\d+)?)-(\d+(?:\.\d+)?)$")
+SCALE_MEASURES = ("words", "paragraphs", "paragraph_words", "sentences", "first_paragraph_words", "last_paragraph_words")
+SCALE_ITEM = re.compile(r"^(\w+)(?:\.(" + "|".join(SCALE_MEASURES) + r"))?=(\d+(?:\.\d+)?)-(\d+(?:\.\d+)?)$")
 
 
 def _command_arguments(text: str, command: str) -> list[tuple[int, str]]:
@@ -1335,26 +1436,32 @@ def _strip_marker(sentence: str) -> str:
     return re.sub(r"^[\u2022\-*（(]?\s*(?:\d+[)）]|[ivx]+[)）])?\s*", "", sentence.strip())
 
 
+def _caption_phrase(caption: str) -> str:
+    """The noun phrase of a caption: its first sentence. Note sentences may follow it."""
+    return re.split(r"(?<=[.!?])\s+(?=[`'\"(]?[A-Z])", caption.strip(), maxsplit=1)[0]
+
+
 def _caption_issues(kind: str, caption: str, lang: str) -> list[str]:
     """Form checks of Section 13 of the team house style (English captions only)."""
     letters = [c for c in caption if c.isalpha()]
-    if lang != "en" or not letters or "".join(letters).isupper():
-        return []  # printed capitals (a converted PDF) carry no case or period information
+    if lang != "en" or not letters:
+        return []
     issues = []
+    count = _label_words(_caption_phrase(caption), lang)
+    if kind == "table" and count > DOCUMENT_RULES["table_caption_words"]:
+        issues.append(f"noun phrase of {count} words (a result-table caption runs about 20; move details to the table note)")
+    if "".join(letters).isupper():
+        return issues  # printed capitals (a converted PDF) carry no case or period information
     # Algorithm captions name the procedure without a final period in three reference papers and
     # in the supervisor-approved draft; figure and table captions end with a period.
+    if kind == "algorithm" and caption.rstrip().endswith("."):
+        issues.append("final period on an algorithm caption")
     if kind != "algorithm" and not caption.rstrip().endswith("."):
         issues.append("no final period")
     tokens = [t for t in WORD.findall(caption)[1:] if len(t) >= 4 and not _is_acronym(t)]
     capitalized = [t for t in tokens if t[0].isupper()]
     if len(capitalized) >= 3 and len(capitalized) > len(tokens) / 2:
         issues.append("title case")
-    # Note sentences may follow the noun phrase when the class has no table notes; only the
-    # noun phrase is held to the length rule.
-    phrase = re.split(r"(?<=[.!?])\s+(?=[`'\"(]?[A-Z])", caption.strip(), maxsplit=1)[0]
-    count = _label_words(phrase, lang)
-    if kind == "table" and count > DOCUMENT_RULES["table_caption_words"]:
-        issues.append(f"noun phrase of {count} words (a result-table caption runs about 20; move details to the table note)")
     return issues
 
 
@@ -1380,26 +1487,43 @@ def _term_pattern(term: str) -> re.Pattern:
     return re.compile(r"(?<![A-Za-z])" + body + r"(?:s|es)?(?![A-Za-z])", re.I)
 
 
-def _term_counts(texts: dict[str, str], terms: list[str]) -> dict[str, dict[str, int]]:
-    """Occurrences of each term per text; longer terms are counted first and masked."""
+def _term_counts(texts: dict[str, list[str]], ledger: str,
+                 terms: list[str]) -> tuple[dict[str, dict[str, int]], dict[str, list[str]]]:
+    """Occurrences and example sentences of each term per text.
+
+    Longer terms are counted first and masked. A variant followed by the ledger term in
+    parentheses, as in `Internet of Things devices (IoTDs)`, defines the abbreviation and
+    is not counted.
+    """
+    patterns = {term: _term_pattern(term) for term in terms}
+    definitions = {
+        term: re.compile(patterns[term].pattern + r"\s*[（(]\s*" + re.escape(ledger) + r"s?\s*[)）]", re.I)
+        for term in terms if term != ledger
+    }
     counts: dict[str, dict[str, int]] = {term: {} for term in terms}
-    for key, text in texts.items():
-        for term in sorted(terms, key=len, reverse=True):
-            pattern = _term_pattern(term)
-            found = len(pattern.findall(text))
-            if found:
-                counts[term][key] = found
-            text = pattern.sub(" \x00 ", text)
-    return counts
+    examples: dict[str, list[str]] = {term: [] for term in terms}
+    for key, sentences in texts.items():
+        for sentence in sentences:
+            text = sentence
+            for term in sorted(terms, key=len, reverse=True):
+                if term in definitions:
+                    text = definitions[term].sub(" \x00 ", text)
+                found = len(patterns[term].findall(text))
+                if found:
+                    counts[term][key] = counts[term].get(key, 0) + found
+                    if len(examples[term]) < 3:
+                        examples[term].append(sentence)
+                text = patterns[term].sub(" \x00 ", text)
+    return counts, examples
 
 
 def parse_scale(items: list[str]) -> dict[tuple[str, str], tuple[float, float]]:
-    """Parse `exp=900-1900`, `exp.paragraphs=10-19`, or `intro.paragraph_words=60-140`."""
+    """Parse `exp=900-1900`, `exp.paragraphs=10-19`, `related.last_paragraph_words=120-160`, and the like."""
     scale = {}
     for item in items:
         match = SCALE_ITEM.match(item.strip())
         if not match or match.group(1) not in SECTION_ORDER:
-            raise ValueError(f"invalid scale item {item!r}; use SECTION[.words|.paragraphs|.paragraph_words]=LOW-HIGH")
+            raise ValueError(f"invalid scale item {item!r}; use SECTION[.{'|.'.join(SCALE_MEASURES)}]=LOW-HIGH")
         low, high = float(match.group(3)), float(match.group(4))
         scale[(match.group(1), match.group(2) or "words")] = (min(low, high), max(low, high))
     return scale
@@ -1415,6 +1539,7 @@ def document_audit(path: pathlib.Path, result: dict[str, dict], section: str | N
     """Captions, subsection titles, roadmap, opener templates, scale, and ledger terms of one file."""
     lang = result_language(result)
     profile = LANGUAGES[lang]
+    scope = measurement_scope(result)
     suffix = path.suffix.lower()
     text = read_source(path)
     if suffix == ".tex":
@@ -1430,6 +1555,7 @@ def document_audit(path: pathlib.Path, result: dict[str, dict], section: str | N
 
     captions = [
         {"kind": payload[0], "section": roles[top], "text": payload[1], "words": _label_words(payload[1], lang),
+         "phrase_words": _label_words(_caption_phrase(payload[1]), lang),
          "issues": _caption_issues(payload[0], payload[1], lang)}
         for kind, top, payload in events if kind == "caption" and kept(top)
     ]
@@ -1448,13 +1574,19 @@ def document_audit(path: pathlib.Path, result: dict[str, dict], section: str | N
         for key, items in prose.items()
     }
     sentences = [s for groups in grouped.values() for group in groups for s in group]
-    # Opener templates are Introduction rules; text without an Introduction is read whole.
-    opening = [s for group in grouped["intro"] for s in group] if "intro" in grouped else sentences
-    templates = {}
-    for label, pattern in OPENER_TEMPLATES[lang]:
-        hits = [s for s in opening if pattern.search(_strip_marker(s))]
-        if hits:
-            templates[label] = hits
+
+    # Opener templates are Introduction rules. Text without any section heading is read
+    # whole; a file with classified sections but no Introduction is not checked.
+    templates: dict[str, list[str]] | None = None
+    if "intro" in grouped or scope == "text":
+        opening = [s for group in grouped["intro"] for s in group] if "intro" in grouped else sentences
+        templates = {}
+        for label, pattern in OPENER_TEMPLATES[lang]:
+            for sentence in opening:
+                match = pattern.search(_strip_marker(sentence))
+                if match:
+                    verb = match.groupdict().get("verb")
+                    templates.setdefault(f"To address ..., this study {verb}" if verb else label, []).append(sentence)
     count_nouns = [s for s in sentences if COUNT_NOUN.search(s)] if lang == "en" else []
 
     roadmap = None
@@ -1475,25 +1607,33 @@ def document_audit(path: pathlib.Path, result: dict[str, dict], section: str | N
     for (key, measure_name), (low, high) in (scale or {}).items():
         if section not in (None, key):
             continue
-        measured = result.get(key)
-        if not measured:
-            scale_rows.append({"section": key, "measure": measure_name, "low": low, "high": high, "value": None})
-            continue
-        if measure_name == "words":
-            value = float(measured["words"])
-        elif measure_name == "paragraphs":
-            value = float(measured["paragraphs"])
-        else:
-            value = measured["words"] / measured["paragraphs"] if measured["paragraphs"] else 0.0
-        scale_rows.append({"section": key, "measure": measure_name, "low": low, "high": high, "value": value})
+        target = key if key in result else "body" if scope == "text" and "body" in result else None
+        row = {"section": key, "measure": measure_name, "low": low, "high": high, "value": None, "measured": target}
+        measured = result.get(target) if target else None
+        if measured:
+            paragraphs = prose.get(target, [])
+            if measure_name in {"words", "paragraphs", "sentences"}:
+                value = float(measured[measure_name])
+            elif measure_name == "paragraph_words":
+                value = measured["words"] / measured["paragraphs"] if measured["paragraphs"] else 0.0
+            elif measure_name == "first_paragraph_words":
+                value = float(units(paragraphs[0], lang)) if paragraphs else 0.0
+            else:
+                value = float(units(paragraphs[-1], lang)) if paragraphs else 0.0
+            row["value"] = value
+        scale_rows.append(row)
 
     term_rows = []
     if terms:
-        texts = {key: " ".join(items) for key, items in prose.items()}
+        texts = {key: [s for p in items for s in split_sentences(p, lang)] for key, items in prose.items()}
+        if section in (None, "abstract") and "abstract" in sections:
+            abstract = [clean_tex(p) if tex else clean_md(p) for p in sections["abstract"]]
+            texts = {"abstract": [s for p in abstract for s in split_sentences(p, lang)], **texts}
         if captions:
-            texts["captions"] = " ".join(c["text"] for c in captions)
+            texts["captions"] = [c["text"] for c in captions]
         for preferred, variants in terms:
-            term_rows.append({"term": preferred, "variants": variants, "counts": _term_counts(texts, [preferred] + variants)})
+            counts, examples = _term_counts(texts, preferred, [preferred] + variants)
+            term_rows.append({"term": preferred, "variants": variants, "counts": counts, "examples": examples})
 
     return {
         "language": lang,
@@ -1528,7 +1668,7 @@ def document_flags(audit: dict) -> list[str]:
         if roadmap["without_section"]:
             flags.append(f"roadmap: {len(roadmap['without_section'])} sentence(s) name no section "
                          "(one sentence per section, no content summary)")
-    for label, hits in audit["templates"].items():
+    for label, hits in (audit["templates"] or {}).items():
         if len(hits) > 1:
             flags.append(f"opener template '{label}' starts {len(hits)} sentences (at most once per paper)")
     if audit["count_nouns"]:
@@ -1560,9 +1700,26 @@ def term_flags(rows: list[dict]) -> list[str]:
             where = row["counts"][variant]
             if where:
                 places = ", ".join(f"{key} {count}" for key, count in where.items())
-                flags.append(f"term '{variant}' appears {sum(where.values())} times ({places}); "
-                             f"the ledger term is '{row['term']}'")
+                example = row.get("examples", {}).get(variant) or [""]
+                flags.append(f"term '{variant}' appears {sum(where.values())} times ({places}); the ledger term is "
+                             f"'{row['term']}'; first sentence: {example[0][:110]}")
     return flags
+
+
+def document_notes(audit: dict) -> list[str]:
+    """Measurements worth a look that are not flags."""
+    notes = []
+    for caption in audit["captions"]:
+        if caption["kind"] == "table" and caption["words"] > DOCUMENT_RULES["table_caption_total_words"]:
+            notes.append(f"table caption ({caption['section']}) runs {caption['words']} words in total (reference "
+                         "result-table captions 6-20); put the note sentences below the table unless the document "
+                         f"class has no table notes: {caption['text'][:60]}")
+    for row in audit["scale"]:
+        if row["value"] is not None and row["measured"] != row["section"]:
+            notes.append(f"scale for {row['section']} measured on the whole text (no {row['section']} heading found)")
+    if audit["templates"] is None:
+        notes.append("opener templates not checked: no Introduction")
+    return notes
 
 
 def _document_section(audit: dict, terms_by_document: list[tuple[str, dict]]) -> list[str]:
@@ -1570,7 +1727,9 @@ def _document_section(audit: dict, terms_by_document: list[tuple[str, dict]]) ->
     unit = LANGUAGES[audit["language"]]["unit"]
     out = ["**Captions**", ""]
     out += [
-        f"- {c['kind']} ({c['section']}, {c['words']} {unit}): {_md_cell(c['text'][:160])}"
+        f"- {c['kind']} ({c['section']}, {c['words']} {unit}"
+        + (f", noun phrase {c['phrase_words']}" if c["phrase_words"] != c["words"] else "")
+        + f"): {_md_cell(c['text'][:160])}"
         + (f" **[{'; '.join(c['issues'])}]**" if c["issues"] else "")
         for c in audit["captions"]
     ] or ["- none found"]
@@ -1580,7 +1739,10 @@ def _document_section(audit: dict, terms_by_document: list[tuple[str, dict]]) ->
     out += ["", "**Roadmap**", ""]
     out.append(f"- {roadmap['words']} {unit} in {roadmap['sentences']} sentences" if roadmap else "- not found")
     out += ["", "**Opener templates**", ""]
-    out += [f"- {label}: {len(hits)}" for label, hits in audit["templates"].items()] or ["- none"]
+    if audit["templates"] is None:
+        out.append("- not checked: no Introduction")
+    else:
+        out += [f"- {label}: {len(hits)}" for label, hits in audit["templates"].items()] or ["- none"]
     if audit["scale"]:
         out += ["", "**Declared scale**", ""]
         for row in audit["scale"]:
@@ -1589,12 +1751,18 @@ def _document_section(audit: dict, terms_by_document: list[tuple[str, dict]]) ->
                        f"(declared {_num_text(row['low'])}-{_num_text(row['high'])})")
     if terms_by_document:
         out += ["", "**Ledger terms**", "", "| Document | Term | Ledger term? | Occurrences |", "|---|---|---|---|"]
+        examples = []
         for name, document in terms_by_document:
             for row in document["terms"]:
                 for term in [row["term"]] + row["variants"]:
                     where = row["counts"][term]
                     places = ", ".join(f"{k} {v}" for k, v in where.items()) or "0"
                     out.append(f"| {_md_cell(name)} | {_md_cell(term)} | {'yes' if term == row['term'] else 'no'} | {places} |")
+                    if term != row["term"]:
+                        examples += [f"- {name}, '{term}': {_md_cell(s[:160])}" for s in row["examples"][term]]
+        if examples:
+            out += ["", "Sentences with a non-ledger variant (read each one; a variant must name the same concept):", ""]
+            out += examples
     return out
 
 
@@ -1643,6 +1811,9 @@ def submission_report(paths: list[pathlib.Path], lang: str = "auto", sentences_p
     out += ["", "## 2. Flags against the house-style band", ""]
     flags = band_flags(result) + document_flags(audit)
     out += [f"- {flag}" for flag in flags] or ["- none"]
+    notes = band_notes(result) + document_notes(audit)
+    if notes:
+        out += ["", "Notes (not flags):", ""] + [f"- {note}" for note in notes]
 
     out += ["", "## 3. Banned constructions", ""]
     any_banned = False
@@ -1783,6 +1954,11 @@ def _print_fingerprint(path: pathlib.Path, result: dict[str, dict], only: str | 
             write("  none\n")
         for flag in document:
             write(f"  - {flag}\n")
+        notes = band_notes(checked) + document_notes(audit)
+        if notes:
+            write("\nNotes (not flags):\n")
+            for note in notes:
+                write(f"  - {note}\n")
         for label, hits in audit["templates"].items():
             if len(hits) > 1:
                 for sentence in hits[:3]:
@@ -1840,7 +2016,8 @@ def main(argv: list[str] | None = None) -> int:
         "--scale",
         nargs="+",
         metavar="SECTION[.MEASURE]=LOW-HIGH",
-        help="Declared scale ranges to check, such as exp=900-1900, exp.paragraphs=10-19, intro.paragraph_words=60-140",
+        help="Declared scale ranges to check: SECTION[.words|.paragraphs|.paragraph_words|.sentences|"
+             ".first_paragraph_words|.last_paragraph_words]=LOW-HIGH, such as exp=900-1900 exp.paragraphs=10-19",
     )
     parser.add_argument(
         "--terms",
@@ -1930,6 +2107,7 @@ def main(argv: list[str] | None = None) -> int:
                 "flags": band_flags(result),
                 "document": audit,
                 "document_flags": document_flags(audit),
+                "notes": band_notes(result) + document_notes(audit),
             },
             sys.stdout,
             indent=2,

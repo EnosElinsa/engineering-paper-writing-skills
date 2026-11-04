@@ -520,6 +520,115 @@ class DocumentCheckTests(unittest.TestCase):
         self.assertTrue(data["document"]["captions"])
 
 
+class CountingAndNoteTests(unittest.TestCase):
+    def setUp(self) -> None:
+        self.temp = tempfile.TemporaryDirectory()
+        self.root = pathlib.Path(self.temp.name)
+
+    def tearDown(self) -> None:
+        self.temp.cleanup()
+
+    def write(self, name: str, text: str) -> pathlib.Path:
+        path = self.root / name
+        path.write_text(text, encoding="utf-8")
+        return path
+
+    def test_list_items_join_their_lead_in_except_contributions(self) -> None:
+        path = self.write("lists.md", (
+            "# I. Introduction\n\n" + LONG + " The main contributions of this study are summarized as follows:\n\n"
+            "- " + LONG + "\n\n- " + LONG + "\n\n# V. Experimental Studies\n\n" + LONG + " The settings are listed below.\n\n"
+            "- Population size 100.\n\n- Generations 300.\n"
+        ))
+        result = F.fingerprint(path)
+        self.assertEqual(result["intro"]["paragraphs"], 3)
+        self.assertEqual(result["exp"]["paragraphs"], 1)
+        tex = self.write("lists.tex", (
+            "\\begin{document}\n\\section{Experimental Studies}\n" + LONG + " The settings are listed below.\n"
+            "\\begin{itemize}\n\\item Population size 100.\n\\item Generations 300.\n\\end{itemize}\n\\end{document}\n"
+        ))
+        self.assertEqual(F.fingerprint(tex)["exp"]["paragraphs"], 1)
+
+    def test_text_after_a_display_joins_its_lead_in(self) -> None:
+        path = self.write("where.md", (
+            "# III. System Model\n\n" + LONG + " The delay is given by:\n\n$$d = a + b$$\n\n"
+            "where a denotes the waiting time and b denotes the service time of the robot in the zone.\n"
+        ))
+        self.assertEqual(F.fingerprint(path)["model"]["paragraphs"], 1)
+
+    def test_caption_lengths_and_algorithm_period(self) -> None:
+        path = self.write("captions.tex", (
+            "\\begin{document}\n\\section{Experimental Studies}\n" + LONG + "\n"
+            "\\begin{table}\\caption{Comparison results of the five algorithms based on HV. The best value of every instance "
+            "is shown in bold, the second best is underlined, and the symbols mark the results of the Wilcoxon rank-sum "
+            "test at the 0.05 level over thirty runs.}\\end{table}\n"
+            "\\begin{algorithm}\\caption{Framework of the proposed algorithm.}\\end{algorithm}\n\\end{document}\n"
+        ))
+        audit = F.document_audit(path, F.fingerprint(path))
+        self.assertEqual(audit["captions"][0]["issues"], [])
+        self.assertTrue(any("runs" in note and "words in total" in note for note in F.document_notes(audit)))
+        self.assertEqual(audit["captions"][1]["issues"], ["final period on an algorithm caption"])
+        caps = self.write("caps.md", (
+            "# V. Experimental Studies\n\n" + LONG + "\n\nTABLE III COMPARISON RESULTS OF THE FIVE ALGORITHMS BASED ON THE "
+            "MEAN AND STANDARD DEVIATION IN PARENTHESES OF HV AND IGD OVER THIRTY INDEPENDENT RUNS ON THREE INSTANCES\n"
+        ))
+        audit = F.document_audit(caps, F.fingerprint(caps))
+        self.assertTrue(audit["captions"][0]["issues"][0].startswith("noun phrase of"))
+
+    def test_notes_cover_unjudged_measures_tolerance_and_quota(self) -> None:
+        since = "Since the station moves with the demand, the controller assigns every robot to the nearest zone again."
+        path = self.write("notes.md", "# V. Experimental Studies\n\n" + " ".join([since] + [LONG] * 21) + "\n")
+        notes = F.band_notes(F.fingerprint(path))
+        self.assertTrue(any("not judged below a whole paper" in note for note in notes), notes)
+        self.assertTrue(any("0% of sentences under 12" in note for note in notes), notes)
+        self.assertTrue(any("reaches the single-section limit" in note for note in notes), notes)
+
+    def test_opener_templates_count_per_verb_and_need_an_introduction(self) -> None:
+        considers = "To address this limitation, this study considers a mobile depot that follows the delivery demand."
+        proposes = "To address this challenge, this study proposes an algorithm that relocates the depot in each cycle."
+        path = self.write("open.md", "# I. Introduction\n\n" + " ".join([LONG, considers, proposes]) + "\n")
+        audit = F.document_audit(path, F.fingerprint(path))
+        self.assertFalse(any("opener template" in flag for flag in F.document_flags(audit)))
+        path = self.write("open2.md", "# I. Introduction\n\n" + " ".join([LONG, considers, considers]) + "\n")
+        audit = F.document_audit(path, F.fingerprint(path))
+        self.assertTrue(any("this study considers' starts 2" in flag for flag in F.document_flags(audit)))
+        path = self.write("related.md", "# II. Related Work\n\n" + " ".join([LONG, considers, considers]) + "\n")
+        audit = F.document_audit(path, F.fingerprint(path))
+        self.assertIsNone(audit["templates"])
+        self.assertIn("opener templates not checked: no Introduction", F.document_notes(audit))
+
+    def test_terms_skip_definitions_cover_the_abstract_and_give_sentences(self) -> None:
+        path = self.write("terms.md", (
+            "Abstract—Internet of Things devices (IoTDs) offload tasks, and every Internet of Things device pays a charge.\n\n"
+            "# I. Introduction\n\n" + LONG + " Each IoTD offloads its task to a nearby server in every slot of the day.\n"
+        ))
+        ledger = self.write("terms.txt", "IoTD: Internet of Things device\n")
+        audit = F.document_audit(path, F.fingerprint(path), terms=F.read_terms(ledger))
+        row = audit["terms"][0]
+        self.assertEqual(row["counts"]["Internet of Things device"], {"abstract": 1})
+        self.assertIn("every Internet of Things device", row["examples"]["Internet of Things device"][0])
+        self.assertTrue(F.term_flags(audit["terms"])[0].startswith("term 'Internet of Things device' appears 1 times"))
+
+    def test_scale_measures_and_headingless_text(self) -> None:
+        path = self.write("scale.md", "# V. Experimental Studies\n\n" + " ".join([LONG] * 3) + "\n\n" + LONG + "\n")
+        scale = F.parse_scale(["exp.sentences=1-2", "exp.first_paragraph_words=1-5", "exp.last_paragraph_words=20-40"])
+        flags = F.document_flags(F.document_audit(path, F.fingerprint(path), scale=scale))
+        self.assertTrue(any(flag.startswith("exp sentences = 4") for flag in flags), flags)
+        self.assertTrue(any(flag.startswith("exp first paragraph words") for flag in flags), flags)
+        self.assertFalse(any(flag.startswith("exp last paragraph words") for flag in flags), flags)
+        plain = self.write("plain.txt", LONG + " " + LONG + "\n")
+        audit = F.document_audit(plain, F.fingerprint(plain), scale=F.parse_scale(["intro=1-5"]))
+        self.assertTrue(any(flag.startswith("intro words = ") for flag in F.document_flags(audit)))
+        self.assertTrue(any("measured on the whole text" in note for note in F.document_notes(audit)))
+
+    def test_citations_ignore_inline_intervals(self) -> None:
+        path = self.write("cite.md", "# I. Introduction\n\n" + LONG + " The weight lies in $[0,1]$ and again in $[0,1]$ [3].\n")
+        self.assertEqual(F.citation_reuse(path), {})
+
+    def test_subsection_label_ends_a_sentence_and_e_notation_is_one_token(self) -> None:
+        self.assertEqual(len(F.split_sentences("The settings follow Section V-A. The results are reported next.")), 2)
+        self.assertEqual(F.sentence_length("The HV is 5.83e+04 on the first instance."), 7)
+
+
 class DiffTests(unittest.TestCase):
     def test_merge_and_split_are_classified(self) -> None:
         old = "The robots return to a distant station. This increases their travel distance. " + LONG
