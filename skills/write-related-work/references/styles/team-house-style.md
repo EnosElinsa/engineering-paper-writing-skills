@@ -51,6 +51,7 @@ Default: keep the body and every section inside the band below. A deviation need
 
 Counting rule: the counting rule of the reader and terminology contract, with inline math counted as one word in sentence lengths, sentences under four words (run-in labels such as `Step 1.`) excluded, and the abstract excluded from the body.
 
+<!-- calibrate:begin rhythm -->
 | Body measure | Band | Reference papers (four) | Supervisor-approved baseline draft |
 |---|---|---|---|
 | Mean sentence length (words) | 21.4–23.8 | 21.4, 22.9, 23.3, 23.8 | 21.5 |
@@ -61,7 +62,7 @@ Counting rule: the counting rule of the reader and terminology contract, with in
 
 | Section | Mean sentence length band |
 |---|---|
-| Abstract | 24.5–30.5 |
+| Abstract | 24.8–30.5 |
 | Introduction | 19.8–23.6 |
 | Related Work | 21.3–26.3 |
 | System Model and Problem Formulation | 20.8–23.2 |
@@ -69,7 +70,8 @@ Counting rule: the counting rule of the reader and terminology contract, with in
 | Experimental studies | 22.1–24.5 |
 | Conclusion | 24.2–28.0 |
 
-The abstract and Conclusion bands include the supervisor-approved values (24.8 and 28.0). Section means within one word of the band count as inside.
+The abstract and Conclusion bands include the supervisor-approved values (abstract 24.8, Conclusion 28.0). Section means within one word of the band count as inside.
+<!-- calibrate:end rhythm -->
 
 How to use the band:
 
@@ -332,3 +334,5 @@ The numbers were measured on the complete text of four IEEE Transactions papers 
 - *UAV-Enabled Multi-Source Data Fusion in Vehicular Networks: A Joint Optimization Approach for Reliability and Latency* (DOI `10.1109/TWC.2026.3676831`).
 
 The supervisor-practice rows come from two rounds of supervisor edits on a 2026 journal revision by the same team, measured as before-and-after sentence diffs; no sentence of that manuscript is reproduced here. In the only round that contained supervisor edits alone, the changed passages went from 49 to 38 sentences and their mean length rose from 22.3 to 23.9 words, through six merges and two deletions without a single split. All examples in this file are synthetic. Openers and title shapes are short stock phrases, not copied sentences.
+
+The tables between `calibrate` markers in Section 3, the band in the fingerprint script, and the Chinese weak-prior tables are generated together. When the team publishes another paper of this family, add it to the reference set and regenerate them with the calibration tool of the collection repository instead of editing the numbers by hand.

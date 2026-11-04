@@ -36,6 +36,20 @@ The section skills, `write-abstracts-and-conclusions`, and `latex-prose-audit` r
 
 `shared/scripts/style_fingerprint.py` measures a `.tex` (including `\input` and `\include` children), `.md`, or `.txt` manuscript in English or Chinese against that band using only the Python standard library (a Chinese manuscript is measured in ideographs against the weak-prior band of the Chinese adapter): section scale, the sentence-length profile, connectives per 100 sentences, within-sentence features, banned constructions with their sentences, runs of short sentences, repeated citation keys within a section (`--citations`), paragraph-opening sentences (`--spine`), abbreviation definitions across the manuscript, supplement, and letter (`--abbrev`), and a sentence-level classification of edits between two versions (`--diff OLD NEW`). It is copied into every skill that refers to it at `scripts/style_fingerprint.py`.
 
+### Recalibrating the house style
+
+When the team publishes another paper of this family, add it to the reference set and regenerate the band:
+
+```bash
+python scripts/calibrate_house_style.py --references path/to/reference-papers \
+    --approved path/to/supervisor-approved.tex --baseline path/to/approved-baseline.tex \
+    --abstract-limit 250 --check
+python scripts/calibrate_house_style.py ... --write
+python scripts/sync_shared.py
+```
+
+The tool measures every reference with the fingerprint script and proposes each range as the minimum to maximum over the references. `--approved` drafts widen only the abstract and Conclusion ranges, `--baseline` fills the last column of the rhythm table, and `--abstract-limit` sets the upper end of the abstract word range. `--check` exits non-zero when the proposed band differs from the shipped one. `--write` rewrites the generated blocks (the `TEAM_BAND` literal, the house-style rhythm tables, the Chinese weak-prior tables, and the abstract and Conclusion ranges in the house style) and lists the prose that still needs a manual review. Connective limits are house rules and are never recalibrated. The paper corpus stays local and is not part of the repository.
+
 ## MEC domain pack
 
 The initial `mec` pack is declared in [domain-packs.json](domain-packs.json) and is available to the five section-writing skills.

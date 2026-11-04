@@ -12,7 +12,7 @@ Usage:
 Inputs: LaTeX (.tex), Markdown converted from a PDF (.md, one paragraph per line,
 `#` headings), or plain text (.txt, blank-line paragraphs). English and Chinese
 manuscripts are supported; `--lang auto` (the default) decides from the text.
-A LaTeX root file is read with its \input, \include, \subfile, and \import files
+A LaTeX root file is read with its \\input, \\include, \\subfile, and \\import files
 inlined; missing files are skipped with a warning.
 
 Counting rule (protocols S and R of the reader and terminology contract):
@@ -60,6 +60,7 @@ SECTION_PATTERNS = (
 SECTION_ORDER = ("abstract", "intro", "related", "model", "method", "exp", "future", "concl", "body")
 
 # Team house-style band (see references/styles/team-house-style.md, section "Sentence rhythm").
+# calibrate:begin band
 TEAM_BAND = {
     "body": {
         "mean": (21.4, 23.8),
@@ -69,7 +70,7 @@ TEAM_BAND = {
         "share_short": (0.09, 0.14),
     },
     "section_mean": {
-        "abstract": (24.5, 30.5),
+        "abstract": (24.8, 30.5),
         "intro": (19.8, 23.6),
         "related": (21.3, 26.3),
         "model": (20.8, 23.2),
@@ -81,12 +82,15 @@ TEAM_BAND = {
     "abstract_sentences": (7, 10),
     "conclusion_words": (165, 280),
     "conclusion_sentences": (6, 10),
-    "initial_per_100": {
-        "Since": (0.0, 1.0),
-        "Hence": (0.0, 0.0),
-        "Accordingly": (0.0, 1.0),
-        "However": (1.0, 2.6),
-    },
+}
+# calibrate:end band
+
+# Connective limits are house rules, not measurements; recalibration leaves them alone.
+TEAM_BAND["initial_per_100"] = {
+    "Since": (0.0, 1.0),
+    "Hence": (0.0, 0.0),
+    "Accordingly": (0.0, 1.0),
+    "However": (1.0, 2.6),
 }
 
 # Chinese band: a weak prior converted from the English band with the Chinese

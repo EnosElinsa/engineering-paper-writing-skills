@@ -34,6 +34,7 @@ Author rules, applied as written. They are the Chinese counterparts of the team 
 
 No Chinese reference paper by the team is available. The band below converts the house-style English band with the default ratio of this adapter, 1.5 to 2.0 ideographs per English word: lower ends are multiplied by 1.5 and upper ends by 2.0. The short and long thresholds use the midpoint ratio 1.75. Shares, sentence counts, and paragraph counts transfer unchanged. Treat a value outside the band as a reason to read the section again, not as a defect. Replace this band with a measured one as soon as a Chinese reference paper by the team exists. [G-ZH-rhythm]
 
+<!-- calibrate:begin zh-rhythm -->
 | Body measure | Weak-prior band |
 |---|---|
 | Mean sentence length (ideographs) | 32–48 |
@@ -53,6 +54,7 @@ No Chinese reference paper by the team is available. The band below converts the
 | Conclusion | 36–56 |
 
 The abstract converts to 315–500 ideographs and the Conclusion to 248–560 ideographs. A venue's own limit overrides both.
+<!-- calibrate:end zh-rhythm -->
 
 Counting rule: CJK ideographs only (see Scale conversion), sentences split after `。`, `？`, and `！`, fragments under five ideographs dropped, and paragraphs of at least 30 ideographs. Run the bundled fingerprint script with `--lang zh` (or let `--lang auto` detect the language) to measure a draft.
 
