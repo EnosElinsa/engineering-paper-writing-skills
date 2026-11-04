@@ -24,6 +24,18 @@
       ]
     },
     {
+      "source": "shared/styles/house-style-card.md",
+      "targets": [
+        "write-introductions",
+        "write-related-work",
+        "write-system-models",
+        "write-methods",
+        "write-experiments",
+        "write-abstracts-and-conclusions",
+        "latex-prose-audit"
+      ]
+    },
+    {
       "source": "shared/styles/team-house-style.md",
       "targets": [
         "write-introductions",

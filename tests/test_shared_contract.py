@@ -10,6 +10,7 @@ from scripts.validate_skills import FORBIDDEN_PATTERNS, shared_destination
 ROOT = pathlib.Path(__file__).resolve().parents[1]
 CONTRACT = "references/core/reader-and-terminology-contract.md"
 STYLE = "references/styles/team-house-style.md"
+CARD = "references/styles/house-style-card.md"
 SCRIPT = "scripts/style_fingerprint.py"
 SECTION_SKILLS = (
     "write-introductions",
@@ -40,6 +41,7 @@ class SharedContractTests(unittest.TestCase):
         for skill in (*SECTION_SKILLS, "latex-prose-audit"):
             text = (ROOT / "skills" / skill / "SKILL.md").read_text(encoding="utf-8")
             self.assertIn(f"]({STYLE})", text, f"{skill} does not link the house style")
+            self.assertIn(f"]({CARD})", text, f"{skill} does not link the house-style card")
             self.assertIn(f"]({SCRIPT})", text, f"{skill} does not link the fingerprint script")
 
     def test_every_manifest_copy_matches_its_shared_source(self) -> None:

@@ -12,7 +12,7 @@ from scripts import calibrate_house_style as C
 
 
 ROOT = pathlib.Path(__file__).resolve().parents[1]
-FILES = (C.SCRIPT, C.STYLE, C.ZH)
+FILES = (C.SCRIPT, C.STYLE, C.ZH, C.CARD)
 
 
 def sentence(words: int, topic: str) -> str:
@@ -94,6 +94,8 @@ class CalibrationTests(unittest.TestCase):
         for key in ("abstract_words", "conclusion_words"):
             self.assertIn(f"{band[key][0]}–{band[key][1]} words", style)
         self.assertEqual(band["abstract_words"][1], 250)
+        card = (self.root / C.CARD).read_text(encoding="utf-8")
+        self.assertIn(C.render_card(C.current_band(module)), card)
         zh_band = module.TEAM_BAND_ZH
         low, high = zh_band["body"]["mean"]
         self.assertIn(f"{low}–{high}", zh)
@@ -128,7 +130,7 @@ class ShippedBlocksTests(unittest.TestCase):
         script = (ROOT / C.SCRIPT).read_text(encoding="utf-8")
         self.assertIn("# calibrate:begin band", script)
         self.assertIn("# calibrate:end band", script)
-        for relative, name in ((C.STYLE, "rhythm"), (C.STYLE, "validation"), (C.ZH, "zh-rhythm")):
+        for relative, name in ((C.STYLE, "rhythm"), (C.STYLE, "validation"), (C.ZH, "zh-rhythm"), (C.CARD, "card")):
             text = (ROOT / relative).read_text(encoding="utf-8")
             self.assertIn(f"<!-- calibrate:begin {name} -->", text)
             self.assertIn(f"<!-- calibrate:end {name} -->", text)
@@ -138,6 +140,11 @@ class ShippedBlocksTests(unittest.TestCase):
         rendered = C.render_band(C.current_band(module))
         script = (ROOT / C.SCRIPT).read_text(encoding="utf-8")
         self.assertIn(rendered, script)
+
+    def test_card_reproduces_the_shipped_band(self) -> None:
+        module = C.load_fingerprint(ROOT)
+        card = (ROOT / C.CARD).read_text(encoding="utf-8")
+        self.assertIn(C.render_card(C.current_band(module)), card)
 
 
 if __name__ == "__main__":

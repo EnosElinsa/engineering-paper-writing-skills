@@ -13,7 +13,7 @@ Write the parts of a paper that readers see first and last as compressed version
 
 1. Always read [the core contract and quality gates](references/core/contract-and-quality-gates.md) in full.
 2. Always read [the reader and terminology contract](references/core/reader-and-terminology-contract.md).
-3. Read [the team house style](references/styles/team-house-style.md) unless the user names another venue or team style. It holds the measured title, abstract, index-term, contribution, roadmap, and Conclusion shapes and the sentence-rhythm band.
+3. Read [the house-style card](references/styles/house-style-card.md) and Sections 10, 11, and 12 of [the full team house style](references/styles/team-house-style.md) unless the user names another venue or team style. They hold the measured title, abstract, index-term, contribution, roadmap, and Conclusion shapes and the sentence-rhythm band.
 4. Read [the Chinese manuscript adapter](references/languages/zh.md) when the manuscript is written in Chinese.
 5. Use [the fingerprint script](scripts/style_fingerprint.py) to count words, sentences, and banned constructions when Python is available.
 6. The contribution list sits inside the Introduction. When `write-introductions` is installed, use it for the Introduction around the list; this skill governs the list itself and its agreement with the abstract and the Conclusion.

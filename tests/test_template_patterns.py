@@ -32,6 +32,7 @@ PATTERN_SECTIONS = (
     ("shared/styles/team-house-style.md", "## 11. Contribution list and roadmap"),
     ("shared/styles/team-house-style.md", "## 12. Conclusion"),
     ("shared/styles/team-house-style.md", "## 13. Captions and equation lead-ins"),
+    ("shared/styles/house-style-card.md", "## Structure defaults"),
     ("skills/write-abstracts-and-conclusions/references/core/contract-and-quality-gates.md", "## 2. Title"),
     ("skills/write-abstracts-and-conclusions/references/core/contract-and-quality-gates.md", "## 3. Abstract"),
     ("skills/write-abstracts-and-conclusions/references/core/contract-and-quality-gates.md", "## 5. Contribution list and roadmap"),

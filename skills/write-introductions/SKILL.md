@@ -13,7 +13,7 @@ Build an Introduction as a causal argument rather than a compressed literature r
 
 1. Always read [the core contract and quality gates](references/core/contract-and-quality-gates.md) in full.
 2. Always read [the reader and terminology contract](references/core/reader-and-terminology-contract.md).
-3. Read [the team house style](references/styles/team-house-style.md) unless the user names another venue or team style. It governs author voice, sentence rhythm, connectives, paragraph openers, and the contribution list and roadmap, and it overrides the generic example sentences of this skill where they differ.
+3. Read [the house-style card](references/styles/house-style-card.md) unless the user names another venue or team style. It governs author voice, sentence rhythm, connectives, paragraph openers, and the contribution list and roadmap, and it overrides the generic example sentences of this skill where they differ. When drafting or revising, also read Sections 4, 9, and 11 (merging, Introduction openers, contribution list and roadmap) of [the full team house style](references/styles/team-house-style.md); read its other sections only when the card's last table names them.
 4. Read [the Chinese manuscript adapter](references/languages/zh.md) when the manuscript is written in Chinese.
 5. Read [the MEC domain pack](references/domains/mec.md) only when the manuscript concerns mobile edge computing, UAV-MEC, HAP-UAV, vehicular edge computing, dispersed edge computing, or a directly adjacent MEC setting. It also holds the reference-scale tables for the scale statement.
 6. If no domain pack matches, apply the generic workflow and derive domain facts only from the manuscript and supplied sources. Do not treat MEC examples as universal content.

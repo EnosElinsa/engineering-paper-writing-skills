@@ -32,7 +32,7 @@ Each skill is independently installable. The section skills always load their ge
 
 `shared/styles/team-house-style.md` records the measured conventions of the author team that calibrated these skills: author voice, a sentence-rhythm band (mean sentence length, its spread, and the shares of very long and very short sentences), the rules for combining and splitting sentences, a connective profile, banned constructions, section and subsection titles, attested paragraph openers, and the shapes of the title, abstract, index terms, contribution list, roadmap, and Conclusion. The numbers come from four published IEEE Transactions papers by the team and from measured before-and-after diffs of supervisor edits. Where the two disagree, the supervisor's practice wins, and the file names the reference-paper habits that are not imitated.
 
-The section skills, `write-abstracts-and-conclusions`, and `latex-prose-audit` read the house style unless the user names another venue or team style. The shared contract adds protocol R, which keeps a draft inside the rhythm band and checks over-splitting as well as over-long sentences.
+The section skills, `write-abstracts-and-conclusions`, and `latex-prose-audit` read `shared/styles/house-style-card.md` unless the user names another venue or team style. The card is a five-kilobyte summary of the voice, banned constructions, rhythm band, merge devices, connectives, and structure defaults; each skill then reads only the sections of the full house style that its task needs, which cuts the default reading of a section skill by about a quarter. The shared contract adds protocol R, which keeps a draft inside the rhythm band and checks over-splitting as well as over-long sentences.
 
 `shared/scripts/style_fingerprint.py` measures a `.tex` (including `\input` and `\include` children), `.md`, or `.txt` manuscript in English or Chinese against that band using only the Python standard library (a Chinese manuscript is measured in ideographs against the weak-prior band of the Chinese adapter): section scale, the sentence-length profile, connectives per 100 sentences, within-sentence features, banned constructions with their sentences, runs of short sentences, repeated citation keys within a section (`--citations`), paragraph-opening sentences (`--spine`), abbreviation definitions across the manuscript, supplement, and letter (`--abbrev`), a one-shot Markdown pre-submission report of all of these (`--report`), and a sentence-level classification of edits between two versions (`--diff OLD NEW`). It is copied into every skill that refers to it at `scripts/style_fingerprint.py`.
 
@@ -48,7 +48,7 @@ python scripts/calibrate_house_style.py ... --write
 python scripts/sync_shared.py
 ```
 
-The tool measures every reference with the fingerprint script and proposes each range as the minimum to maximum over the references. `--approved` drafts widen only the abstract and Conclusion ranges, `--baseline` fills the last column of the rhythm table, and `--abstract-limit` sets the upper end of the abstract word range. `--check` exits non-zero when the proposed band differs from the shipped one. `--write` rewrites the generated blocks (the `TEAM_BAND` literal, the house-style rhythm tables, the Chinese weak-prior tables, and the abstract and Conclusion ranges in the house style) and lists the prose that still needs a manual review. Connective limits are house rules and are never recalibrated. `--validate "LABEL=PATH" ...` measures further papers that do not set the band, lists which measures fall outside it, and with `--write` records a summary table in the provenance section of the house style. The paper corpus stays local and is not part of the repository.
+The tool measures every reference with the fingerprint script and proposes each range as the minimum to maximum over the references. `--approved` drafts widen only the abstract and Conclusion ranges, `--baseline` fills the last column of the rhythm table, and `--abstract-limit` sets the upper end of the abstract word range. `--check` exits non-zero when the proposed band differs from the shipped one. `--write` rewrites the generated blocks (the `TEAM_BAND` literal, the house-style rhythm tables, the rhythm lines of the card, the Chinese weak-prior tables, and the abstract and Conclusion ranges in the house style) and lists the prose that still needs a manual review. Connective limits are house rules and are never recalibrated. `--validate "LABEL=PATH" ...` measures further papers that do not set the band, lists which measures fall outside it, and with `--write` records a summary table in the provenance section of the house style. The paper corpus stays local and is not part of the repository.
 
 ## MEC domain pack
 
@@ -86,6 +86,7 @@ shared/
   core/reader-and-terminology-contract.md
   languages/zh.md
   styles/team-house-style.md
+  styles/house-style-card.md
   scripts/style_fingerprint.py
 skills-manifest.json
 domain-packs.json
@@ -94,7 +95,7 @@ scripts/
 tests/
 ```
 
-Each section skill, including `write-abstracts-and-conclusions`, carries byte-identical copies of the files under `shared/`: `references/core/reader-and-terminology-contract.md`, `references/languages/zh.md`, `references/styles/team-house-style.md`, and `scripts/style_fingerprint.py`. `latex-prose-audit` receives only the house style and the script, and `write-revision-responses` only the script. `shared/` is the canonical source and `shared-files.json` lists the target skills. The Chinese manuscript adapter is a language layer loaded only for Chinese manuscripts, and the house style is a style layer. Neither is a domain pack.
+Each section skill, including `write-abstracts-and-conclusions`, carries byte-identical copies of the files under `shared/`: `references/core/reader-and-terminology-contract.md`, `references/languages/zh.md`, `references/styles/team-house-style.md`, `references/styles/house-style-card.md`, and `scripts/style_fingerprint.py`. `latex-prose-audit` receives only the house style, the card, and the script, and `write-revision-responses` only the script. `shared/` is the canonical source and `shared-files.json` lists the target skills. The Chinese manuscript adapter is a language layer loaded only for Chinese manuscripts, and the house style is a style layer. Neither is a domain pack.
 
 A future domain is added as a matching `references/domains/<domain>.md` adapter in the affected section skills and one declaration in `domain-packs.json`. Domain adapters may specialize a core contract, but must not replace generic evidence, causality, safety, or claim-bounding gates.
 

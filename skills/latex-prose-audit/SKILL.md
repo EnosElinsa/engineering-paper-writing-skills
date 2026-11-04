@@ -40,11 +40,12 @@ question; use the project's LaTeX diagnostic workflow for that narrower task.
    overall organization.
 4. Read [rules-and-checks.md](references/rules-and-checks.md) before the first
    full audit. Use its rules as checks with evidence, not as a word blacklist.
-5. Read [the team house style](references/styles/team-house-style.md) unless
+5. Read [the house-style card](references/styles/house-style-card.md) unless
    the user names another venue or team style. Its author voice, sentence
    rhythm, connective profile, and banned constructions are audit rules for the
    team's manuscripts, and they take precedence over this skill's generic
-   examples where the two differ.
+   examples where the two differ. For a full audit of a team manuscript, also
+   read Sections 4, 5, 7, and 13 of [the full team house style](references/styles/team-house-style.md).
 6. Run [the fingerprint script](scripts/style_fingerprint.py) on the target
    when Python is available. Use its flags as leads: read each flagged sentence
    before reporting it. For a full audit of a submission, `--report` with the

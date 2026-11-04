@@ -13,7 +13,7 @@ Explain a method as an executable solution to the previously formulated problem.
 
 1. Always read [the core contract and quality gates](references/core/contract-and-quality-gates.md) in full.
 2. Always read [the reader and terminology contract](references/core/reader-and-terminology-contract.md).
-3. Read [the team house style](references/styles/team-house-style.md) unless the user names another venue or team style. It governs author voice, sentence rhythm, connectives, section and subsection titles, paragraph openers, captions, and equation lead-ins, and it overrides the generic example sentences of this skill where they differ.
+3. Read [the house-style card](references/styles/house-style-card.md) unless the user names another venue or team style. It governs author voice, sentence rhythm, connectives, section and subsection titles, paragraph openers, captions, and equation lead-ins, and it overrides the generic example sentences of this skill where they differ. When drafting or revising, also read Sections 8, 9, and 13 (titles, algorithm openers, captions and equation lead-ins) of [the full team house style](references/styles/team-house-style.md); read its other sections only when the card's last table names them.
 4. Read [the Chinese manuscript adapter](references/languages/zh.md) when the manuscript is written in Chinese.
 5. For population-based, Pareto, constrained, or dynamic evolutionary optimization, read [the evolutionary-algorithm route](references/methods/evolutionary-algorithms.md).
 6. For MDP or POMDP, value-based, policy-gradient, actor-critic, single-agent, or multi-agent learning, read [the reinforcement-learning route](references/methods/reinforcement-learning.md).

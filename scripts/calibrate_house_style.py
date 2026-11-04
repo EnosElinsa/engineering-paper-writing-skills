@@ -7,7 +7,8 @@ rewrites the three generated blocks that hold it:
 
 - the TEAM_BAND literal in shared/scripts/style_fingerprint.py;
 - the rhythm tables in shared/styles/team-house-style.md (Section 3);
-- the weak-prior Chinese tables in shared/languages/zh.md.
+- the weak-prior Chinese tables in shared/languages/zh.md;
+- the rhythm lines of the quick card in shared/styles/house-style-card.md.
 
 It also replaces the abstract and Conclusion ranges in Sections 10 and 12 of the
 house style. Prose elsewhere (provenance, the corpus list) is reported for manual
@@ -39,6 +40,7 @@ ROOT = pathlib.Path(__file__).resolve().parents[1]
 SCRIPT = pathlib.PurePosixPath("shared/scripts/style_fingerprint.py")
 STYLE = pathlib.PurePosixPath("shared/styles/team-house-style.md")
 ZH = pathlib.PurePosixPath("shared/languages/zh.md")
+CARD = pathlib.PurePosixPath("shared/styles/house-style-card.md")
 
 SECTIONS = ("abstract", "intro", "related", "model", "method", "exp", "concl")
 SECTION_LABELS = {
@@ -225,6 +227,25 @@ def render_rhythm(band: dict, references: list[dict], baseline: dict | None, app
     return "\n".join(lines)
 
 
+def render_card(band: dict) -> str:
+    b = band["body"]
+    sections = ", ".join(
+        f"{SECTION_LABELS[s]} {_num(low, 1)}–{_num(high, 1)}" for s, (low, high) in
+        ((s, band["section_mean"][s]) for s in SECTIONS if s in band["section_mean"])
+    )
+    return "\n".join([
+        f"- Body: mean sentence length {_num(b['mean'][0], 1)}–{_num(b['mean'][1], 1)} words, median "
+        f"{b['median'][0]:.0f}–{b['median'][1]:.0f}, 90th percentile {b['p90'][0]:.0f}–{b['p90'][1]:.0f}, "
+        f"{_pct(b['share_long'][0])}–{_pct(b['share_long'][1])} of sentences over 35 words, "
+        f"{_pct(b['share_short'][0])}–{_pct(b['share_short'][1])} under 12 words.",
+        f"- Section means (indicative): {sections} words.",
+        f"- Abstract {band['abstract_words'][0]}–{band['abstract_words'][1]} words in "
+        f"{band['abstract_sentences'][0]}–{band['abstract_sentences'][1]} sentences; Conclusion "
+        f"{band['conclusion_words'][0]}–{band['conclusion_words'][1]} words in "
+        f"{band['conclusion_sentences'][0]}–{band['conclusion_sentences'][1]} sentences.",
+    ])
+
+
 def render_zh(module: ModuleType, band: dict) -> str:
     convert = lambda pair: (round(pair[0] * module.ZH_RATIO[0]), round(pair[1] * module.ZH_RATIO[1]))  # noqa: E731
     long_threshold = round(35 * module.ZH_THRESHOLD_RATIO)
@@ -292,6 +313,9 @@ def write(root: pathlib.Path, module: ModuleType, old: dict, band: dict, referen
             if not done:
                 notes.append(f"house style {heading}: '{before}' not found; set '{after}' by hand")
     style.write_bytes(text.encode("utf-8"))
+
+    card = root / CARD
+    card.write_bytes(replace_block(card.read_text(encoding="utf-8"), "card", render_card(band), "md").encode("utf-8"))
 
     zh = root / ZH
     zh.write_bytes(replace_block(zh.read_text(encoding="utf-8"), "zh-rhythm", render_zh(module, band), "md").encode("utf-8"))
