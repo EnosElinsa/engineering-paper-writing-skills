@@ -38,7 +38,7 @@ Synthetic shape: `Mobile Charging Station-Assisted Delivery Robots in Campus Net
 One paragraph, no citations, no equations or symbols, every abbreviation defined at first use. Moves in this order: [G-AC-abs]
 
 1. **Setting.** The field and the operating setting in one sentence.
-2. **Limiting assumption.** What existing approaches fix or assume, then the consequence of that assumption in this setting. State the mechanism, not a verdict (`existing approaches fix the station locations before operation` rather than `existing approaches are inadequate`).
+2. **Limiting assumption.** What existing approaches fix or assume, then the consequence of that assumption in this setting. State the mechanism, not a verdict (`existing approaches fix the station locations before operation` rather than `existing approaches are inadequate`). `... remain largely unexplored` and `these studies lack <method family>` are verdicts too. Name the assumption that fails, in the terms of the closing gap of Related Work.
 3. **Scenario.** `To address this limitation, this study considers a scenario in which ...`, with the actors and the cycle in plain words.
 4. **Formulation.** The decisions, the objectives, and the constraint classes, with the problem class.
 5. **Algorithm.** The solver family and the mechanism that answers the stated difficulty.
@@ -84,6 +84,7 @@ Rules:
 
 - Do not restate the contribution list (`The contributions of this study are threefold ...`).
 - Do not add a result that the experimental section does not report, or a value judgment that no experiment measures.
+- Attribute an ablation gain only to the component that the ablation isolates. A comparison with a fixed-operator variant isolates the operator selection, not the operator pool.
 - When an experiment shows a trade-off or an offsetting cost, the Conclusion keeps it (`while the effect on total energy depends on the station's own travel cost`).
 - Keep one paragraph for the summary and, when the venue allows, a second paragraph for future work.
 
@@ -113,6 +114,7 @@ The title, abstract, index terms, contribution list, and Conclusion form one cla
 - Every number in a summary part equals the number in its source artifact after rounding, and its range covers exactly the instances it names.
 - After a rerun, a parameter change, or a model change, recheck every number, every direction word (`more`, `similar`, `less`), and every scope phrase in all summary parts and in any response letter that quotes them.
 - The improvement range in the abstract and the result sentence of the last contribution item use the same baseline and the same metric.
+- The limitation in the abstract states the same assumption as the closing gap of Related Work, in the same terms.
 
 ## 9. Common failures and corrections
 
@@ -120,6 +122,8 @@ The title, abstract, index terms, contribution list, and Conclusion form one cla
 |---|---|
 | `achieves the highest hypervolume` | Report the improvement range over the best-performing baseline with the instance count |
 | Abstract limitation written as a verdict (`existing methods are inadequate`) | State the assumption that existing methods make and its consequence |
+| Abstract limitation `... remain largely unexplored` or `these studies lack multi-objective approaches` | State the assumption that the cited studies make, as the Related Work gap states it |
+| Conclusion attributes an ablation gain to a component that the ablation did not isolate | Name only the isolated component, or state that the other cause is not established |
 | Abstract over the word limit after adding the result | Shorten the setting and limitation moves |
 | Conclusion lists the contributions again | Summarize the evidence by experiment group, in order |
 | Conclusion drops the scope of a selected-run result | Restore `in the selected runs` |

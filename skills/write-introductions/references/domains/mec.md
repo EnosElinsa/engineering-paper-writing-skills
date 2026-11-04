@@ -90,6 +90,14 @@ These are default ranges for the scale statement (protocol S in the shared contr
 | Algorithm-motivation paragraph (words / sentences) | 190 / 7 | 250 / 9 | 111 / 5 | 280 / 11 | 111–280 / 5–11 |
 | Citation occurrences / unique sources | 19 / 18 | 10 / 10 | 29 / 24 | 23 / 22 | 10–29 / 10–24 |
 
+**Script counts for `--scale`.** The bundled fingerprint script counts contribution items as paragraphs, joins every other list item and the `where` clause after a display to the paragraph that introduces it, and drops blocks under 20 words. Its counts of the MinerU text of the four papers are below. Use them to declare `--scale` ranges for a draft. Do not run `--scale` on PDF-converted reference text, whose page and column breaks can still split a paragraph.
+
+| Script count | Demand-aware | Dispersed | Terrain-aware | Fusion | `--scale` |
+|---|---:|---:|---:|---:|---|
+| Paragraphs (body, contribution items, roadmap) | 10 | 8 | 8 | 11 | `intro.paragraphs=8-11` |
+| Words | 1026 | 1373 | 1107 | 1417 | `intro=1026-1417` |
+| Words per paragraph | 103 | 172 | 138 | 129 | `intro.paragraph_words=103-172` |
+
 **Reading the table**
 
 1. The scenario and objectives are split into two paragraphs only in the Fusion paper. The other three papers merge them, and the merged paragraph carries the problem formulation as well (the Dispersed merged paragraph runs 293 words and 13 sentences). The split is therefore the default and a merge is a recorded exception, as in the core merge rule.

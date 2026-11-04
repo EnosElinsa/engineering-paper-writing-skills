@@ -217,6 +217,14 @@ These are order-of-magnitude defaults for the scale statement (protocol S in the
 | Opening overview paragraph, words | 159 | 281 | 184 | 239 |
 | Numbered equations (approximate) | 29 | 10 | not counted | not counted |
 
+**Script counts for `--scale`.** The bundled fingerprint script counts contribution items as paragraphs, joins every other list item and the `where` clause after a display to the paragraph that introduces it, and drops blocks under 20 words. Its counts of the MinerU text of the four papers are below. Use them to declare `--scale` ranges for a draft. Do not run `--scale` on PDF-converted reference text, whose page and column breaks can still split a paragraph. A model whose displays all continue their paragraphs counts as a few long paragraphs (the Dispersed paper: 6). For these four sections: `model=1343-2735 model.paragraphs=6-24`, and declare words per paragraph from the closest paper rather than the whole range.
+
+| Script count | Demand-aware | Dispersed | Terrain-aware | Fusion |
+|---|---:|---:|---:|---:|
+| Paragraphs | 22 | 6 | 24 | 16 |
+| Words | 1343 | 1861 | 2735 | 1640 |
+| Words per paragraph | 61 | 310 | 114 | 102 |
+
 Reading the table: expect roughly 1,250–2,800 words and five or six subsections for a system model that includes the formulation, and an opening overview paragraph of about 160–280 words. The Dispersed opening paragraph also introduces the five-step workflow.
 
 **Counterexamples: align to structure and scale, not to sentences**

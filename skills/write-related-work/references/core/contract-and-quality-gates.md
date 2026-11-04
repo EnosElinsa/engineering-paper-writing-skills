@@ -202,7 +202,7 @@ Fail and revise if any of the following occurs:
 - a paragraph starts with a paper list and ends without a class-level synthesis;
 - a limitation introduces a mechanism not described in the preceding evidence;
 - the Related Work repeats the Introduction's background or full scenario description;
-- the final paragraph describes the proposed algorithm in implementation detail;
+- the final paragraph describes the proposed model, mechanism, or algorithm in implementation detail (each response gets at most one clause);
 - an algorithm subsection lists method names without identifying the target structural mismatch;
 - one closest paper consumes disproportionate space without changing the class-level conclusion.
 - the same closest-work description or limitation is repeated under multiple axes; [G-RW-dup]

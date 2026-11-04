@@ -15,13 +15,13 @@ The short version of [the full team house style](team-house-style.md). Read this
 ## Rhythm
 
 <!-- calibrate:begin card -->
-- Body: mean sentence length 21.4–23.8 words, median 20–22, 90th percentile 32–37, 7%–13% of sentences over 35 words, 9%–14% under 12 words.
-- Section means (indicative): Abstract 24.8–30.5, Introduction 19.8–23.6, Related Work 21.3–26.3, System Model and Problem Formulation 20.8–23.2, Proposed algorithm 19.7–25.5, Experimental studies 22.1–24.5, Conclusion 24.2–28.0 words.
+- Body: mean sentence length 23.2–24.8 words, median 21–23, 90th percentile 37–39, 11%–15% of sentences over 35 words, 9%–11% under 12 words.
+- Section means (indicative): Abstract 24.8–30.5, Introduction 20.1–23.6, Related Work 21.3–26.3, System Model and Problem Formulation 22.7–27.1, Proposed algorithm 20.5–27.0, Experimental studies 23.1–24.6, Conclusion 24.2–28.0 words.
 - Abstract 210–250 words in 7–10 sentences; Conclusion 165–280 words in 6–10 sentences.
 <!-- calibrate:end card -->
 - A Chinese manuscript uses the weak-prior band of the Chinese manuscript adapter.
-- The 90th percentile and the two shares apply to a whole paper. Check one section alone against its section mean only.
-- Below the band means over-split: merge before cutting. Never write three sentences under 12 words in a row, merge two adjacent short sentences that state two sides of one comparison or share a subject, and do not split definition or list sentences to move a share.
+- The 90th percentile and the two shares apply to a whole paper. Check one section alone against its section mean only. After a section-mean flag, stop once inside the band.
+- Below the band means over-split: merge before cutting. Never write three sentences under 12 words in a row, merge two adjacent short sentences that state two sides of one comparison or share a subject, and do not split definition or list sentences to move a share. Keep short result and definition sentences: an experiment section with under 5% short sentences is a reason to reread.
 
 ## Merge, then split
 
@@ -31,7 +31,7 @@ Split only a second independent claim: two claims joined by `, and`, a participl
 
 ## Connectives
 
-Over a whole paper, open at most one sentence in 100 with `Since` and one with `Accordingly`, and none with `Hence`. On one section alone, allow one of each per 100 sentences of the section (at least one), and check `However` and `To address` over the whole paper only. Rotate `Therefore`, `Consequently`, `As a result`, and `Thus`. Use `However` only for a real contrast and `For example` where a general claim needs a case. Never open two consecutive sentences with the same connective, and recount after any splitting pass.
+Over a whole paper, open at most one sentence in 100 with `Since` and one with `Accordingly`, and none with `Hence`. On one section alone, allow one of each per 100 sentences of the section (at least one), and check `However` and `To address` over the whole paper only. The allowance is a limit, not a quota, and most sections use none. Rotate `Therefore`, `Consequently`, `As a result`, and `Thus`. Use `However` only for a real contrast and `For example` where a general claim needs a case. Never open two consecutive sentences with the same connective, and recount after any splitting pass.
 
 ## Structure defaults
 
@@ -41,7 +41,7 @@ Over a whole paper, open at most one sentence in 100 with `Since` and one with `
 - Roadmap: one sentence per section, at most about 77 words, and no summary of section content.
 - Abstract: one paragraph with the setting, the limiting assumption and its cost, the scenario, the formulation, the algorithm, and a scoped numeric result against the best-performing baseline.
 - Conclusion: restate the problem, summarize each experiment group in order with its scope, and end with a future-work chain tied to stated limitations.
-- Captions: a sentence-case noun phrase in the manuscript's own terms that names the compared objects, instances, and run rule. Figure and table captions end with a period, and algorithm captions do not. The noun phrase of a result-table caption stays near 20 words, and metric names, run counts, and significance rules go in the table note.
+- Captions: a sentence-case noun phrase in the manuscript's own terms that names the compared objects, instances, and run rule. Figure and table captions end with a period, and algorithm captions do not. The noun phrase of a result-table caption stays near 20 words, and metric names, run counts, and significance rules go in a `Note.` line below the table unless the document class is known to have no table notes.
 - Displays: a clause that names the quantity and ends with a colon introduces each display (`... is calculated as follows:`).
 
 ## Checks and delivery

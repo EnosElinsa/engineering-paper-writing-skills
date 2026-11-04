@@ -41,7 +41,7 @@ Author actions take `this study` as the subject or use the passive. [G-STY-voice
 - `The periodic planning is formulated as ...`, `A dynamic constrained multi-objective evolutionary algorithm based on ... is proposed.`
 - Use `we` only in future-work sentences of the Conclusion (`Building on this extended model, we will develop ...`). Do not use `our`.
 - Use one self-reference noun in every section, including the roadmap: `this study`.
-- Reserve `this study` for the sentences in which the paper itself acts: the contribution items, the scenario and algorithm sentences of the Introduction, the roadmap, and the opening of the Conclusion. Elsewhere, use the passive or make the algorithm or a modeled actor the subject. The reference Introductions use `this study` or `this paper` 1.5–6.4 times per 1000 words.
+- Reserve `this study` for the sentences in which the paper itself acts: the contribution items, the scenario and algorithm sentences of the Introduction, the roadmap, and the opening of the Conclusion. Elsewhere, use the passive or make the algorithm or a modeled actor the subject. The reference Introductions use `this study` or `this paper` 1.5–6.4 times per 1000 words. The reserved positions alone give about five uses per 1000 words in an Introduction of about 1300 words, and the reference papers with lower rates use `we` in these positions.
 - In running prose, the proposed method is `the proposed algorithm` (or `the proposed mechanism` for a component). Use its acronym where it is compared by name with baselines, in tables, and in figure legends. The reference papers use `the proposed` 2.5–6.8 times per 1000 words.
 - Other valid agents are the algorithm and the modeled actors (controller, platform, vehicle, server). A section, table, or figure takes only reporting verbs (`Section II reviews ...`, `Table III presents ...`, `Fig. 3 shows ...`).
 - Response letters keep the first person (`We have revised Section V-C ...`).
@@ -55,20 +55,20 @@ Counting rule: the counting rule of the reader and terminology contract, with in
 <!-- calibrate:begin rhythm -->
 | Body measure | Band | Reference papers (four) | Supervisor-approved baseline draft |
 |---|---|---|---|
-| Mean sentence length (words) | 21.4–23.8 | 21.4, 22.9, 23.3, 23.8 | 21.5 |
-| Median | 20–22 | 20, 22, 22, 22 | 20 |
-| 90th percentile | 32–37 | 32, 35, 37, 37 | 34 |
-| Share of sentences over 35 words | 7%–13% | 7%, 10%, 12%, 13% | 8% |
-| Share of sentences under 12 words | 9%–14% | 9%, 12%, 13%, 14% | 18% |
+| Mean sentence length (words) | 23.2–24.8 | 23.2, 24.2, 24.4, 24.8 | 22.4 |
+| Median | 21–23 | 21, 22, 23, 23 | 21 |
+| 90th percentile | 37–39 | 37, 38, 38, 39 | 36 |
+| Share of sentences over 35 words | 11%–15% | 11%, 14%, 14%, 15% | 11% |
+| Share of sentences under 12 words | 9%–11% | 9%, 9%, 10%, 11% | 15% |
 
 | Section | Mean sentence length band |
 |---|---|
 | Abstract | 24.8–30.5 |
-| Introduction | 19.8–23.6 |
+| Introduction | 20.1–23.6 |
 | Related Work | 21.3–26.3 |
-| System Model and Problem Formulation | 20.8–23.2 |
-| Proposed algorithm | 19.7–25.5 |
-| Experimental studies | 22.1–24.5 |
+| System Model and Problem Formulation | 22.7–27.1 |
+| Proposed algorithm | 20.5–27.0 |
+| Experimental studies | 23.1–24.6 |
 | Conclusion | 24.2–28.0 |
 
 The abstract and Conclusion bands include the supervisor-approved values (abstract 24.8, Conclusion 28.0). Section means within 3 words of the band count as inside.
@@ -80,6 +80,8 @@ How to use the band:
 - A draft above the band stacks claims. Split it with the rules of Section 4.
 - Most sentences carry 15–30 words. Keep sentences under 12 words for a short result or a definition, and never write three in a row.
 - The 90th percentile and the two shares describe the body of a whole paper, measured over at least three of the Introduction, Related Work, model, method, experiment, and Conclusion sections. When one section is drafted or measured alone, check its section mean only. A settings subsection that lists definitions and parameters may hold many long or short sentences. Do not split its definition or list sentences to move a share into the band.
+- After a section-mean flag, split or merge only until the mean is inside the band. Do not aim at the band center, and check afterwards that the long sentences were not all split.
+- When fewer than about 5% of the sentences of an experiment section run under 12 words, reread whether short results and definitions were merged into long sentences. The script lists this as a note, not a flag.
 - The body band is the default to act on. The section bands rest on four papers and vary more between papers than the body band (compare the last two columns of the validation table in Section 15). Treat a section outside its band as a reason to reread that section, and change it only when its sentences show the over-splitting or stacking signals of Section 4.
 
 ## 4. Combining and splitting sentences
@@ -139,7 +141,7 @@ Rotate connectives the way the reference papers do, and do not let a banned word
 | Hence | 0 | Not used |
 | On one hand, On the other hand | two papers | Not used |
 
-The per-100 ranges are rates over the body of a whole paper. One section is too short for a rate, and some openers cluster in one section: the four reference Introductions open 3.6–9.1 of every 100 sentences with `However`, above the paper-level range. When one section is drafted or measured alone, count instead. Allow one sentence-initial `Since` and one `Accordingly` per 100 sentences of the section, at least one of each, and no `Hence`. Check `However`, `To address`, and the other rates over the whole paper.
+The per-100 ranges are rates over the body of a whole paper. One section is too short for a rate, and some openers cluster in one section: the four reference Introductions open 3.6–9.1 of every 100 sentences with `However`, above the paper-level range. When one section is drafted or measured alone, count instead. Allow one sentence-initial `Since` and one `Accordingly` per 100 sentences of the section, at least one of each, and no `Hence`. The allowance is a limit, not a quota. The six main sections together still allow one per 100 sentences over the whole paper, so most sections use none. Check `However`, `To address`, and the other rates over the whole paper.
 
 Within sentences, the reference papers use `, thereby` and same-subject participle tails 2.1–3.8 times per 1000 words, `while` or `whereas` 2.9–3.5, `due to` 0.5–1.3, `, which` 0.9–2.2, and `, where` 0.6–3.1.
 
@@ -174,11 +176,11 @@ Do not use these in author prose. Pasted reviewer comments and quoted titles are
 - `we` or `our` outside future work (Section 2);
 - an inanimate noun as a volitional agent: a mechanism, constraint, equation, metric, section, or table does not decide, ensure, guarantee, validate, or explain;
 - a dangling modifier after a split (`By solving ..., the duration is derived` becomes `Solving ... yields the duration` or a passive with an explicit operation);
-- sweeping meta sentences such as `no existing study considers ...`: state the assumption that fails instead.
+- sweeping meta sentences such as `no existing study considers ...` or `... remains largely unexplored`: state the assumption that fails instead.
 
 ## 8. Section and subsection titles
 
-Default: use the titles below. Deviate when the venue prescribes other titles, and record the reason. [G-STY-head]
+Default: use the titles below. Deviate when the venue prescribes other titles, or when an inherited structure splits the model into a workflow section and a modeling section (the system-model skill allows this split), and record the reason. [G-STY-head]
 
 | Section | Default title | Attested subsection titles |
 |---|---|---|
@@ -191,7 +193,7 @@ Default: use the titles below. Deviate when the venue prescribes other titles, a
 
 - Do not title the experiment section `Performance Evaluation` or `Simulation Results`.
 - Do not put the algorithm acronym into the section title (`Proposed Algorithm`, not `Proposed X-Y Algorithm`).
-- An experiment subsection title names the operation and the object in about eight words or fewer (the reference experiment subsection titles average 4.3–6.7 words): `Overall Performance Comparison`, `Investigation of the <mechanism>`, `Comparison of <named alternatives>`, `Trade-off Analysis of the Obtained Solutions`. Name the varied factor in the title when it fits, otherwise in the opening sentence of the subsection. Do not use a bare topic phrase such as `Impact of X` or `X Study`, and use `Comparison of ...` rather than `Investigation of ...` when the subsection compares named alternatives.
+- An experiment subsection title names the operation and the object in about eight words or fewer (the reference experiment subsection titles average 4.3–6.7 words): `Overall Performance Comparison`, `Investigation of the <mechanism>`, `Comparison of <named alternatives>`, `Trade-off Analysis of the <obtained solutions>`. Name the varied factor in the title when it fits, otherwise in the opening sentence of the subsection. Do not use a bare topic phrase such as `Impact of X` or `X Study`, and use `Comparison of ...` rather than `Investigation of ...` when the subsection compares named alternatives.
 
 ## 9. Paragraph openers by section
 
@@ -235,7 +237,7 @@ Use these attested openers before inventing new ones. Counts give the number of 
 | Conclusion | `The ablation studies ...` | 2, H |
 | Conclusion | `Future work will ...` / `Building on ..., we will ...` | 1, H |
 
-Use an opener only in a paragraph that already has its function. Use each Introduction opener at most once per paper, apart from `For example` and `For instance` (`In this scenario, ...` opens a sentence in one of the four reference Introductions). Do not add a paragraph to host an opener. When the reference papers of the target family classify the literature in Related Work, the Introduction adds no classification paragraph. Do not repeat the verb in the count noun (`categorized into two categories`). Write `fall into two groups` or `are classified into two kinds of approach` instead.
+Use an opener only in a paragraph that already has its function. Use each Introduction opener at most once per paper, apart from `For example` and `For instance` (`In this scenario, ...` opens a sentence in one of the four reference Introductions). `To address ..., this study considers` (the scenario) and `To address ..., this study proposes` (the method) count as two openers. Do not add a paragraph to host an opener. When the reference papers of the target family classify the literature in Related Work, the Introduction adds no classification paragraph. Do not repeat the verb in the count noun (`categorized into two categories`). Write `fall into two groups` or `are classified into two kinds of approach` instead.
 
 Do not open with `Note that`, `It is worth noting that`, `Recently, ...`, or `As is well known`.
 
@@ -287,7 +289,7 @@ Do not restate the contribution list (`Our contributions are threefold`), and do
 **Captions.** A figure or table caption is a noun phrase that identifies the artifact and ends with a period. Write it in sentence case in the source (the document class may print table captions in capitals), and give every caption of one kind the same form. [G-STY-cap]
 
 - Name the compared objects, the instances, and the run-selection rule (`at the median run`, `for the median-performing run`).
-- Keep the noun phrase of a result-table caption to about 20 words (the reference papers use 6–20). Put metric full names, the run count, and the significance rule in the note below the table, or in short sentences after the noun phrase when the document class has no table notes (as in the supervisor-approved draft).
+- Keep the noun phrase of a result-table caption to about 20 words (the reference papers use 6–20). Put metric full names, the run count, and the significance rule in the note below the table, or in short sentences after the noun phrase only when the manuscript or the user states that the document class has no table notes (as in the supervisor-approved draft). In Markdown or when the class is unknown, write them as a `Note.` line below the table.
 - Fill a caption form with the manuscript's own terms. When the setup calls its test settings `cases`, the caption does too, even where the attested form says `instances`.
 - Do not state the result, explain the method, or repeat what the panel labels, legend, or setup paragraph already state. Panel labels such as `(a) CMOP1. (b) CMOP2.` may follow when the class prints no subcaptions.
 - Define every abbreviation that appears in a table header or row label, in the caption or in a note below the table, and explain significance symbols in that note.
@@ -329,13 +331,14 @@ The default output reports:
 
 - section scale, the sentence-length profile, connectives per 100 sentences, and within-sentence features per 1000 words, with flags against the band of Section 3 (a file with fewer than three main sections is checked against its section means and connective counts only);
 - banned constructions, runs of short sentences, adjacent short sentences that could merge, and repeated connectives, each with its sentences;
-- document checks: figure and table captions without a final period or in title case, a result-table noun phrase over 22 words, subsection titles of ten or more words, a roadmap over 77 words or with a sentence that names no section, an Introduction opener used more than once, a count noun that repeats its verb, and more than 6.9 uses of `this study` per 1000 words in the Introduction.
+- document checks: figure and table captions without a final period or in title case, an algorithm caption with a final period, a result-table noun phrase over 22 words (printed capitals included), subsection titles of ten or more words, a roadmap over 77 words or with a sentence that names no section, an Introduction opener used more than once, a count noun that repeats its verb, and more than 6.9 uses of `this study` per 1000 words in the Introduction;
+- notes, which are not flags: whole-paper measures outside the band when fewer than three main sections are measured, a section mean outside its band but inside the tolerance, a section of 20 or more sentences with under 5% short sentences, a single-section connective count at its limit, and a table caption over 30 words with its note sentences.
 
 Options:
 
 - `--section exp` restricts the report to one section;
-- `--scale exp=900-1900 exp.paragraphs=10-19 intro.paragraph_words=60-140` checks the ranges of the scale statement;
-- `--terms ledger.txt` reads the term ledger, one group per line with the ledger term first (`case: instance, test instance`), and reports every other variant with its count per section and in the captions;
+- `--scale exp=900-1900 exp.paragraphs=10-19 related.last_paragraph_words=120-160` checks the ranges of the scale statement (measures `words`, `paragraphs`, `paragraph_words`, `sentences`, `first_paragraph_words`, and `last_paragraph_words`);
+- `--terms ledger.txt` reads the term ledger, one group per line with the ledger term first (`case: instance, test instance`), and reports every other variant with its count per section, in the abstract, and in the captions, with the sentences that use it (the long form in an abbreviation definition is not counted);
 - `--citations` lists citation keys repeated within a section, and `--spine --section intro` prints the opening sentence of every paragraph under its heading;
 - `--abbrev main.tex supplement.tex reply.tex` audits abbreviation definitions and uses in each document and compares their long forms;
 - `--report main.tex supplement.tex reply.tex --out report.md` writes all of the above as one Markdown pre-submission report and checks abbreviations, ledger terms, and banned constructions in the supplement and the letter too (the letter keeps its first person);
@@ -357,12 +360,12 @@ Experiment order. Two of the four reference papers (Demand-aware and Fusion) rep
 The supervisor-practice rows come from two rounds of supervisor edits on a 2026 journal revision by the same team, measured as before-and-after sentence diffs; no sentence of that manuscript is reproduced here. In the only round that contained supervisor edits alone, the changed passages went from 49 to 38 sentences and their mean length rose from 22.3 to 23.9 words, through six merges and two deletions without a single split. All examples in this file are synthetic. Openers and title shapes are short stock phrases, not copied sentences.
 
 <!-- calibrate:begin validation -->
-Validation. The band was checked against 13 further published papers that were not used to set it: 5 same-lineage constrained evolutionary papers, 8 reinforcement-learning MEC papers. Their body mean sentence lengths run from 20.5 to 26.7 words.
+Validation. The band was checked against 13 further published papers that were not used to set it: 5 same-lineage constrained evolutionary papers, 8 reinforcement-learning MEC papers. Their body mean sentence lengths run from 20.4 to 26.9 words.
 
 | Group | Papers | Body mean (min–max) | Body mean inside the band or its tolerance | Any section mean outside |
 |---|---|---|---|---|
-| same-lineage constrained evolutionary papers | 5 | 21.4–26.7 | 4 of 5 | 2 of 5 |
-| reinforcement-learning MEC papers | 8 | 20.5–24.5 | 8 of 8 | 5 of 8 |
+| same-lineage constrained evolutionary papers | 5 | 21.7–26.9 | 3 of 5 | 2 of 5 |
+| reinforcement-learning MEC papers | 8 | 20.4–25.2 | 6 of 8 | 5 of 8 |
 <!-- calibrate:end validation -->
 
 The tables between `calibrate` markers in Sections 3 and 15, the band in the fingerprint script, and the Chinese weak-prior tables are generated together. When the team publishes another paper of this family, add it to the reference set and regenerate them with the calibration tool of the collection repository instead of editing the numbers by hand.
