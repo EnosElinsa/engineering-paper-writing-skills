@@ -9,12 +9,13 @@
 5. [Density rules](#density-rules)
 6. [Solver-family subsections](#solver-family-subsections)
 7. [Closing gap paragraph](#closing-gap-paragraph)
-8. [Language and style](#language-and-style)
-9. [Citation fidelity gates](#citation-fidelity-gates)
-10. [Structural hard gates](#structural-hard-gates)
-11. [Center-sentence audit](#center-sentence-audit)
-12. [Gap-to-module audit](#gap-to-module-audit)
-13. [Final compression pass](#final-compression-pass)
+8. [Optional comparison table](#optional-comparison-table)
+9. [Language and style](#language-and-style)
+10. [Citation fidelity gates](#citation-fidelity-gates)
+11. [Structural hard gates](#structural-hard-gates)
+12. [Center-sentence audit](#center-sentence-audit)
+13. [Gap-to-module audit](#gap-to-module-audit)
+14. [Final compression pass](#final-compression-pass)
 
 ## Pre-draft evidence table
 
@@ -154,6 +155,18 @@ Default: when the gap paragraph contrasts an alternative solver family (for exam
 
 Fail if any sentence shares a run of eight or more identical consecutive words with the Introduction. The eight-word threshold is a heuristic, not a measured value; use it to find copied sentences, not to reject a legitimate shared technical phrase.
 
+## Optional comparison table
+
+Default: write the Related Work without a comparison table. None of the four team reference papers uses one, and the closing gap paragraph carries the comparison. Deviate when the venue, a reviewer, or the author asks for a table, and then follow these rules. [G-RW-table]
+
+- Each column is a problem fact that a cited study either models or does not (a modeled resource limit, an actor that must hand over, a kind of state that must move). A design choice of this paper (its encoding, synchronization scheme, learner, or repair) is never a column, for the same reason that it is never a gap fact (contract rule `G-SH-gap`).
+- Keep the columns few. Drop a column that follows from two others, and drop a column whose answer the reader can infer from the setting; argue such a point in the prose instead.
+- Mark a cell with a check mark or leave it blank. Do not introduce a third symbol that needs a table note; when a cell needs two meanings, split the column into two.
+- Merge rows whose marks are identical into one row that lists their citations.
+- The last row is this study. Its marks must follow from the model sections, not from the method.
+- The table supports the closing gap paragraph and does not replace it. The paragraph still states the mechanism chain, and it argues every dimension the table leaves out.
+- Introduce the table in the prose by what it compares (`Table I compares the reviewed studies with this study in terms of the modeled ...`), and do not restate its marks sentence by sentence.
+
 ## Language and style
 
 Prefer concrete mechanism nouns: `fixed resource allocation`, `event-dependent sampling`, `state-dependent feasible region`, `redundant execution`, and `terminal safety constraint`.
@@ -197,6 +210,7 @@ Fail and revise if any of the following occurs:
 - a closing-gap sentence shares a run of eight or more identical consecutive words with the Introduction (heuristic threshold);
 - a source that supports a classification category in the Introduction is missing from the same category in Related Work with no recorded exception;
 - the closing gap hedges a consequence that follows from the definitions, or asserts it without the mechanism chain that produces it.
+- a comparison table has a column that is a design choice of this paper, a third cell symbol, or rows with identical marks left unmerged.
 
 ## Center-sentence audit
 

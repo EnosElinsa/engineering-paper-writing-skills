@@ -628,6 +628,24 @@
           "id": "G-AUD-abbr"
         }
       ]
+    },
+    "48": {
+      "summary": "Four contribution items with a separate evidence item",
+      "gates": [
+        {
+          "file": "skills/write-introductions/references/core/contract-and-quality-gates.md",
+          "id": "G-INT-contrib"
+        }
+      ]
+    },
+    "49": {
+      "summary": "Comparison table built on the paper's own design",
+      "gates": [
+        {
+          "file": "skills/write-related-work/references/core/contract-and-quality-gates.md",
+          "id": "G-RW-table"
+        }
+      ]
     }
   }
 }

@@ -77,7 +77,7 @@ Popularity is not method motivation. The solver family is the carrier; the probl
 
 ### 6. Close with contributions and audit
 
-Use two to four contributions spanning the paper's actual novelty layers, such as `scenario/model -> formulation -> method -> evidence`. Start each item with an action and new object, then state a bounded effect or validation scope. Follow the house-style contribution and roadmap shapes, and keep the list consistent with the abstract and the Conclusion.
+Use two or three contributions spanning the paper's actual novelty layers, in the order `scenario/model -> formulation -> method`, with the evidence as the result sentence of the last item. Start each item with an action and new object, then state a bounded effect or validation scope. Follow the house-style contribution and roadmap shapes, and keep the list consistent with the abstract and the Conclusion.
 
 Run the core center-sentence, classification, evidence, citation, paragraph, and module-mapping gates. Then run the selected domain gates. Revise until the Introduction is causal, source-grounded, non-redundant, and clearly separated from Related Work.
 

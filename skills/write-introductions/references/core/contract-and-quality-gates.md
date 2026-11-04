@@ -365,12 +365,13 @@ Default: the Introduction follows one main line. Each body paragraph opens from 
 
 ## Contributions
 
-Use this order when applicable:
+Default: write two or three items in this order (the four reference papers use three, the supervisor-approved draft two). Merge the scenario into the problem item when the scenario is not itself a contribution. Deviate when the venue asks for a separate evidence item, and record the reason. [G-INT-contrib]
 
 1. **Scenario/model:** new operating scenario, architecture, or state process;
 2. **Problem:** joint decisions and newly modeled coupling, objective, or constraint;
-3. **Algorithm:** module and corresponding structural difficulty;
-4. **Evidence:** only conclusions supported by completed experiments, analysis, or proof.
+3. **Algorithm:** module and corresponding structural difficulty, closed by one result sentence with its scope.
+
+Evidence is not an item of its own. Only conclusions supported by completed experiments, analysis, or proof enter that result sentence.
 
 Write each item as `action + object + bounded distinction/role + evidence scope`.
 
