@@ -1959,7 +1959,7 @@ def _print_fingerprint(path: pathlib.Path, result: dict[str, dict], only: str | 
             write("\nNotes (not flags):\n")
             for note in notes:
                 write(f"  - {note}\n")
-        for label, hits in audit["templates"].items():
+        for label, hits in (audit["templates"] or {}).items():
             if len(hits) > 1:
                 for sentence in hits[:3]:
                     write(f"    [{label}] {sentence[:140]}\n")

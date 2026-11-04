@@ -595,6 +595,10 @@ class CountingAndNoteTests(unittest.TestCase):
         audit = F.document_audit(path, F.fingerprint(path))
         self.assertIsNone(audit["templates"])
         self.assertIn("opener templates not checked: no Introduction", F.document_notes(audit))
+        buffer = io.StringIO()
+        with contextlib.redirect_stdout(buffer):
+            self.assertEqual(F.main([str(path)]), 0)
+        self.assertIn("opener templates not checked", buffer.getvalue())
 
     def test_terms_skip_definitions_cover_the_abstract_and_give_sentences(self) -> None:
         path = self.write("terms.md", (
