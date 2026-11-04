@@ -576,6 +576,11 @@ put the statistical comparison in a separate result sentence.
 
 #### 11.4 Captions
 
+When the team house style applies, check captions and equation lead-ins against
+its attested forms (Section 13 of the house style): sentence case with a final
+period for every caption kind, abbreviations in table headers defined, and a
+colon-ended lead-in before each display.
+
 Captions identify the artifact, variables/cases, and representative-run rule
 when needed. They do not reproduce the result paragraph or explain the entire
 method. Use parallel templates for related panels, compact relationship wording

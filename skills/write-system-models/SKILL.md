@@ -13,7 +13,7 @@ Write the model in the order the system operates and formulate a problem that cl
 
 1. Always read [the core contract and quality gates](references/core/contract-and-quality-gates.md) in full.
 2. Always read [the reader and terminology contract](references/core/reader-and-terminology-contract.md).
-3. Read [the team house style](references/styles/team-house-style.md) unless the user names another venue or team style. It governs author voice, sentence rhythm, connectives, subsection titles, and paragraph openers, and it overrides the generic example sentences of this skill where they differ.
+3. Read [the team house style](references/styles/team-house-style.md) unless the user names another venue or team style. It governs author voice, sentence rhythm, connectives, subsection titles, paragraph openers, captions, and equation lead-ins, and it overrides the generic example sentences of this skill where they differ.
 4. Read [the Chinese manuscript adapter](references/languages/zh.md) when the manuscript is written in Chinese.
 5. Read [the MEC domain pack](references/domains/mec.md) only for mobile edge computing, UAV-MEC, HAP-UAV, vehicular edge computing, dispersed edge computing, or directly adjacent MEC systems. It also holds the reference-scale table.
 6. If no domain pack matches, infer the operational workflow and physical checks from the target architecture and authoritative sources. Do not reuse MEC equations or module order by analogy alone.

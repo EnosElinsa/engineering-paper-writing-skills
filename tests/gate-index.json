@@ -606,6 +606,19 @@
           "id": "G-AUD-sym"
         }
       ]
+    },
+    "46": {
+      "summary": "Captions in mixed forms and a display without a lead-in",
+      "gates": [
+        {
+          "file": "shared/styles/team-house-style.md",
+          "id": "G-STY-cap"
+        },
+        {
+          "file": "shared/styles/team-house-style.md",
+          "id": "G-STY-eq"
+        }
+      ]
     }
   }
 }

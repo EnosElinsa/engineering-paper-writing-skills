@@ -1,6 +1,6 @@
 # Team house style
 
-This file records the measured writing conventions of the author team: author voice, sentence rhythm, how sentences are combined and split, connectives, modifiers, banned constructions, section titles, paragraph openers, and the shape of the title, abstract, index terms, contribution list, and Conclusion. It applies on top of the skill's own contract. Where a generic example sentence in a skill differs from this file, follow this file.
+This file records the measured writing conventions of the author team: author voice, sentence rhythm, how sentences are combined and split, connectives, modifiers, banned constructions, section titles, paragraph openers, captions and equation lead-ins, and the shape of the title, abstract, index terms, contribution list, and Conclusion. It applies on top of the skill's own contract. Where a generic example sentence in a skill differs from this file, follow this file.
 
 ## Contents
 
@@ -16,8 +16,9 @@ This file records the measured writing conventions of the author team: author vo
 10. [Title, abstract, and index terms](#10-title-abstract-and-index-terms)
 11. [Contribution list and roadmap](#11-contribution-list-and-roadmap)
 12. [Conclusion](#12-conclusion)
-13. [Measuring a draft](#13-measuring-a-draft)
-14. [Provenance](#14-provenance)
+13. [Captions and equation lead-ins](#13-captions-and-equation-lead-ins)
+14. [Measuring a draft](#14-measuring-a-draft)
+15. [Provenance](#15-provenance)
 
 ## 1. Scope and precedence
 
@@ -270,7 +271,44 @@ Default: one or two paragraphs, 165–280 words, 6–10 sentences (reference pap
 
 Do not restate the contribution list (`Our contributions are threefold`), and do not add a value judgment that no experiment measures (`These results show the practical value of ...`).
 
-## 13. Measuring a draft
+## 13. Captions and equation lead-ins
+
+**Captions.** A caption is a noun phrase that identifies the artifact and ends with a period. Write it in sentence case in the source (the document class may print table captions in capitals), and give every caption of one kind the same form. [G-STY-cap]
+
+- Name the compared objects, the instances, and the run-selection rule (`at the median run`, `for the median-performing run`).
+- Do not state the result, explain the method, or repeat what the panel labels, legend, or setup paragraph already state. Panel labels such as `(a) CMOP1. (b) CMOP2.` may follow when the class prints no subcaptions.
+- Define every abbreviation that appears in a table header or row label, in the caption or in a note below the table, and explain significance symbols in that note.
+- Algorithm boxes, figures, and tables of one paper share the sentence case and the final period.
+
+Attested forms, with the number of reference papers (out of four) that use each; H marks the supervisor-approved draft:
+
+| Artifact | Form | Attested |
+|---|---|---|
+| System figure | `Illustration of the considered <system>.` | 3, H |
+| Encoding figure | `Illustration of the genetic encoding scheme.` | 2 |
+| Pareto-front plot | `Obtained feasible non-dominated solutions of <instances>.` | 2 |
+| Convergence plot | `Convergence graphs of the <N> algorithms on <instances> at the median run.` | 3 |
+| Parameter table | `Simulation parameters among the <N> <instances>.` or `Parameter settings for the <N> <instances>.` | 3, H / 2, H |
+| Instance table | `Test instance configurations with varying problem scales.` | 2 |
+| Result table | `Comparison results of the <N> algorithms based on the mean and standard deviation (in parentheses) of <metrics>.` | 3 (the `based on` tail in 2), H |
+| Scenario table | `Comparison of the <A> and <B> scenarios.` | 1, H |
+
+**Equation lead-ins.** Name the quantity, then introduce the display with a clause that ends in a colon. Three of the four reference papers introduce 43%–48% of their displays this way, while the other displays continue a sentence (`..., where`, `subject to`). The supervisor-approved draft introduces every display with a colon. [G-STY-eq]
+
+| Lead-in | Papers | Occurrences |
+|---|---|---|
+| `<quantity> is calculated as follows:` and other `... as follows:` forms | 4 | 22 |
+| `<quantity> is given by:` | 3 | 5 |
+| `<quantity> is:` | 2 | 14 |
+| `<quantity> is determined by:` | 2 | 2 |
+| `<quantity> can be expressed as:` | 1 | 3 |
+
+- When the display adopts a cited model, cite it in the lead-in (`The hovering power is given by [12]:`).
+- After the display, define the new symbols in one `where` clause in the order in which they appear, then state a meaning, coupling, or boundary case if one is needed.
+- Do not open with `The following equation gives ...`, and do not introduce the explanation with `Thus` or `Therefore`.
+- End the display with a comma or a period as part of the sentence.
+
+## 14. Measuring a draft
 
 Run `scripts/style_fingerprint.py` (in the skill directory) on the draft when Python is available:
 
@@ -282,7 +320,7 @@ Run `scripts/style_fingerprint.py` (in the skill directory) on the draft when Py
 
 Read every flagged sentence before changing it. A flag is a measurement, not a verdict: a long sentence may be a necessary list, and a short one may be a result.
 
-## 14. Provenance
+## 15. Provenance
 
 The numbers were measured on the complete text of four IEEE Transactions papers by the author team, all constrained or dynamic constrained multi-objective evolutionary approaches to UAV or edge-computing systems:
 
