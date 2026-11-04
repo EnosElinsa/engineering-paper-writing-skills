@@ -13,9 +13,11 @@ Build an Introduction as a causal argument rather than a compressed literature r
 
 1. Always read [the core contract and quality gates](references/core/contract-and-quality-gates.md) in full.
 2. Always read [the reader and terminology contract](references/core/reader-and-terminology-contract.md).
-3. Read [the Chinese manuscript adapter](references/languages/zh.md) when the manuscript is written in Chinese.
-4. Read [the MEC domain pack](references/domains/mec.md) only when the manuscript concerns mobile edge computing, UAV-MEC, HAP-UAV, vehicular edge computing, dispersed edge computing, or a directly adjacent MEC setting. It also holds the reference-scale tables for the scale statement.
-5. If no domain pack matches, apply the generic workflow and derive domain facts only from the manuscript and supplied sources. Do not treat MEC examples as universal content.
+3. Read [the team house style](references/styles/team-house-style.md) unless the user names another venue or team style. It governs author voice, sentence rhythm, connectives, paragraph openers, and the contribution list and roadmap, and it overrides the generic example sentences of this skill where they differ.
+4. Read [the Chinese manuscript adapter](references/languages/zh.md) when the manuscript is written in Chinese.
+5. Read [the MEC domain pack](references/domains/mec.md) only when the manuscript concerns mobile edge computing, UAV-MEC, HAP-UAV, vehicular edge computing, dispersed edge computing, or a directly adjacent MEC setting. It also holds the reference-scale tables for the scale statement.
+6. If no domain pack matches, apply the generic workflow and derive domain facts only from the manuscript and supplied sources. Do not treat MEC examples as universal content.
+7. Run [the fingerprint script](scripts/style_fingerprint.py) on the draft before delivery when Python is available; `--citations` also lists citation keys repeated within the Introduction.
 
 ## Workflow
 
@@ -75,7 +77,7 @@ Popularity is not method motivation. The solver family is the carrier; the probl
 
 ### 6. Close with contributions and audit
 
-Use two to four contributions spanning the paper's actual novelty layers, such as `scenario/model -> formulation -> method -> evidence`. Start each item with an action and new object, then state a bounded effect or validation scope.
+Use two to four contributions spanning the paper's actual novelty layers, such as `scenario/model -> formulation -> method -> evidence`. Start each item with an action and new object, then state a bounded effect or validation scope. Follow the house-style contribution and roadmap shapes, and keep the list consistent with the abstract and the Conclusion.
 
 Run the core center-sentence, classification, evidence, citation, paragraph, and module-mapping gates. Then run the selected domain gates. Revise until the Introduction is causal, source-grounded, non-redundant, and clearly separated from Related Work.
 
@@ -85,7 +87,8 @@ Run the core center-sentence, classification, evidence, citation, paragraph, and
 2. Every definite expression has an antecedent (A); every action has a purpose or a cost (Q).
 3. Each proposition has one home (D); each universal or negative claim is tagged and supported (C).
 4. Length is inside the declared scale range, or the deviation is recorded (S).
-5. Ledgers and notes stay out of the manuscript (H).
+5. Sentence rhythm and connectives are inside the house-style band, or the deviation is recorded (R).
+6. Ledgers and notes stay out of the manuscript (H).
 
 ## Output constraints
 

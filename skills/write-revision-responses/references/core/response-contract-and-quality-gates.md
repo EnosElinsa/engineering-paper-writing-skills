@@ -117,6 +117,7 @@ A revision changes numbers, equation numbers, citation numbers, terms, and figur
 - Fix only obvious errors inside the edited sentences, with the smallest edit, and report each fix.
 - Check the edits for errors before building on them: quotes identical to the compiled source and complete; stale content left by a model change (old platform words, a figure that still draws the old object); two terms for one quantity; claims that a pending rerun may invalidate; quoted table layout equal to the source.
 - Record the patterns of the edits (what was strengthened, weakened, moved, or deleted, and why) as reusable writing rules for the next paper.
+- Measure the edits instead of only reading them. Run the bundled fingerprint script with `--diff snapshot edited` on the version sent to the co-author and the version received back. Classify every changed hunk as a merge, split, rewrite, insertion, or deletion, and compare the mean sentence length and the connectives of the changed sentences before and after. An edit type that recurs across rounds becomes a house-style rule. An edit type that conflicts with an existing house-style rule is reported to the user with both versions, not adopted silently, and the user decides which rule wins. [G-RV-style]
 
 ## 9. Change report
 

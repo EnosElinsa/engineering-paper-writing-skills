@@ -113,7 +113,7 @@ These are default ranges for the scale statement (protocol S in the shared contr
 | 4 | Decisions in plain words | The five decisions, each named by what it does, some with a purpose clause such as improving communication quality |
 | 5 | Main coupling | Position changes alter the channel, which couples trajectory with resource allocation |
 | 6 | Extra coupling | Altitude changes the line-of-sight probability |
-| 7 | Dynamics | Movement changes the topology and channel over time, so the optimization must be dynamic |
+| 7 | Dynamics | Movement changes the topology and channel over time, which makes the optimization dynamic |
 
 ## Citation-use evidence
 
@@ -137,7 +137,7 @@ The transferable standard is therefore stricter than occasional benchmark artifa
 - reuse a source across paragraphs only for materially independent facts when it is uniquely authoritative;
 - prefer restructuring a claim over swapping in a weaker citation solely to eliminate a duplicate.
 
-The bundled audit script detects numerical reuse. It cannot establish whether a source supports the claim; that requires the citation-role ledger and source reading.
+The bundled fingerprint script (`scripts/style_fingerprint.py --citations`) lists citation keys or numbers repeated within a section. It cannot establish whether a source supports the claim. That requires the citation-role ledger and source reading.
 
 ## Source-by-source anatomy
 

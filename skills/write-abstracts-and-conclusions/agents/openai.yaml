@@ -1,0 +1,4 @@
+interface:
+  display_name: "Abstract and Conclusion Writer"
+  short_description: "Draft titles, abstracts, index terms, contribution lists, and Conclusions that match the results"
+  default_prompt: "Use $write-abstracts-and-conclusions to draft, revise, or audit this paper's title, abstract, index terms, contribution list, or Conclusion."

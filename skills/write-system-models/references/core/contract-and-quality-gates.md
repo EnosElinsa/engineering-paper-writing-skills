@@ -216,9 +216,9 @@ Use center sentences that name the modeled operation:
 - `Following data collection, ...`
 - `At the end of each cycle, ...`
 - `To ensure ..., constraint C_k requires ...`
-- `Based on the above models, we formulate ...`
+- `Based on the above models, the [planning] problem is formulated as ...`
 
-Use `we assume` for a modeling assumption, `we define` for notation, `is given by` for an adopted relation, and `we introduce/design` only for a genuine scenario-specific modeling component.
+Use `is assumed to` for a modeling assumption, `is defined as` for notation, `is given by` for an adopted relation, and `this study introduces` only for a genuine scenario-specific modeling component.
 
 Avoid vague claims such as `for simplicity` without stating the consequence. State what a simplifying assumption affects and what it does not: an obstacle-free flight model does not make the communication links obstacle-free when the channel model accounts for blockage.
 

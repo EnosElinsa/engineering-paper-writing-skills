@@ -342,9 +342,9 @@ They do not need paper-by-paper discussion. Cite the primary algorithm paper or 
 
 | Status | Preferred language |
 |---|---|
-| Adopted unchanged | `we employ`, `we adopt`, `following` |
-| Adapted | `we adapt ... by`, `we modify ... to` |
-| New mechanism | `we design`, `we introduce`, `the proposed mechanism` |
+| Adopted unchanged | `is adopted`, `is employed`, `following` |
+| Adapted | `is adapted by`, `is modified to` |
+| New mechanism | `this study designs`, `this study introduces`, `the proposed mechanism` |
 | Empirical effect | `is intended to`, or a bounded claim tied to a cited result/ablation |
 | Proven effect | `guarantees` only under the stated assumptions and theorem |
 

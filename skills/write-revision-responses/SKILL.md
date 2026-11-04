@@ -14,6 +14,7 @@ Turn every editor and reviewer comment into a concrete, checkable change and a r
 1. Always read [the response contract and quality gates](references/core/response-contract-and-quality-gates.md) in full.
 2. When a response changes a manuscript section, revise that section with the matching section skill when it is installed (`write-introductions`, `write-related-work`, `write-system-models`, `write-methods`, `write-experiments`), and audit the sentences with `latex-prose-audit`. This skill decides what changes, where it lives, and how the letter reports it; the section skills govern how the section is written.
 3. If the user supplies a letter template from another paper, use it for format, structure, length, and locator phrasing only, never for content.
+4. Use [the fingerprint script](scripts/style_fingerprint.py) with `--diff` to classify a co-author's or supervisor's edits against the snapshot (merges, splits, rewrites, deletions) and to compare sentence length and connectives before and after them.
 
 ## Workflow
 
@@ -47,7 +48,7 @@ After a result, model, equation, or citation change, update every document and e
 
 ### 7. Integrate co-author or supervisor edits
 
-Keep their version untouched as a snapshot, adopt their framework, respect their deletions, fix only obvious errors with minimal edits, and check their edits for errors before building on them. At the end, report every change made after the snapshot with locations.
+Keep their version untouched as a snapshot, adopt their framework, respect their deletions, fix only obvious errors with minimal edits, and check their edits for errors before building on them. Classify their edits with the fingerprint script's `--diff` mode and record recurring edit types as writing rules for the next paper. At the end, report every change made after the snapshot with locations.
 
 ### 8. Audit and deliver
 

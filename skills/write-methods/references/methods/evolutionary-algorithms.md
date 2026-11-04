@@ -372,27 +372,27 @@ Define population size, objectives, chromosome length, neighbors, generations, s
 ### 10.1 Suitable opening language
 
 - `This section develops an evolutionary solution to Problem (P), whose [named coupling] makes direct feasibility preservation difficult.`
-- `We build on [baseline] and introduce [mechanism] to address [exact failure].`
+- `The proposed algorithm builds on [baseline] and introduces [mechanism] to address [exact failure].`
 - `The method is executed by [entity] at [time] using [inputs] and returns [output].`
 
 ### 10.2 Encoding language
 
 - `An individual comprises ...`
 - `The first segment encodes ..., whereas the second segment represents ...`
-- `This representation satisfies [constraint] by construction because ...`
+- `This representation satisfies [constraint] by construction, since ...`
 - `The remaining constraints are handled by ...`
 
 ### 10.3 Framework language
 
-- `The main population ...; the auxiliary population ...`
+- `The main population ..., whereas the auxiliary population ...`
 - `At each generation, the method first ..., then ..., and finally ...`
 - `The offspring produced in one population may update ... according to ...`
 
 ### 10.4 Mechanism language
 
 - `When [trigger], the mechanism preserves ... and regenerates ...`
-- `Because [downstream variable] depends on [upstream variable], reconstruction proceeds in the order ...`
-- `The rule directly enforces [constraints]; [remaining constraint] is instead handled through ...`
+- `Since [downstream variable] depends on [upstream variable], reconstruction proceeds in the order ...`
+- `The rule directly enforces [constraints]. [Remaining constraint] is instead handled through ...`
 
 ### 10.5 Output language
 

@@ -1,0 +1,164 @@
+from __future__ import annotations
+
+import contextlib
+import importlib.util
+import io
+import json
+import pathlib
+import re
+import tempfile
+import unittest
+
+
+ROOT = pathlib.Path(__file__).resolve().parents[1]
+SCRIPT = ROOT / "shared" / "scripts" / "style_fingerprint.py"
+STYLE = ROOT / "shared" / "styles" / "team-house-style.md"
+
+
+def _load():
+    spec = importlib.util.spec_from_file_location("style_fingerprint", SCRIPT)
+    module = importlib.util.module_from_spec(spec)
+    assert spec.loader is not None
+    spec.loader.exec_module(module)
+    return module
+
+
+F = _load()
+
+LONG = (
+    "The controller assigns every robot to one delivery zone in each planning cycle according to the "
+    "remaining battery level, the zone demand, and the distance to the charging station."
+)
+
+TEX = r"""
+\documentclass{article}
+\begin{document}
+\begin{abstract}
+Delivery robots serve campus zones. However, existing planners fix the station before operation.
+\end{abstract}
+\section{Introduction}
+Campus delivery has emerged as a key service for large sites \cite{a,b}. Existing planners fix the
+charging station before operation \cite{a}, which leaves robots far from the station late in the day.
+Smith et al. studied the zone layout in Fig.~\ref{fig:x}, where $x_i$ denotes the zone load.
+
+\section{Experimental Studies}
+The robots move to their zones. They stop at the hover points. They charge at the station. The
+station waits for them before the next cycle starts.
+We compare four methods because they share one budget; the baselines follow their papers, but the
+proposed algorithm uses the same population size and the same number of generations in every run.
+Hence, the comparison is fair. Future work is open, and we will extend the model to larger fleets.
+\end{document}
+"""
+
+
+class SentenceSplitTests(unittest.TestCase):
+    def test_protects_abbreviations_and_initials(self) -> None:
+        text = "Smith et al. reported it in Fig. 3, e.g. on the U.S. map. The next sentence starts here."
+        self.assertEqual(len(F.split_sentences(text)), 2)
+
+    def test_splits_after_acronym(self) -> None:
+        self.assertEqual(len(F.split_sentences("The robots use MEC. The station charges them.")), 2)
+
+    def test_inline_math_counts_in_sentence_length_not_in_words(self) -> None:
+        cleaned = F.clean_tex(r"The load $x_i$ of zone $i$ is bounded by the capacity of the station.")
+        self.assertEqual(F.sentence_length(cleaned), 14)
+        self.assertEqual(len(F.words(cleaned)), 12)
+
+
+class FingerprintTests(unittest.TestCase):
+    def setUp(self) -> None:
+        self.temp = tempfile.TemporaryDirectory()
+        self.path = pathlib.Path(self.temp.name) / "draft.tex"
+        self.path.write_text(TEX, encoding="utf-8")
+
+    def tearDown(self) -> None:
+        self.temp.cleanup()
+
+    def test_sections_are_classified(self) -> None:
+        result = F.fingerprint(self.path)
+        self.assertIn("intro", result)
+        self.assertIn("exp", result)
+        self.assertIn("abstract", result)
+        self.assertIn("body", result)
+
+    def test_banned_constructions_are_reported(self) -> None:
+        banned = F.fingerprint(self.path)["exp"]["banned"]
+        for name in ("because", "semicolon", ", but", "Hence", "we/our outside future work"):
+            self.assertIn(name, banned, name)
+        we_hits = banned["we/our outside future work"]
+        self.assertFalse(any("we will extend" in sentence for sentence in we_hits))
+
+    def test_short_run_is_flagged(self) -> None:
+        exp = F.fingerprint(self.path)["exp"]
+        self.assertTrue(exp["short_runs"], "three consecutive short sentences were not detected")
+
+    def test_band_flags_cover_body_and_banned_words(self) -> None:
+        flags = F.band_flags(F.fingerprint(self.path))
+        self.assertTrue(any("because" in flag for flag in flags))
+        self.assertTrue(any("run(s) of three or more" in flag for flag in flags))
+
+    def test_citation_reuse_within_section(self) -> None:
+        self.assertEqual(F.citation_reuse(self.path), {"intro": {"a": 2}})
+
+    def test_markdown_citation_ranges_expand(self) -> None:
+        path = pathlib.Path(self.temp.name) / "paper.md"
+        path.write_text(
+            "# I. INTRODUCTION\n\n" + LONG + " [3], [2, 5], [4-6].\n\n" + LONG + " [5].\n",
+            encoding="utf-8",
+        )
+        self.assertEqual(F.citation_reuse(path), {"intro": {"5": 3}})
+
+    def test_cli_json_runs(self) -> None:
+        buffer = io.StringIO()
+        with contextlib.redirect_stdout(buffer):
+            self.assertEqual(F.main([str(self.path), "--json"]), 0)
+        data = json.loads(buffer.getvalue())
+        self.assertIn("flags", data)
+        self.assertIn("body", data["sections"])
+
+
+class DiffTests(unittest.TestCase):
+    def test_merge_and_split_are_classified(self) -> None:
+        old = "The robots return to a distant station. This increases their travel distance. " + LONG
+        new = (
+            "The robots return to a distant station, increasing their travel distance. " + LONG
+            + " The station then waits for the slowest robot. Each robot reports its battery level."
+        )
+        with tempfile.TemporaryDirectory() as directory:
+            old_path = pathlib.Path(directory) / "old.txt"
+            new_path = pathlib.Path(directory) / "new.txt"
+            old_path.write_text(old, encoding="utf-8")
+            new_path.write_text(new, encoding="utf-8")
+            report = F.diff_report(old_path, new_path)
+        self.assertEqual(report["kinds"].get("merge"), 1)
+        self.assertEqual(report["kinds"].get("insert"), 1)
+        self.assertGreater(report["changed_mean_new"], report["changed_mean_old"])
+
+
+class BandDocumentationTests(unittest.TestCase):
+    def test_script_band_matches_house_style_tables(self) -> None:
+        text = STYLE.read_text(encoding="utf-8")
+        for (low, high) in F.TEAM_BAND["section_mean"].values():
+            self.assertIn(f"{low:.1f}–{high:.1f}", text)
+        body = F.TEAM_BAND["body"]
+        self.assertIn(f"{body['mean'][0]:.1f}–{body['mean'][1]:.1f}", text)
+        self.assertIn(f"{body['median'][0]:.0f}–{body['median'][1]:.0f}", text)
+        self.assertIn(f"{body['p90'][0]:.0f}–{body['p90'][1]:.0f}", text)
+        for key in ("share_over_35", "share_under_12"):
+            low, high = body[key]
+            self.assertIn(f"{round(low * 100)}%–{round(high * 100)}%", text)
+        for key in ("abstract_words", "conclusion_words"):
+            low, high = F.TEAM_BAND[key]
+            self.assertIn(f"{low}–{high} words", text)
+        for key in ("abstract_sentences", "conclusion_sentences"):
+            low, high = F.TEAM_BAND[key]
+            self.assertIn(f"{low}–{high} sentences", text)
+
+    def test_style_gate_ids_are_well_formed(self) -> None:
+        ids = re.findall(r"\[(G-STY-[a-z]+)\]", STYLE.read_text(encoding="utf-8"))
+        self.assertEqual(len(ids), len(set(ids)))
+        self.assertGreaterEqual(len(ids), 10)
+
+
+if __name__ == "__main__":
+    unittest.main()

@@ -33,7 +33,8 @@ take a volitional or result-achievement verb. Valid intentional agents include:
 - an algorithm or named algorithm instance;
 - a controller, optimizer, learner, decision maker, UAV, server, or modeled
   physical actor;
-- the authors (`we`) when describing an author action; and
+- the authors when describing an author action (`this study` in the team
+  house style; `we` where the venue style uses the first person); and
 - a system only when the sentence means its controller or executing entities.
 
 The following are not independent intentional agents:
@@ -377,7 +378,8 @@ unambiguous order. Otherwise write the pairings explicitly.
 
 - Present tense: paper content and stable definitions (`Section IV presents`,
   `Eq.~(8) defines`, `the algorithm uses`).
-- Past tense: completed experimental actions (`We conducted 30 runs`).
+- Past tense: completed experimental actions (`Thirty independent runs were
+  conducted`).
 - Within one result paragraph, choose a consistent pattern such as `Table III
   reports that the algorithm achieved...` or present tense throughout.
 - Future tense: actual future work only.
@@ -394,15 +396,40 @@ voice to hide an undefined executor or missing comparison.
 Coordinate like grammatical forms: `minimizing energy consumption and reducing
 delay`, or `energy-consumption minimization and delay reduction`. Do not mix
 infinitives, gerunds, and nominalizations in one list. Keep contribution
-openings parallel (`We formulate`, `We design`, `We evaluate`).
+openings parallel (`This study formulates`, `This study proposes`, `This study
+designs`).
 
 ### Rule 9: sentence economy and repetition
 
-#### 9.1 One principal claim per sentence
+#### 9.1 One principal claim per sentence, checked in both directions
 
-Split a sentence that contains several independent `which`, `where`, `while`,
-`thereby`, or `and` branches. Keep necessary causal chains intact, but make the
-actor and result visible in each clause.
+A sentence states one claim. The claim may carry its direct consequence, the
+two sides of one comparison, a short cause, a purpose, or a definition of its
+terms. Audit both failure directions. [G-AUD-merge]
+
+Split when a sentence:
+
+- joins two independent claims with `, and`;
+- ends with a participle that adds a new fact with a different implied subject;
+- contains a `which` clause with more than one possible antecedent;
+- exceeds about 40 words and carries two claims.
+
+Merge when the text:
+
+- has three or more consecutive sentences under 12 words;
+- spreads one subject's attributes over consecutive short sentences;
+- uses a sentence only to state the consequence of the previous one
+  (`This results in ...`, `This leads to ...`): fold it in with `, thereby` or a
+  same-subject participle;
+- splits the two sides of one comparison: rejoin them with `while` or
+  `whereas`;
+- shows a run of `Since`, `Therefore`, or `Accordingly` openers created by an
+  earlier splitting pass.
+
+After either change, keep the actor and result visible, check for dangling
+modifiers, and recount sentence-initial connectives. When the team house style
+applies, compare the section's sentence-length profile with its band before and
+after the edit, and do not join clauses with `, but` or a semicolon.
 
 #### 9.2 Remove duplicate meaning
 

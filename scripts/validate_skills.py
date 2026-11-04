@@ -21,6 +21,10 @@ DOMAIN_SKILL_FIELDS = {"name", "reference"}
 DOMAIN_INDEPENDENT_SKILLS = {"latex-prose-audit"}
 SHARED_FIELDS = {"source", "targets"}
 SHARED_SOURCE_ROOT = "shared"
+# Shared layers that carry no domain content and may also be copied into
+# domain-independent skills: the house-style profile and the bundled scripts.
+DOMAIN_NEUTRAL_SHARED_PREFIXES = ("shared/styles/", "shared/scripts/")
+SHARED_SCRIPT_PREFIX = "shared/scripts/"
 LEGACY_SKILL_PREFIX = "writing-mec-"
 LEGACY_REPOSITORY_NAME = "mec-paper-writing-skills"
 FORBIDDEN_PATTERNS: tuple[tuple[str, re.Pattern[str]], ...] = (
@@ -184,7 +188,12 @@ def load_domain_packs(
 
 
 def shared_destination(source: str) -> str:
-    """Return the in-skill path of a shared source, e.g. shared/core/x.md -> references/core/x.md."""
+    """Return the in-skill path of a shared source.
+
+    shared/core/x.md -> references/core/x.md; shared/scripts/x.py -> scripts/x.py.
+    """
+    if source.startswith(SHARED_SCRIPT_PREFIX):
+        return "scripts/" + source.removeprefix(SHARED_SCRIPT_PREFIX)
     return "references/" + source.removeprefix(f"{SHARED_SOURCE_ROOT}/")
 
 
@@ -237,7 +246,7 @@ def load_shared_files(
         for target in targets:
             if not isinstance(target, str) or target not in manifest_names:
                 errors.append(f"{label} refers to unknown skill {target!r}")
-            elif target in DOMAIN_INDEPENDENT_SKILLS:
+            elif target in DOMAIN_INDEPENDENT_SKILLS and not source.startswith(DOMAIN_NEUTRAL_SHARED_PREFIXES):
                 errors.append(f"{label}: {target} must not receive shared copies")
             elif target in clean_targets:
                 errors.append(f"{label} repeats target {target}")

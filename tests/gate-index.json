@@ -366,6 +366,153 @@
           "id": "G-RV-sync"
         }
       ]
+    },
+    "26": {
+      "summary": "Over-split paragraph of short same-subject sentences",
+      "gates": [
+        {
+          "file": "shared/styles/team-house-style.md",
+          "id": "G-STY-rhythm"
+        },
+        {
+          "file": "shared/styles/team-house-style.md",
+          "id": "G-STY-merge"
+        },
+        {
+          "file": "shared/core/reader-and-terminology-contract.md",
+          "id": "G-SH-R"
+        },
+        {
+          "file": "skills/latex-prose-audit/references/rules-and-checks.md",
+          "id": "G-AUD-merge"
+        }
+      ]
+    },
+    "27": {
+      "summary": "Banned because replaced by stacked Since and Hence openers",
+      "gates": [
+        {
+          "file": "shared/styles/team-house-style.md",
+          "id": "G-STY-conn"
+        }
+      ]
+    },
+    "28": {
+      "summary": "Clauses joined with but and semicolons, first person in the body",
+      "gates": [
+        {
+          "file": "shared/styles/team-house-style.md",
+          "id": "G-STY-ban"
+        },
+        {
+          "file": "shared/styles/team-house-style.md",
+          "id": "G-STY-voice"
+        }
+      ]
+    },
+    "29": {
+      "summary": "Promotional modifiers copied from a reference paper",
+      "gates": [
+        {
+          "file": "shared/styles/team-house-style.md",
+          "id": "G-STY-mod"
+        }
+      ]
+    },
+    "30": {
+      "summary": "Experiment section titled by topic and acronym with non-attested openers",
+      "gates": [
+        {
+          "file": "shared/styles/team-house-style.md",
+          "id": "G-STY-head"
+        },
+        {
+          "file": "shared/styles/team-house-style.md",
+          "id": "G-STY-open"
+        }
+      ]
+    },
+    "31": {
+      "summary": "Abstract without numbers, claiming the highest value, over the word limit",
+      "gates": [
+        {
+          "file": "skills/write-abstracts-and-conclusions/references/core/contract-and-quality-gates.md",
+          "id": "G-AC-abs"
+        },
+        {
+          "file": "skills/write-abstracts-and-conclusions/references/core/contract-and-quality-gates.md",
+          "id": "G-AC-num"
+        },
+        {
+          "file": "shared/styles/team-house-style.md",
+          "id": "G-STY-front"
+        }
+      ]
+    },
+    "32": {
+      "summary": "Conclusion restates contributions and drops the selected-run scope",
+      "gates": [
+        {
+          "file": "skills/write-abstracts-and-conclusions/references/core/contract-and-quality-gates.md",
+          "id": "G-AC-concl"
+        },
+        {
+          "file": "skills/write-abstracts-and-conclusions/references/core/contract-and-quality-gates.md",
+          "id": "G-AC-claim"
+        },
+        {
+          "file": "shared/styles/team-house-style.md",
+          "id": "G-STY-concl"
+        }
+      ]
+    },
+    "33": {
+      "summary": "Future work as a list of unrelated directions",
+      "gates": [
+        {
+          "file": "skills/write-abstracts-and-conclusions/references/core/contract-and-quality-gates.md",
+          "id": "G-AC-future"
+        }
+      ]
+    },
+    "34": {
+      "summary": "Title, index terms, and contribution items off pattern",
+      "gates": [
+        {
+          "file": "skills/write-abstracts-and-conclusions/references/core/contract-and-quality-gates.md",
+          "id": "G-AC-title"
+        },
+        {
+          "file": "skills/write-abstracts-and-conclusions/references/core/contract-and-quality-gates.md",
+          "id": "G-AC-kw"
+        },
+        {
+          "file": "skills/write-abstracts-and-conclusions/references/core/contract-and-quality-gates.md",
+          "id": "G-AC-contrib"
+        },
+        {
+          "file": "shared/styles/team-house-style.md",
+          "id": "G-STY-contrib"
+        }
+      ]
+    },
+    "35": {
+      "summary": "Abstract and contribution list disagree after a rerun",
+      "gates": [
+        {
+          "file": "skills/write-abstracts-and-conclusions/references/core/contract-and-quality-gates.md",
+          "id": "G-AC-sync"
+        }
+      ]
+    },
+    "36": {
+      "summary": "Supervisor edits adopted without classification against the house style",
+      "gates": [
+        {
+          "file": "skills/write-revision-responses/references/core/response-contract-and-quality-gates.md",
+          "id": "G-RV-style"
+        }
+      ]
     }
   }
 }

@@ -492,21 +492,21 @@ Rounding or argmax alone is not a complete hybrid-action design when decisions h
 ### 12.1 Problem-to-RL transition
 
 - `Problem (P) requires slot-level decisions under [named uncertainty], whereas solving the full optimization after each change exceeds the decision interval.`
-- `Because each UAV observes only [local information] while the objective depends on [global coupling], we adopt a CTDE multi-agent framework.`
+- `Since each UAV observes only [local information] while the objective depends on [global coupling], a CTDE multi-agent framework is adopted.`
 - `The action combines [discrete choice] with [conditional continuous parameters], motivating a parameterized hybrid-action learner.`
 
 ### 12.2 MDP interface
 
 - `At the beginning of slot t, agent i observes ...`
-- `The observation contains ... because these quantities determine ...`
+- `The observation contains ..., which determine ...`
 - `The action maps to the model decisions as follows ...`
-- `The reward is the negative of [objective] plus [bounded terms]; these penalties discourage rather than preclude violations.`
+- `The reward is the negative of [objective] plus [bounded terms]. These penalties discourage rather than preclude violations.`
 
 ### 12.3 Architecture
 
 - `During centralized training, the critic receives ..., whereas actor i uses ...`
 - `At execution, the critic and exploration process are removed, and each actor maps its local observation to ...`
-- `We replace the baseline [interface] with [adaptation] because ...`
+- `The baseline [interface] is replaced with [adaptation] to ...`
 
 ### 12.4 Action realization
 

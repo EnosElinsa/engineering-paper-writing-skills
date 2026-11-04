@@ -5,7 +5,7 @@ import pathlib
 import tempfile
 import unittest
 
-from scripts.validate_skills import validate_collection, validate_shared
+from scripts.validate_skills import shared_destination, validate_collection, validate_shared
 
 
 def _write(path: pathlib.Path, content: str) -> None:
@@ -287,6 +287,42 @@ class ValidateSharedTests(unittest.TestCase):
         add_shared_file(self.root, ("latex-prose-audit",))
         errors = validate_collection(self.root)
         self.assertTrue(any("must not receive shared copies" in error for error in errors))
+
+    def test_accepts_house_style_and_script_for_latex_prose_audit(self) -> None:
+        temp = tempfile.TemporaryDirectory()
+        self.addCleanup(temp.cleanup)
+        root = pathlib.Path(temp.name)
+        make_collection(root, ("latex-prose-audit",))
+        style_source, style_copy = "shared/styles/house.md", "references/styles/house.md"
+        script_source, script_copy = "shared/scripts/measure.py", "scripts/measure.py"
+        _write(root / style_source, "# House\n\nStyle.\n")
+        _write(root / script_source, "print('measure')\n")
+        _write(
+            root / "shared-files.json",
+            json.dumps(
+                {
+                    "schema_version": 1,
+                    "files": [
+                        {"source": style_source, "targets": ["latex-prose-audit"]},
+                        {"source": script_source, "targets": ["latex-prose-audit"]},
+                    ],
+                },
+                indent=2,
+            ),
+        )
+        skill = root / "skills" / "latex-prose-audit"
+        _write(skill / style_copy, "# House\n\nStyle.\n")
+        _write(skill / script_copy, "print('measure')\n")
+        skill_md = skill / "SKILL.md"
+        _write(
+            skill_md,
+            skill_md.read_text() + f"\nRead [the style]({style_copy}) and run [the script]({script_copy}).\n",
+        )
+        self.assertEqual(validate_collection(root), [])
+
+    def test_script_copy_lives_outside_references(self) -> None:
+        self.assertEqual(shared_destination("shared/scripts/measure.py"), "scripts/measure.py")
+        self.assertEqual(shared_destination("shared/styles/house.md"), "references/styles/house.md")
 
     def test_rejects_manifest_missing_when_shared_sources_exist(self) -> None:
         (self.root / "shared-files.json").unlink()

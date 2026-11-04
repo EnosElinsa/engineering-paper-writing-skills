@@ -475,7 +475,8 @@ captions parallel and use LaTeX en-dash ranges such as `Figs.~3(a)--(c)`.
 
 - Present: paper content, definitions, algorithm behavior, and current table or
   figure (`Section IV presents`, `the algorithm selects`, `Table III reports`).
-- Past: completed experimental actions (`We conducted 30 runs`).
+- Past: completed experimental actions (`Thirty independent runs were
+  conducted`).
 - Result tense: choose a consistent local pattern, such as `Table III reports
   that the algorithm achieved...` or journal-style present throughout.
 - Future: actual future work only.
@@ -491,9 +492,10 @@ incomplete.
 
 The papers contain long lists of decisions, objectives, constraints, and
 contributions. Coordinate noun phrases with noun phrases or verbs with verbs.
-Keep contribution openings parallel (`We formulate`, `We design`, `We
-evaluate`) and do not mix infinitives, gerunds, and nominalizations in one
-series.
+Keep contribution openings parallel (`This study formulates`, `This study
+proposes`, `This study designs`, following the team house style rather than the
+first person of the reference papers) and do not mix infinitives, gerunds, and
+nominalizations in one series.
 
 ## Cross-corpus conclusions
 

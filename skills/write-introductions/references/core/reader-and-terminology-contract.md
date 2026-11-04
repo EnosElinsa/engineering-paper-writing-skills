@@ -49,6 +49,17 @@ Every range below is a default. Deviate when the venue limits length, an extra i
 
 Counting rule. Paragraph: blank-line-delimited prose block of at least 20 words, page-break fragments merged, contribution bullets counted, page furniture (running headers, copyright lines), figure source code, headings, captions, tables, equations, and pseudocode excluded. Words: alphabetic tokens without citation brackets or inline math. Sentences: split at final punctuation before a capital letter, protecting "et al.", "Fig.", "e.g.", "i.e."; report as plus or minus one. Citations: expand ranges, count each bracketed number once per occurrence, and take unique numbers over the section body.
 
+## R. Sentence-rhythm protocol
+
+Scale counts paragraphs and words. Rhythm counts how those words are packed into sentences. A section can sit inside its scale range and still read as a list of short statements. [G-SH-R]
+
+1. Default: when the team house style applies, use its sentence-length band, connective profile, and combining rules. With other supplied references, measure them with the counting rule above (inline math counted as one word in sentence lengths) and record mean, median, 90th percentile, the shares of sentences over 35 and under 12 words, and the sentence-initial connectives per 100 sentences.
+2. Default: keep the draft inside the band. When it falls below, merge before cutting: fold a direct consequence, the second half of a comparison, a short cause, a purpose, or a definition back into the sentence it belongs to. When it rises above, split at the second independent claim.
+3. Default: after any splitting pass, recount the connectives. A banned word must not be replaced everywhere by one substitute.
+4. Run the bundled fingerprint script on the draft when Python is available, and read every flagged sentence before changing it.
+
+Deviate when the venue or the content requires it (a dense list of settings, a definition-heavy model subsection), and record the reason in the scale statement. For a Chinese manuscript, skip the English word bands and apply only items 2 and 3.
+
 ## H. Manuscript hygiene
 
 Ledgers, term tables, novelty tables, audit results, and verification notes are working artifacts. Deliver them in the reply or a separate file, never in the manuscript body, an appendix, or a comment unless the user asks. An appendix holds paper content only (proofs, derivations, extra results). When the manuscript is written in Chinese, also apply the register, punctuation, and numbering rules of [the Chinese manuscript adapter](../languages/zh.md) before delivery. [G-SH-H]

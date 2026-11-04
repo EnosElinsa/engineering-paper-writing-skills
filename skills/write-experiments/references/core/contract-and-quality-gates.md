@@ -262,12 +262,12 @@ State the perturbation, its magnitude, and whether it was present in training or
 
 ### Preferred openings
 
-- `We first examine whether ...`
-- `This experiment isolates the effect of ...`
-- `To evaluate performance as ... increases, ...`
-- `Table X compares ... under the common budget in Section ...`
-- `The results show that ... across ...`
-- `The advantage narrows on ... because ...`
+- `In this section, simulation experiments are conducted to evaluate ...`
+- `To investigate the effects of ... on ..., a comparative study is conducted under ...`
+- `This experiment presents a comparison of ..., namely ..., to examine how ... affect ...`
+- `As shown in Table X, ... across all three instances.`
+- `These results indicate that ...`
+- `The advantage narrows on ..., where ...`
 
 Use these as rhetorical patterns, not mandatory sentence templates.
 
@@ -281,9 +281,9 @@ Avoid promotional or empty verbs: `outperforms greatly`, `proves effectiveness`,
 
 Use a transition only when it names the evidentiary relationship:
 
-- full method to ablation: `Having established the aggregate advantage, we next isolate ...`
-- nominal to scale: `We then examine whether this advantage persists as ...`
-- convergence to system outcome: `Convergence establishes trainability; the next experiment evaluates the resulting policy on ...`
+- full method to ablation: `To identify the contribution of each component, an ablation study is conducted on ...`
+- nominal to scale: `To evaluate whether this advantage persists as ... increases, ...`
+- convergence to system outcome: `After training converges, the resulting policy is evaluated on ...`
 - result to exception: `This pattern changes on the largest instance, where ...`
 
 Avoid mechanical enumeration such as `Next, Fig. 7 is analyzed`.

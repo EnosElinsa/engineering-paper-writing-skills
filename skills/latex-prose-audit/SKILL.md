@@ -40,6 +40,14 @@ question; use the project's LaTeX diagnostic workflow for that narrower task.
    overall organization.
 4. Read [rules-and-checks.md](references/rules-and-checks.md) before the first
    full audit. Use its rules as checks with evidence, not as a word blacklist.
+5. Read [the team house style](references/styles/team-house-style.md) unless
+   the user names another venue or team style. Its author voice, sentence
+   rhythm, connective profile, and banned constructions are audit rules for the
+   team's manuscripts, and they take precedence over this skill's generic
+   examples where the two differ.
+6. Run [the fingerprint script](scripts/style_fingerprint.py) on the target
+   when Python is available. Use its flags as leads: read each flagged sentence
+   before reporting it.
 
 ## Audit workflow
 
@@ -79,6 +87,9 @@ the missing decision instead.
 2. **Category B — sentence-level English:** check direct verb choice,
    collocations, modifiers, numerical qualifiers, pronouns, `which/where`,
    parentheticals, `respectively`, tense, voice, parallelism, and repetition.
+   Check sentence rhythm in both directions: stacked claims that need a split,
+   and runs of short sentences or stacked `Since`/`Therefore` openers that need
+   a merge.
 3. **Category C — mathematical and artifact prose:** check scalar/vector/
    matrix/set/function notation, indices and superscripts, domains, ordered
    sequences, dimensions, units, formula semantics, algorithm line prose,
@@ -128,7 +139,9 @@ After `--fix` or an explicitly authorized revision:
 2. rerun the ledgers and search for stale terms, labels, and symbols;
 3. run the project's LaTeX compiler (normally `latexmk` with the target's
    engine) when available, and report the exact command and result;
-4. run `git diff --check` when the target is in a Git working tree.
+4. rerun the fingerprint script and compare the sentence-length profile and
+   connective counts with the pre-edit run;
+5. run `git diff --check` when the target is in a Git working tree.
 
 If compilation is unavailable or the source is incomplete, report that status
 explicitly. Never claim that a LaTeX fix is verified from a static text scan

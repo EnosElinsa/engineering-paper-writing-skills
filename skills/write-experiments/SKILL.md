@@ -13,11 +13,13 @@ Design and write an experimental section as a chain of questions, controlled com
 
 1. Always read [the core contract and quality gates](references/core/contract-and-quality-gates.md) in full.
 2. Always read [the reader and terminology contract](references/core/reader-and-terminology-contract.md).
-3. Read [the Chinese manuscript adapter](references/languages/zh.md) when the manuscript is written in Chinese.
-4. For population-based, Pareto, constrained, or dynamic evolutionary optimization, read [the evolutionary-algorithm route](references/methods/evolutionary-algorithms.md).
-5. For value-based, policy-gradient, actor-critic, single-agent, or multi-agent learning, read [the reinforcement-learning route](references/methods/reinforcement-learning.md).
-6. Read [the MEC domain pack](references/domains/mec.md) only for MEC or directly adjacent edge-computing systems. It also holds the order-of-magnitude scale table.
-7. When several routes apply, read all relevant references and audit each evidence channel separately.
+3. Read [the team house style](references/styles/team-house-style.md) unless the user names another venue or team style. It governs author voice, sentence rhythm, connectives, section and subsection titles, and paragraph openers, and it overrides the generic example sentences of this skill where they differ.
+4. Read [the Chinese manuscript adapter](references/languages/zh.md) when the manuscript is written in Chinese.
+5. For population-based, Pareto, constrained, or dynamic evolutionary optimization, read [the evolutionary-algorithm route](references/methods/evolutionary-algorithms.md).
+6. For value-based, policy-gradient, actor-critic, single-agent, or multi-agent learning, read [the reinforcement-learning route](references/methods/reinforcement-learning.md).
+7. Read [the MEC domain pack](references/domains/mec.md) only for MEC or directly adjacent edge-computing systems. It also holds the order-of-magnitude scale table.
+8. When several routes apply, read all relevant references and audit each evidence channel separately.
+9. Run [the fingerprint script](scripts/style_fingerprint.py) on the draft before delivery when Python is available.
 
 ## Workflow
 
@@ -82,7 +84,8 @@ Apply the core evidence, fairness, reproducibility, statistics, paragraph, and c
 2. Every definite expression has an antecedent (A); every action has a purpose or a cost (Q).
 3. Each proposition has one home (D); each universal or negative claim is tagged and supported (C).
 4. Length is inside the declared scale range, or the deviation is recorded (S).
-5. Ledgers and notes stay out of the manuscript (H).
+5. Sentence rhythm and connectives are inside the house-style band, or the deviation is recorded (R).
+6. Ledgers and notes stay out of the manuscript (H).
 
 ## Output constraints
 

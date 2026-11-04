@@ -13,9 +13,11 @@ Use Related Work as the evidence layer of the paper's motivation. Organize prior
 
 1. Always read [the core contract and quality gates](references/core/contract-and-quality-gates.md) in full.
 2. Always read [the reader and terminology contract](references/core/reader-and-terminology-contract.md).
-3. Read [the Chinese manuscript adapter](references/languages/zh.md) when the manuscript is written in Chinese.
-4. Read [the MEC domain pack](references/domains/mec.md) only for mobile edge computing, UAV-MEC, HAP-UAV, vehicular edge computing, dispersed edge computing, or directly adjacent MEC settings. It also holds the reference-scale and citation-recovery tables.
-5. If no domain pack matches, derive the classification axes and terminology from the target manuscript and verified literature. Do not import MEC taxonomies into another field.
+3. Read [the team house style](references/styles/team-house-style.md) unless the user names another venue or team style. It governs author voice, sentence rhythm, connectives, subsection titles, and paragraph openers, and it overrides the generic example sentences of this skill where they differ.
+4. Read [the Chinese manuscript adapter](references/languages/zh.md) when the manuscript is written in Chinese.
+5. Read [the MEC domain pack](references/domains/mec.md) only for mobile edge computing, UAV-MEC, HAP-UAV, vehicular edge computing, dispersed edge computing, or directly adjacent MEC settings. It also holds the reference-scale and citation-recovery tables.
+6. If no domain pack matches, derive the classification axes and terminology from the target manuscript and verified literature. Do not import MEC taxonomies into another field.
+7. Run [the fingerprint script](scripts/style_fingerprint.py) on the draft before delivery when Python is available.
 
 ## Governing distinction
 
@@ -91,7 +93,8 @@ Apply the core classification, evidence, gap, citation, paragraph, and resolutio
 2. Every definite expression has an antecedent (A); every action has a purpose or a cost (Q).
 3. Each proposition has one home (D); each universal or negative claim is tagged and supported (C).
 4. Length is inside the declared scale range, or the deviation is recorded (S).
-5. Ledgers and notes stay out of the manuscript (H).
+5. Sentence rhythm and connectives are inside the house-style band, or the deviation is recorded (R).
+6. Ledgers and notes stay out of the manuscript (H).
 
 ## Output constraints
 

@@ -4,11 +4,12 @@
 
 A portable, extensible collection of source-grounded Codex skills for writing and auditing engineering research papers.
 
-The repository separates three layers:
+The repository separates four layers:
 
-- **generic section contracts** for Introductions, Related Work, System Models, Methods, and Experiments;
+- **generic section contracts** for Introductions, Related Work, System Models, Methods, Experiments, and the summary parts (title, abstract, index terms, contribution list, Conclusion);
 - **method-family routes** for evolutionary algorithms and reinforcement learning;
-- **domain packs** for field-specific causal structure, terminology, physical checks, and evidence expectations.
+- **domain packs** for field-specific causal structure, terminology, physical checks, and evidence expectations;
+- **a team house style** for measured author voice, sentence rhythm, connectives, titles, and paragraph openers.
 
 Mobile edge computing is the first formally supported domain pack. The generic skills remain usable outside MEC, while `latex-prose-audit` stays domain-independent.
 
@@ -21,10 +22,19 @@ Mobile edge computing is the first formally supported domain pack. The generic s
 | `write-system-models` | Architecture inheritance, operational flow, symbols, timing, constraints, and formulation closure | `domains/mec.md` |
 | `write-methods` | Model-to-algorithm traceability, novelty boundaries, executable semantics, deployment, and complexity | evolutionary algorithms, reinforcement learning, and `domains/mec.md` |
 | `write-experiments` | Evaluation contracts, fair comparisons, evidence-to-claim writing, statistics, ablations, and robustness | evolutionary algorithms, reinforcement learning, and `domains/mec.md` |
+| `write-abstracts-and-conclusions` | Titles, abstracts with quantified results, index terms, contribution lists and roadmaps, Conclusions ordered by evidence, future-work chains, and agreement of all summary parts after reruns | team house style |
 | `write-revision-responses` | Comment ledgers, model-or-test answers to requests, response-letter structure, verbatim quotation, highlighting policy, cross-document synchronization after reruns, integration of co-author edits, and change reports | domain-independent |
 | `latex-prose-audit` | LaTeX-aware sentence-level prose, semantic roles, articles, notation, mathematical phrasing, references, and source integrity | domain-independent |
 
 Each skill is independently installable. The section skills always load their generic core, then load only the applicable method and domain references.
+
+## Team house style
+
+`shared/styles/team-house-style.md` records the measured conventions of the author team that calibrated these skills: author voice, a sentence-rhythm band (mean sentence length, its spread, and the shares of very long and very short sentences), the rules for combining and splitting sentences, a connective profile, banned constructions, section and subsection titles, attested paragraph openers, and the shapes of the title, abstract, index terms, contribution list, roadmap, and Conclusion. The numbers come from four published IEEE Transactions papers by the team and from measured before-and-after diffs of supervisor edits. Where the two disagree, the supervisor's practice wins, and the file names the reference-paper habits that are not imitated.
+
+The section skills, `write-abstracts-and-conclusions`, and `latex-prose-audit` read the house style unless the user names another venue or team style. The shared contract adds protocol R, which keeps a draft inside the rhythm band and checks over-splitting as well as over-long sentences.
+
+`shared/scripts/style_fingerprint.py` measures a `.tex`, `.md`, or `.txt` manuscript against that band using only the Python standard library: section scale, the sentence-length profile, connectives per 100 sentences, within-sentence features, banned constructions with their sentences, runs of short sentences, repeated citation keys within a section (`--citations`), and a sentence-level classification of edits between two versions (`--diff OLD NEW`). It is copied into every skill that refers to it at `scripts/style_fingerprint.py`.
 
 ## MEC domain pack
 
@@ -53,12 +63,16 @@ skills/
     references/methods/reinforcement-learning.md
     references/domains/mec.md
   write-experiments/
+  write-abstracts-and-conclusions/
+    references/core/contract-and-quality-gates.md
   write-revision-responses/
     references/core/response-contract-and-quality-gates.md
   latex-prose-audit/
 shared/
   core/reader-and-terminology-contract.md
   languages/zh.md
+  styles/team-house-style.md
+  scripts/style_fingerprint.py
 skills-manifest.json
 domain-packs.json
 shared-files.json
@@ -66,13 +80,13 @@ scripts/
 tests/
 ```
 
-Each section skill also carries byte-identical copies of the files under `shared/` at `references/core/reader-and-terminology-contract.md` and `references/languages/zh.md`. `shared/` is the canonical source and `shared-files.json` lists the target skills; `latex-prose-audit` never receives a copy. The Chinese manuscript adapter is a language layer loaded only for Chinese manuscripts, not a domain pack.
+Each section skill, including `write-abstracts-and-conclusions`, carries byte-identical copies of the files under `shared/`: `references/core/reader-and-terminology-contract.md`, `references/languages/zh.md`, `references/styles/team-house-style.md`, and `scripts/style_fingerprint.py`. `latex-prose-audit` receives only the house style and the script, and `write-revision-responses` only the script. `shared/` is the canonical source and `shared-files.json` lists the target skills. The Chinese manuscript adapter is a language layer loaded only for Chinese manuscripts, and the house style is a style layer. Neither is a domain pack.
 
 A future domain is added as a matching `references/domains/<domain>.md` adapter in the affected section skills and one declaration in `domain-packs.json`. Domain adapters may specialize a core contract, but must not replace generic evidence, causality, safety, or claim-bounding gates.
 
 ## Install with Codex
 
-Ask Codex to install all seven paths from this public repository:
+Ask Codex to install all eight paths from this public repository:
 
 ```text
 Install these skills from EnosElinsa/engineering-paper-writing-skills:
@@ -81,6 +95,7 @@ skills/write-related-work
 skills/write-system-models
 skills/write-methods
 skills/write-experiments
+skills/write-abstracts-and-conclusions
 skills/write-revision-responses
 skills/latex-prose-audit
 ```
@@ -136,8 +151,9 @@ python scripts/sync_shared.py --check
 - **Generic core, explicit specialization:** universal section logic stays separate from method and domain assumptions.
 - **Source-grounded rules:** domain adapters record the cross-paper evidence behind specialized guidance.
 - **Progressive disclosure:** a skill loads only the references required by the target paper.
-- **Shared files are copied, then synchronised:** a skill must stay installable on its own and its links may not leave its directory, so rules common to the section skills (the reader and terminology contract, the Chinese manuscript adapter) are copied into each one. `shared/` holds the single canonical source, `scripts/sync_shared.py` writes the copies, and `scripts/sync_shared.py --check` plus the validator fail the build when a copy drifts or goes missing.
-- **Scale from evidence, not from core:** benchmark-derived lengths live in the domain pack as measured defaults with their counting rule. The generic cores state only the protocol for declaring a range.
+- **Shared files are copied, then synchronised:** a skill must stay installable on its own and its links may not leave its directory, so rules common to several skills (the reader and terminology contract, the Chinese manuscript adapter, the team house style, the fingerprint script) are copied into each one. `shared/` holds the single canonical source, `scripts/sync_shared.py` writes the copies, and `scripts/sync_shared.py --check` plus the validator fail the build when a copy drifts or goes missing.
+- **Scale from evidence, not from core:** benchmark-derived lengths live in the domain pack, and the team's sentence-rhythm band lives in the house style, as measured defaults with their counting rule. The generic cores state only the protocols for declaring a range.
+- **Measured, then enforced:** recommended sentence patterns are checked by a unit test against the constructions the house style bans, and the fingerprint script's band is checked against the house-style tables.
 - **Artifact-independent:** no skill requires a particular wiki, manuscript format, Git workflow, corpus directory, or local machine path.
 - **Evidence-bounded:** novelty, citation, causality, optimality, robustness, and performance claims cannot exceed supplied evidence.
 - **Extensible contracts:** new domains use the same adapter interface and validation rules as MEC.

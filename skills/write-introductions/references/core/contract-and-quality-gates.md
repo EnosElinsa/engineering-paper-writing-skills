@@ -23,7 +23,7 @@ The first sentence states the paragraph's main conclusion or advance. It should 
 Avoid empty centers:
 
 - Weak: `Recently, the proposed system has attracted extensive attention.`
-- Strong: `Distributed sensing reduces response time in remote operations, but intermittent connectivity makes reliable data delivery depend on local buffering.`
+- Strong: `Although distributed sensing reduces response time in remote operations, intermittent connectivity makes reliable data delivery depend on local buffering.`
 
 ### Subordinate center sentences
 
@@ -332,14 +332,14 @@ Control sentence burden:
 
 ### Functional English sentence patterns
 
-- Background: `X has emerged as ... because ...`
+- Background: `X has emerged as a key enabler of ..., where ...`
 - Narrowing: `However, X remains constrained by ...`
-- Classification: `Existing studies can be categorized according to ...`
+- Classification: `Existing studies can be categorized into N categories according to ..., namely, ...`
 - Synthesis: `Across these approaches, ...`
 - Scenario: `To address this limitation, this study considers ...`
 - Problem: `In this scenario, the controller jointly determines ...`
 - Algorithm motivation: `Solving the formulated problem poses ...`
-- Method: `To address this challenge, we propose ...`
+- Method: `To address this challenge, this study proposes ...`
 
 Use these as functional prompts, not fill-in-the-blank prose. Avoid:
 
