@@ -173,7 +173,8 @@ def _pct(value: float) -> str:
     return f"{round(value * 100)}%"
 
 
-def render_rhythm(band: dict, references: list[dict], baseline: dict | None, approved: list[dict]) -> str:
+def render_rhythm(band: dict, references: list[dict], baseline: dict | None, approved: list[dict],
+                  section_tolerance: float = 3.0) -> str:
     b = band["body"]
     count = NUMBER_WORDS.get(len(references), str(len(references)))
     header = f"| Body measure | Band | Reference papers ({count}) |"
@@ -217,10 +218,10 @@ def render_rhythm(band: dict, references: list[dict], baseline: dict | None, app
         lines.append(
             "The abstract and Conclusion bands include the supervisor-approved values ("
             + "; ".join(approved_values)
-            + "). Section means within one word of the band count as inside."
+            + f"). Section means within {section_tolerance:g} words of the band count as inside."
         )
     else:
-        lines.append("Section means within one word of the band count as inside.")
+        lines.append(f"Section means within {section_tolerance:g} words of the band count as inside.")
     return "\n".join(lines)
 
 
@@ -280,7 +281,8 @@ def write(root: pathlib.Path, module: ModuleType, old: dict, band: dict, referen
     script.write_bytes(replace_block(script.read_text(encoding="utf-8"), "band", render_band(band), "py").encode("utf-8"))
 
     style = root / STYLE
-    text = replace_block(style.read_text(encoding="utf-8"), "rhythm", render_rhythm(band, references, baseline, approved), "md")
+    text = replace_block(style.read_text(encoding="utf-8"), "rhythm", render_rhythm(band, references, baseline, approved,
+                                                                 module.LANGUAGES["en"]["tolerance"]["section"]), "md")
     for heading, prefix in (("## 10. Title, abstract, and index terms", "abstract"), ("## 12. Conclusion", "conclusion")):
         for unit in ("words", "sentences"):
             key = f"{prefix}_{unit}"
@@ -298,9 +300,69 @@ def write(root: pathlib.Path, module: ModuleType, old: dict, band: dict, referen
     return notes
 
 
+VALIDATION_KEYS = ("mean", "median", "p90", "share_long", "share_short")
+
+
+def validate(module: ModuleType, band: dict, groups: list[tuple[str, list[dict]]]) -> list[dict]:
+    """Compare validation papers with a band, using the fingerprint script's tolerances."""
+    tolerance = module.LANGUAGES["en"]["tolerance"]
+    results = []
+    for label, rows in groups:
+        for row in rows:
+            outside = []
+            for key in VALIDATION_KEYS:
+                low, high = band["body"][key]
+                if module._status(row[key], low, high, tolerance[key]) not in {"in", "near"}:
+                    outside.append(f"body {key} {row[key]}")
+            for section, value in row["sections"].items():
+                if section in band["section_mean"]:
+                    low, high = band["section_mean"][section]
+                    if module._status(value, low, high, tolerance["section"]) not in {"in", "near"}:
+                        outside.append(f"{section} {value}")
+            results.append({"group": label, "name": row["name"], "mean": row["mean"], "outside": outside})
+    return results
+
+
+def render_validation(groups: list[tuple[str, list[dict]]], results: list[dict]) -> str:
+    total = sum(len(rows) for _, rows in groups)
+    parts = ", ".join(f"{len(rows)} {label}" for label, rows in groups)
+    means = [row["mean"] for _, rows in groups for row in rows]
+    lines = [
+        f"Validation. The band was checked against {total} further published papers that were not used to set it: {parts}. "
+        f"Their body mean sentence lengths run from {min(means):.1f} to {max(means):.1f} words.",
+        "",
+        "| Group | Papers | Body mean (min–max) | Body mean inside the band or its tolerance | Any section mean outside |",
+        "|---|---|---|---|---|",
+    ]
+    for label, rows in groups:
+        mine = [r for r in results if r["group"] == label]
+        inside = sum(1 for r in mine if not any(o.startswith("body mean") for o in r["outside"]))
+        any_section = sum(1 for r in mine if any(not o.startswith("body") for o in r["outside"]))
+        values = [r["mean"] for r in mine]
+        lines.append(f"| {label} | {len(mine)} | {min(values):.1f}–{max(values):.1f} | {inside} of {len(mine)} | {any_section} of {len(mine)} |")
+    return "\n".join(lines)
+
+
+def parse_groups(items: list[str]) -> list[tuple[str, list[pathlib.Path]]]:
+    groups = []
+    for item in items:
+        label, separator, path = item.partition("=")
+        if not separator or not label.strip() or not path.strip():
+            raise ValueError(f"--validate expects LABEL=PATH, got {item!r}")
+        groups.append((label.strip(), collect([pathlib.Path(path.strip())])))
+    return groups
+
+
 def main(argv: list[str] | None = None) -> int:
     parser = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
     parser.add_argument("--references", nargs="+", type=pathlib.Path, required=True)
+    parser.add_argument(
+        "--validate",
+        nargs="*",
+        default=[],
+        metavar="LABEL=PATH",
+        help="validation papers that do not set the band; with --write, the summary is written to the house style",
+    )
     parser.add_argument("--approved", nargs="*", type=pathlib.Path, default=[])
     parser.add_argument("--baseline", type=pathlib.Path)
     parser.add_argument("--abstract-limit", type=int)
@@ -328,11 +390,22 @@ def main(argv: list[str] | None = None) -> int:
     out("\nProposed band differs from the current one:\n" if changes else "\nProposed band equals the current one.\n")
     for change in changes:
         out(f"  {change}\n")
+    groups = [(label, [measure(module, p) for p in paths]) for label, paths in parse_groups(args.validate)]
+    results = validate(module, band, groups) if groups else []
+    if results:
+        out("\nValidation against the proposed band:\n")
+        for result in results:
+            status = "inside" if not result["outside"] else "outside: " + ", ".join(result["outside"])
+            out(f"  [{result['group']}] {result['name'][:50]}: mean {result['mean']} {status}\n")
     if args.check:
         return 1 if changes else 0
     if args.write:
         for note in write(root, module, old, band, references, baseline, approved):
             out(f"note: {note}\n")
+        if groups:
+            style = root / STYLE
+            text = replace_block(style.read_text(encoding="utf-8"), "validation", render_validation(groups, results), "md")
+            style.write_bytes(text.encode("utf-8"))
     return 0
 
 

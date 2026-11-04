@@ -149,7 +149,7 @@ LANGUAGES = {
         "short": 12,
         "long": 35,
         "band": TEAM_BAND,
-        "tolerance": {"mean": 1.0, "median": 1.0, "p90": 2.0, "share_long": 0.02, "share_short": 0.02, "section": 1.0},
+        "tolerance": {"mean": 1.0, "median": 1.0, "p90": 2.0, "share_long": 0.02, "share_short": 0.02, "section": 3.0},
         "connectives": (
             "As a result", "On the other hand", "On one hand", "In this section", "In this study", "In this paper",
             "In addition", "In particular", "In contrast", "For example", "For instance", "To this end",
@@ -186,7 +186,7 @@ LANGUAGES = {
         "short": round(12 * ZH_THRESHOLD_RATIO),
         "long": round(35 * ZH_THRESHOLD_RATIO),
         "band": TEAM_BAND_ZH,
-        "tolerance": {"mean": 1.5, "median": 1.5, "p90": 3.0, "share_long": 0.02, "share_short": 0.02, "section": 1.5},
+        "tolerance": {"mean": 1.5, "median": 1.5, "p90": 3.0, "share_long": 0.02, "share_short": 0.02, "section": 5.0},
         "connectives": (
             "在此基础上", "具体而言", "相比之下", "与此同时", "综上所述", "然而", "但是", "因此", "因而", "所以", "由此",
             "此外", "另外", "同时", "首先", "其次", "最后", "由于", "例如", "具体地", "综上", "可见", "据此", "进而",
@@ -732,7 +732,10 @@ def band_flags(result: dict[str, dict]) -> list[str]:
         if measured and measured["sentences"] >= 5:
             state = _status(measured["mean"], low, high, tolerance["section"])
             if state not in {"in", "near"}:
-                flags.append(f"{section} mean sentence length = {measured['mean']:.1f} is {state} (band {low}-{high}){prior}")
+                flags.append(
+                    f"{section} mean sentence length = {measured['mean']:.1f} is {state} "
+                    f"(band {low}-{high}, indicative; reread the section){prior}"
+                )
     unit = profile["unit"]
     for section, words_key, sentences_key in (
         ("abstract", "abstract_words", "abstract_sentences"),

@@ -70,7 +70,7 @@ Counting rule: the counting rule of the reader and terminology contract, with in
 | Experimental studies | 22.1–24.5 |
 | Conclusion | 24.2–28.0 |
 
-The abstract and Conclusion bands include the supervisor-approved values (abstract 24.8, Conclusion 28.0). Section means within one word of the band count as inside.
+The abstract and Conclusion bands include the supervisor-approved values (abstract 24.8, Conclusion 28.0). Section means within 3 words of the band count as inside.
 <!-- calibrate:end rhythm -->
 
 How to use the band:
@@ -78,6 +78,7 @@ How to use the band:
 - A draft below the band has been over-split. Apply the merges of Section 4 before cutting content. Drafts written under the one-claim rule alone fell to a mean of 16–20 words with 20%–30% of sentences under 12 words.
 - A draft above the band stacks claims. Split it with the rules of Section 4.
 - Most sentences carry 15–30 words. Keep sentences under 12 words for a short result or a definition, and never write three in a row.
+- The body band is the default to act on. The section bands rest on four papers and vary more between papers than the body band (compare the last two columns of the validation table in Section 15). Treat a section outside its band as a reason to reread that section, and change it only when its sentences show the over-splitting or stacking signals of Section 4.
 
 ## 4. Combining and splitting sentences
 
@@ -335,4 +336,13 @@ The numbers were measured on the complete text of four IEEE Transactions papers 
 
 The supervisor-practice rows come from two rounds of supervisor edits on a 2026 journal revision by the same team, measured as before-and-after sentence diffs; no sentence of that manuscript is reproduced here. In the only round that contained supervisor edits alone, the changed passages went from 49 to 38 sentences and their mean length rose from 22.3 to 23.9 words, through six merges and two deletions without a single split. All examples in this file are synthetic. Openers and title shapes are short stock phrases, not copied sentences.
 
-The tables between `calibrate` markers in Section 3, the band in the fingerprint script, and the Chinese weak-prior tables are generated together. When the team publishes another paper of this family, add it to the reference set and regenerate them with the calibration tool of the collection repository instead of editing the numbers by hand.
+<!-- calibrate:begin validation -->
+Validation. The band was checked against 13 further published papers that were not used to set it: 5 same-lineage constrained evolutionary papers, 8 reinforcement-learning MEC papers. Their body mean sentence lengths run from 20.5 to 26.7 words.
+
+| Group | Papers | Body mean (min–max) | Body mean inside the band or its tolerance | Any section mean outside |
+|---|---|---|---|---|
+| same-lineage constrained evolutionary papers | 5 | 21.4–26.7 | 4 of 5 | 2 of 5 |
+| reinforcement-learning MEC papers | 8 | 20.5–24.5 | 8 of 8 | 5 of 8 |
+<!-- calibrate:end validation -->
+
+The tables between `calibrate` markers in Sections 3 and 15, the band in the fingerprint script, and the Chinese weak-prior tables are generated together. When the team publishes another paper of this family, add it to the reference set and regenerate them with the calibration tool of the collection repository instead of editing the numbers by hand.

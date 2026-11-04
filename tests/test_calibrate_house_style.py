@@ -98,6 +98,24 @@ class CalibrationTests(unittest.TestCase):
         low, high = zh_band["body"]["mean"]
         self.assertIn(f"{low}–{high}", zh)
 
+    def test_validation_summary_is_written(self) -> None:
+        validation = self.root / "validation"
+        validation.mkdir()
+        (validation / "long.md").write_text(paper(9), encoding="utf-8")
+        (validation / "close.md").write_text(paper(1), encoding="utf-8")
+        code, output = self.run_tool("--validate", f"synthetic papers={validation}", "--write")
+        self.assertEqual(code, 0)
+        self.assertIn("Validation against the proposed band", output)
+        self.assertIn("outside: body mean", output)
+        style = (self.root / C.STYLE).read_text(encoding="utf-8")
+        self.assertIn("checked against 2 further published papers", style)
+        self.assertIn("| synthetic papers | 2 |", style)
+        self.assertIn("1 of 2", style)
+
+    def test_validate_rejects_a_label_without_path(self) -> None:
+        with contextlib.redirect_stdout(io.StringIO()), self.assertRaises(ValueError):
+            self.run_tool("--validate", "no-path-given")
+
     def test_requires_two_references(self) -> None:
         for path in list(self.refs.iterdir())[1:]:
             path.unlink()
@@ -110,7 +128,7 @@ class ShippedBlocksTests(unittest.TestCase):
         script = (ROOT / C.SCRIPT).read_text(encoding="utf-8")
         self.assertIn("# calibrate:begin band", script)
         self.assertIn("# calibrate:end band", script)
-        for relative, name in ((C.STYLE, "rhythm"), (C.ZH, "zh-rhythm")):
+        for relative, name in ((C.STYLE, "rhythm"), (C.STYLE, "validation"), (C.ZH, "zh-rhythm")):
             text = (ROOT / relative).read_text(encoding="utf-8")
             self.assertIn(f"<!-- calibrate:begin {name} -->", text)
             self.assertIn(f"<!-- calibrate:end {name} -->", text)
