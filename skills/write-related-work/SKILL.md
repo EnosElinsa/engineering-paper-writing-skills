@@ -17,7 +17,7 @@ Use Related Work as the evidence layer of the paper's motivation. Organize prior
 4. Read [the Chinese manuscript adapter](references/languages/zh.md) when the manuscript is written in Chinese.
 5. Read [the MEC domain pack](references/domains/mec.md) only for mobile edge computing, UAV-MEC, HAP-UAV, vehicular edge computing, dispersed edge computing, or directly adjacent MEC settings. It also holds the reference-scale and citation-recovery tables.
 6. If no domain pack matches, derive the classification axes and terminology from the target manuscript and verified literature. Do not import MEC taxonomies into another field.
-7. Run [the fingerprint script](scripts/style_fingerprint.py) on the draft before delivery when Python is available.
+7. Run [the fingerprint script](scripts/style_fingerprint.py) on the draft before delivery when Python is available. `--spine --section related` prints the paragraph-opening sentences for the center-sentence audit.
 
 ## Governing distinction
 

@@ -19,7 +19,7 @@ Design and write an experimental section as a chain of questions, controlled com
 6. For value-based, policy-gradient, actor-critic, single-agent, or multi-agent learning, read [the reinforcement-learning route](references/methods/reinforcement-learning.md).
 7. Read [the MEC domain pack](references/domains/mec.md) only for MEC or directly adjacent edge-computing systems. It also holds the order-of-magnitude scale table.
 8. When several routes apply, read all relevant references and audit each evidence channel separately.
-9. Run [the fingerprint script](scripts/style_fingerprint.py) on the draft before delivery when Python is available.
+9. Run [the fingerprint script](scripts/style_fingerprint.py) on the draft before delivery when Python is available. `--spine --section exp` prints the paragraph-opening sentences for the center-sentence audit.
 
 ## Workflow
 

@@ -17,7 +17,7 @@ Build an Introduction as a causal argument rather than a compressed literature r
 4. Read [the Chinese manuscript adapter](references/languages/zh.md) when the manuscript is written in Chinese.
 5. Read [the MEC domain pack](references/domains/mec.md) only when the manuscript concerns mobile edge computing, UAV-MEC, HAP-UAV, vehicular edge computing, dispersed edge computing, or a directly adjacent MEC setting. It also holds the reference-scale tables for the scale statement.
 6. If no domain pack matches, apply the generic workflow and derive domain facts only from the manuscript and supplied sources. Do not treat MEC examples as universal content.
-7. Run [the fingerprint script](scripts/style_fingerprint.py) on the draft before delivery when Python is available; `--citations` also lists citation keys repeated within the Introduction.
+7. Run [the fingerprint script](scripts/style_fingerprint.py) on the draft before delivery when Python is available; `--citations` also lists citation keys repeated within the Introduction. `--spine --section intro` prints the paragraph-opening sentences for the center-sentence audit.
 
 ## Workflow
 

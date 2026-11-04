@@ -244,6 +244,33 @@ class AbbreviationTests(unittest.TestCase):
                 F.main([str(self.main), str(self.supplement)])
 
 
+class SpineTests(unittest.TestCase):
+    def test_tex_spine_groups_openers_by_heading(self) -> None:
+        tex = (
+            "\\begin{document}\n\\section{Introduction}\n" + LONG + " Second sentence of the first paragraph.\n\n"
+            + "However, " + LONG.lower() + "\n\n\\section{Experimental Studies}\n\\subsection{Overall Comparison}\n"
+            + "As shown in Table~\\ref{tab:x}, " + LONG.lower() + "\n\\end{document}\n"
+        )
+        with tempfile.TemporaryDirectory() as directory:
+            path = pathlib.Path(directory) / "draft.tex"
+            path.write_text(tex, encoding="utf-8")
+            entries = F.spine(path)
+            only_exp = F.spine(path, section="exp")
+        self.assertEqual([e["heading"] for e in entries], ["Introduction", "Overall Comparison"])
+        self.assertEqual(len(entries[0]["openers"]), 2)
+        self.assertTrue(entries[0]["openers"][1].startswith("However,"))
+        self.assertNotIn("Second sentence", " ".join(entries[0]["openers"]))
+        self.assertEqual(len(only_exp), 1)
+
+    def test_markdown_spine_in_chinese(self) -> None:
+        with tempfile.TemporaryDirectory() as directory:
+            path = pathlib.Path(directory) / "draft.md"
+            path.write_text(ZH_MD, encoding="utf-8")
+            entries = F.spine(path, section="intro")
+        self.assertEqual(len(entries), 1)
+        self.assertTrue(entries[0]["openers"][0].startswith("校园配送机器人"))
+
+
 class DiffTests(unittest.TestCase):
     def test_merge_and_split_are_classified(self) -> None:
         old = "The robots return to a distant station. This increases their travel distance. " + LONG

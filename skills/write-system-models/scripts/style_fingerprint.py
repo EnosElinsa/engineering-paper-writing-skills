@@ -647,6 +647,106 @@ def citation_reuse(path: pathlib.Path) -> dict[str, dict[str, int]]:
     return reuse
 
 
+# --------------------------------------------------------------------------- spine
+
+
+def _heading_title(raw: str, tex: bool) -> str:
+    return clean_tex(raw) if tex else re.sub(r"^#+\s*", "", raw).strip()
+
+
+def spine(path: pathlib.Path, lang: str = "auto", section: str | None = None) -> list[dict]:
+    """Return the opening sentence of every prose paragraph, grouped under its heading.
+
+    Each entry is {"section": role, "heading": title, "openers": [sentence, ...]}.
+    """
+    text = path.read_text(encoding="utf-8-sig", errors="replace")
+    tex = path.suffix.lower() == ".tex"
+    if lang not in LANGUAGES:
+        sections, _ = load(path)
+        lang = detect_language(sections)
+    minimum = LANGUAGES[lang]["min_paragraph"]
+    blocks: list[tuple[str, str, str]] = []  # (section role, heading, paragraph)
+    if tex:
+        text = re.sub(r"(?<!\\)%.*", "", text)
+        match = re.search(r"\\begin\{abstract\}(.*?)\\end\{abstract\}", text, flags=re.S)
+        if match:
+            for paragraph in _tex_paragraphs(_remove_environments(match.group(1))):
+                blocks.append(("abstract", "Abstract", paragraph))
+            text = text.replace(match.group(0), " ")
+        match = re.search(r"\\begin\{document\}(.*?)\\end\{document\}", text, flags=re.S)
+        body = match.group(1) if match else text
+        body = re.split(r"\\bibliography\{|\\begin\{thebibliography\}|\\appendices\b|\\appendix\b|\\begin\{IEEEbiography", body)[0]
+        body = _remove_environments(body)
+        for command, marker in (("section", "S"), ("subsection", "U"), ("subsubsection", "U")):
+            body = _strip_command(body, command, keep=False, replacement=f"\n\n@@{marker}@@{{arg}}@@END@@\n\n")
+        role, heading = None, ""
+        for chunk in re.split(r"\n\s*\n", body):
+            chunk = chunk.strip()
+            marker = re.match(r"^@@([SU])@@(.*?)@@END@@$", chunk, flags=re.S)
+            if marker:
+                title = _heading_title(marker.group(2), True)
+                if marker.group(1) == "S":
+                    role, heading = classify(title) or "other", title
+                else:
+                    heading = title
+                continue
+            if role is None:
+                continue
+            for paragraph in _tex_paragraphs(chunk):
+                blocks.append((role, heading, paragraph))
+    else:
+        role, heading = None, ""
+        text = re.sub(r"\$\$.*?\$\$", " ", text, flags=re.S)
+        for raw in text.splitlines():
+            line = raw.strip()
+            if not line:
+                continue
+            title = re.match(r"^(#+)\s*(.*)$", line)
+            if title:
+                name = title.group(2).strip()
+                if re.search(r"references|bibliography|acknowledg|参考文献|致谢", name, re.I):
+                    role = None
+                elif re.match(r"^[A-H]\.\s", name) and role:
+                    heading = name
+                elif re.match(r"^[IVX]+\.\s", name) or classify(name):
+                    role, heading = classify(name) or "other", name
+                continue
+            abstract = re.match(r"^(Abstract|摘要)\s*[\u2014\-:.：]\s*", line)
+            if abstract:
+                blocks.append(("abstract", "Abstract", line[abstract.end():]))
+                continue
+            if role is None or line.startswith(("!", "|", "<")) or FURNITURE.search(line):
+                continue
+            if re.match(r"^(Fig\.|TABLE|Table|Algorithm|图|表|算法)\s*[0-9IVX]+", line) and len(line) < 400:
+                continue
+            blocks.append((role, heading, line))
+    entries: list[dict] = []
+    for role, heading, paragraph in blocks:
+        if section and role != section:
+            continue
+        cleaned = clean_tex(paragraph) if tex else clean_md(paragraph)
+        if units(cleaned, lang) < minimum and not re.match(r"^[\u2022\-*]\s", cleaned):
+            continue
+        sentences = split_sentences(cleaned, lang)
+        if not sentences:
+            continue
+        if not entries or entries[-1]["heading"] != heading or entries[-1]["section"] != role:
+            entries.append({"section": role, "heading": heading, "openers": []})
+        entries[-1]["openers"].append(sentences[0])
+    return entries
+
+
+def _print_spine(path: pathlib.Path, entries: list[dict]) -> None:
+    write = sys.stdout.write
+    write(f"Paragraph-opening sentences: {path.name}\n")
+    number = 0
+    for entry in entries:
+        write(f"\n[{entry['section']}] {entry['heading']}\n")
+        for opener in entry["openers"]:
+            number += 1
+            write(f"  P{number}. {opener}\n")
+
+
 # --------------------------------------------------------------------------- abbreviations
 
 ABBR_EN = re.compile(r"\(\s*([A-Z][A-Za-z0-9\-]*?)\s*\)")
@@ -966,6 +1066,11 @@ def main(argv: list[str] | None = None) -> int:
     parser.add_argument("--lang", choices=["auto", "en", "zh"], default="auto", help="Manuscript language")
     parser.add_argument("--citations", action="store_true", help="Report citation keys repeated within a section")
     parser.add_argument(
+        "--spine",
+        action="store_true",
+        help="Print the opening sentence of every paragraph under its heading (combine with --section)",
+    )
+    parser.add_argument(
         "--abbrev",
         action="store_true",
         help="Audit abbreviation definitions and uses; pass several files (manuscript, supplement, letter) to compare them",
@@ -1002,6 +1107,14 @@ def main(argv: list[str] | None = None) -> int:
     if len(args.paths) > 1:
         parser.error("several files are accepted only with --abbrev")
     args.path = args.paths[0]
+    if args.spine:
+        entries = spine(args.path, args.lang, args.section)
+        if args.json:
+            json.dump(entries, sys.stdout, indent=2, ensure_ascii=False)
+            sys.stdout.write("\n")
+        else:
+            _print_spine(args.path, entries)
+        return 0
     if args.citations:
         reuse = citation_reuse(args.path)
         if args.json:
