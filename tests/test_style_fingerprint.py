@@ -13,6 +13,7 @@ import unittest
 ROOT = pathlib.Path(__file__).resolve().parents[1]
 SCRIPT = ROOT / "shared" / "scripts" / "style_fingerprint.py"
 STYLE = ROOT / "shared" / "styles" / "team-house-style.md"
+ZH = ROOT / "shared" / "languages" / "zh.md"
 
 
 def _load():
@@ -117,6 +118,68 @@ class FingerprintTests(unittest.TestCase):
         self.assertIn("body", data["sections"])
 
 
+ZH_MD = """# 校园配送机器人的充电站协同规划
+
+## I. 引言
+校园配送机器人在大型园区中承担快递和餐食配送任务，其续航决定了单次出行能够覆盖的配送区域范围 [1]。现有研究通常在任务开始前固定充电站的位置，配送需求随时间变化时，机器人往返充电站的距离随之增加 [2]–[4]。据此，本文研究充电站随配送需求移动的协同规划问题，并给出相应的约束多目标进化算法。
+
+## IV. 实验设计
+机器人出发。机器人到达区域。机器人开始配送。充电站在每个规划周期开始时根据各区域的剩余需求重新选择停靠位置。本文比较四种算法；所有算法使用相同的种群规模。我们在三个实例上分别运行三十次，以评估各算法在不同规模下的可行率和超体积。
+因此，本文首先在小规模实例上检查约束满足情况，再在大规模实例上比较各算法的平均超体积。因此，各算法的比较结果均按三十次独立运行取平均值后报告。其中最早就绪派遣规则作为基线：选择最早到达的候选机器人并立即派出，用于检验学习方法的必要性。
+"""
+
+
+class ChineseModeTests(unittest.TestCase):
+    def setUp(self) -> None:
+        self.temp = tempfile.TemporaryDirectory()
+        self.path = pathlib.Path(self.temp.name) / "draft.md"
+        self.path.write_text(ZH_MD, encoding="utf-8")
+
+    def tearDown(self) -> None:
+        self.temp.cleanup()
+
+    def test_language_and_sections_are_detected(self) -> None:
+        self.assertEqual(F.resolve_language(self.path), "zh")
+        result = F.fingerprint(self.path)
+        self.assertEqual(result["body"]["unit"], "chars")
+        self.assertIn("intro", result)
+        self.assertIn("exp", result)
+
+    def test_sentence_length_counts_ideographs(self) -> None:
+        self.assertEqual(F.sentence_length("本文比较四种 UAV 算法。", "zh"), 8)
+        self.assertEqual(len(F.split_sentences("第一句结束。第二句结束！第三句？", "zh")), 3)
+
+    def test_chinese_banned_constructions(self) -> None:
+        result = F.fingerprint(self.path)
+        intro, exp = result["intro"]["banned"], result["exp"]["banned"]
+        self.assertIn("weak connective 可见/据此", intro)
+        self.assertIn("full-width semicolon", exp)
+        self.assertIn("我们 outside future work", exp)
+        self.assertIn("colon inside a sentence", exp)
+
+    def test_run_in_label_colon_is_allowed(self) -> None:
+        self.assertFalse(F._zh_prose_colon("*最早就绪派遣*（Nearest-Ready）：选择最早到达的候选。"))
+        self.assertFalse(F._zh_prose_colon("本文的主要贡献如下：（1）建立模型。"))
+        self.assertTrue(F._zh_prose_colon("其中最早就绪派遣规则作为基线，用于对比：选择最早到达的候选。"))
+        self.assertTrue(F._zh_prose_colon("本节综述三方面研究：电量约束、服务迁移和约束处理。"))
+
+    def test_short_run_and_repeated_opener(self) -> None:
+        exp = F.fingerprint(self.path)["exp"]
+        self.assertTrue(exp["short_runs"])
+        self.assertEqual(exp["repeated_openers"][0][0], "因此")
+
+    def test_citation_range_across_brackets(self) -> None:
+        self.assertEqual(F.citation_reuse(self.path), {})
+        path = pathlib.Path(self.temp.name) / "ranges.md"
+        path.write_text("# I. INTRODUCTION\n\n" + LONG + " [2]–[4].\n\n" + LONG + " [3].\n", encoding="utf-8")
+        self.assertEqual(F.citation_reuse(path), {"intro": {"3": 2}})
+
+    def test_flags_mark_the_band_as_a_weak_prior(self) -> None:
+        flags = F.band_flags(F.fingerprint(self.path))
+        band_flags = [flag for flag in flags if "band" in flag and "weak prior" in flag]
+        self.assertTrue(band_flags)
+
+
 class DiffTests(unittest.TestCase):
     def test_merge_and_split_are_classified(self) -> None:
         old = "The robots return to a distant station. This increases their travel distance. " + LONG
@@ -144,7 +207,7 @@ class BandDocumentationTests(unittest.TestCase):
         self.assertIn(f"{body['mean'][0]:.1f}–{body['mean'][1]:.1f}", text)
         self.assertIn(f"{body['median'][0]:.0f}–{body['median'][1]:.0f}", text)
         self.assertIn(f"{body['p90'][0]:.0f}–{body['p90'][1]:.0f}", text)
-        for key in ("share_over_35", "share_under_12"):
+        for key in ("share_long", "share_short"):
             low, high = body[key]
             self.assertIn(f"{round(low * 100)}%–{round(high * 100)}%", text)
         for key in ("abstract_words", "conclusion_words"):
@@ -153,6 +216,21 @@ class BandDocumentationTests(unittest.TestCase):
         for key in ("abstract_sentences", "conclusion_sentences"):
             low, high = F.TEAM_BAND[key]
             self.assertIn(f"{low}–{high} sentences", text)
+
+    def test_chinese_band_matches_adapter_table(self) -> None:
+        text = ZH.read_text(encoding="utf-8")
+        band = F.TEAM_BAND_ZH
+        for key in ("mean", "median", "p90"):
+            low, high = band["body"][key]
+            self.assertIn(f"{low}–{high}", text, key)
+        for (low, high) in band["section_mean"].values():
+            self.assertIn(f"{low}–{high}", text)
+        for key in ("abstract_words", "conclusion_words"):
+            low, high = band[key]
+            self.assertIn(f"{low}–{high} ideographs", text, key)
+        self.assertIn(f"under {F.LANGUAGES['zh']['short']} ideographs", text)
+        self.assertIn(f"over {F.LANGUAGES['zh']['long']} ideographs", text)
+        self.assertIn(f"{F.ZH_RATIO[0]} to {F.ZH_RATIO[1]}", text)
 
     def test_style_gate_ids_are_well_formed(self) -> None:
         ids = re.findall(r"\[(G-STY-[a-z]+)\]", STYLE.read_text(encoding="utf-8"))

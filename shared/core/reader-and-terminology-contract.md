@@ -58,7 +58,7 @@ Scale counts paragraphs and words. Rhythm counts how those words are packed into
 3. Default: after any splitting pass, recount the connectives. A banned word must not be replaced everywhere by one substitute.
 4. Run the bundled fingerprint script on the draft when Python is available, and read every flagged sentence before changing it.
 
-Deviate when the venue or the content requires it (a dense list of settings, a definition-heavy model subsection), and record the reason in the scale statement. For a Chinese manuscript, skip the English word bands and apply only items 2 and 3.
+Deviate when the venue or the content requires it (a dense list of settings, a definition-heavy model subsection), and record the reason in the scale statement. For a Chinese manuscript, use the weak-prior band in ideographs of [the Chinese manuscript adapter](../languages/zh.md) instead of the English word bands.
 
 ## H. Manuscript hygiene
 

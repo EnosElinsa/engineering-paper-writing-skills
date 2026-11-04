@@ -21,7 +21,7 @@ This file records the measured writing conventions of the author team: author vo
 
 ## 1. Scope and precedence
 
-Apply this file by default to manuscripts of the author team. Skip it only when the user names another venue style or another team's conventions. For a Chinese manuscript, apply Sections 2, 4, 5, 6, and 7 through the Chinese adapter and skip the English word-count bands of Sections 3, 10, and 12.
+Apply this file by default to manuscripts of the author team. Skip it only when the user names another venue style or another team's conventions. For a Chinese manuscript, apply Sections 2, 4, 5, 6, and 7 through their Chinese counterparts in the Chinese manuscript adapter (Sentences), and replace the English bands of Sections 3, 10, and 12 with the adapter's weak-prior band in ideographs.
 
 When sources disagree, use this order:
 
@@ -276,6 +276,7 @@ Run `scripts/style_fingerprint.py` (in the skill directory) on the draft when Py
 
 - `python scripts/style_fingerprint.py paper.tex` prints section scale, the sentence-length profile, connectives per 100 sentences, within-sentence features per 1000 words, banned constructions with their sentences, runs of short sentences, and flags against the band of Section 3;
 - `--section exp` restricts the report to one section;
+- `--lang zh` measures a Chinese manuscript in ideographs against the Chinese adapter's weak-prior band and its banned constructions (`--lang auto`, the default, detects the language);
 - `--citations` lists citation keys repeated within a section;
 - `--diff old.tex new.tex --show 10` classifies the edits between two versions into merges, splits, rewrites, insertions, and deletions, and compares sentence length and connectives in the changed sentences.
 

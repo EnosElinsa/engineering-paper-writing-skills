@@ -18,6 +18,44 @@ Review defaults, edit to taste. The review author extrapolated these from the ru
 
 Keep one core causal relation per sentence. Use the written academic register throughout.
 
+## Sentences
+
+Author rules, applied as written. They are the Chinese counterparts of the team house style's author voice, connective, and banned-construction rules. [G-ZH-sent]
+
+- Give every sentence an explicit subject. A mechanism step names its actor (the controller, the algorithm, the UAV) or uses 本文 for an author action.
+- Use 本文 for author actions. Do not use 我们 outside future-work sentences.
+- Do not put a colon inside a prose sentence. A colon may end a lead-in to a list (`……如下：`) or to a display, and it may follow the run-in label of a list item.
+- Do not write meta-language or self-summary sentences that announce a move instead of making it, such as `解决这一问题的直接思路是……` or a bare `上述两点在该场景中均不成立。` State the fact and let the contrast stay implicit.
+- 可见 and 据此 are not connectives. State the result directly, or use 因此 when the sentence follows from the previous one.
+- Rotate the result connectives. A sentence-initial 因此 alternates with 由此 and 因而, and a direct consequence of the same action folds into the clause with 从而 or 进而 (the counterpart of `, thereby`). Do not open two consecutive sentences with the same connective.
+- Merge before splitting, as in the house style: keep the two sides of one comparison together with `，而`, a definition with `，其中`, a short cause with 由于, and a purpose with 为 or 为了. Do not replace every split with a new sentence that opens with 因此.
+
+## Sentence rhythm (weak prior)
+
+No Chinese reference paper by the team is available. The band below converts the house-style English band with the default ratio of this adapter, 1.5 to 2.0 ideographs per English word: lower ends are multiplied by 1.5 and upper ends by 2.0. The short and long thresholds use the midpoint ratio 1.75. Shares, sentence counts, and paragraph counts transfer unchanged. Treat a value outside the band as a reason to read the section again, not as a defect. Replace this band with a measured one as soon as a Chinese reference paper by the team exists. [G-ZH-rhythm]
+
+| Body measure | Weak-prior band |
+|---|---|
+| Mean sentence length (ideographs) | 32–48 |
+| Median | 30–44 |
+| 90th percentile | 48–74 |
+| Share of sentences over 61 ideographs | 7%–13% |
+| Share of sentences under 21 ideographs | 9%–14% |
+
+| Section | Mean sentence length band (ideographs) |
+|---|---|
+| Abstract | 37–61 |
+| Introduction | 30–47 |
+| Related Work | 32–53 |
+| System Model and Problem Formulation | 31–46 |
+| Proposed algorithm | 30–51 |
+| Experimental studies | 33–49 |
+| Conclusion | 36–56 |
+
+The abstract converts to 315–500 ideographs and the Conclusion to 248–560 ideographs. A venue's own limit overrides both.
+
+Counting rule: CJK ideographs only (see Scale conversion), sentences split after `。`, `？`, and `！`, fragments under five ideographs dropped, and paragraphs of at least 30 ideographs. Run the bundled fingerprint script with `--lang zh` (or let `--lang auto` detect the language) to measure a draft.
+
 ## Punctuation
 
 - Use full-width punctuation in running prose. [G-ZH-punct]

@@ -513,6 +513,24 @@
           "id": "G-RV-style"
         }
       ]
+    },
+    "37": {
+      "summary": "Chinese sentences with colons, meta-language, and a weak connective",
+      "gates": [
+        {
+          "file": "shared/languages/zh.md",
+          "id": "G-ZH-sent"
+        }
+      ]
+    },
+    "38": {
+      "summary": "Over-split Chinese model section",
+      "gates": [
+        {
+          "file": "shared/languages/zh.md",
+          "id": "G-ZH-rhythm"
+        }
+      ]
     }
   }
 }
