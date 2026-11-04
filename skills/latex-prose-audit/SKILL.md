@@ -47,7 +47,9 @@ question; use the project's LaTeX diagnostic workflow for that narrower task.
    examples where the two differ.
 6. Run [the fingerprint script](scripts/style_fingerprint.py) on the target
    when Python is available. Use its flags as leads: read each flagged sentence
-   before reporting it.
+   before reporting it. For a full audit of a submission, `--report` with the
+   manuscript, supplement, and response letter collects every check in one
+   Markdown file.
 
 ## Audit workflow
 

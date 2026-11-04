@@ -55,7 +55,7 @@ Check that the title, abstract, contribution list, and Conclusion use the same t
 
 ### 8. Measure and audit
 
-Run the fingerprint script on the abstract and the Conclusion, then run the hard gates of the contract.
+Run the fingerprint script on the abstract and the Conclusion, then run the hard gates of the contract. Before submission, `--report` lists the abstract and Conclusion scale with the other checks in one file.
 
 ## Reader gates (check before delivering)
 

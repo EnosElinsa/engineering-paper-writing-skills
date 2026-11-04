@@ -52,7 +52,7 @@ Keep their version untouched as a snapshot, adopt their framework, respect their
 
 ### 8. Audit and deliver
 
-Compile every document, run the quote, number, and term checks of the contract, and pass all hard gates. Deliver the revised files and a change report; keep ledgers out of the submission documents.
+Compile every document, run the quote, number, and term checks of the contract, and pass all hard gates. Run the fingerprint script with `--report` on the manuscript, the supplement, and the letter, and read every item it lists. Deliver the revised files and a change report; keep ledgers out of the submission documents.
 
 ## Output constraints
 

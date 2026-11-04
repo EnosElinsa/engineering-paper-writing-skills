@@ -335,6 +335,33 @@ class SpineTests(unittest.TestCase):
         self.assertTrue(entries[0]["openers"][0].startswith("校园配送机器人"))
 
 
+class ReportTests(unittest.TestCase):
+    def test_report_covers_every_check(self) -> None:
+        with tempfile.TemporaryDirectory() as directory:
+            root = pathlib.Path(directory)
+            main = root / "main.tex"
+            main.write_text(TEX, encoding="utf-8")
+            letter = root / "reply.tex"
+            letter.write_text(
+                "\\begin{document}\nWe thank the reviewer. We have revised Section V; the table is updated because "
+                "the rerun changed it, and we report the new values in every row of the table.\n\\end{document}\n",
+                encoding="utf-8",
+            )
+            out = root / "report.md"
+            with contextlib.redirect_stdout(io.StringIO()):
+                self.assertEqual(F.main(["--report", str(main), str(letter), "--out", str(out)]), 0)
+            report = out.read_text(encoding="utf-8")
+        for heading in ("## 1. Section scale", "## 2. Flags", "## 3. Banned constructions", "## 4. Over-splitting",
+                        "## 5. Paragraph-opening sentences", "## 6. Citations repeated", "## 7. Abbreviations",
+                        "## 8. Further documents"):
+            self.assertIn(heading, report)
+        self.assertIn("because", report)
+        self.assertIn("intro: a x2", report)
+        letter_line = next(line for line in report.splitlines() if line.startswith("- **reply.tex**:"))
+        self.assertIn("semicolon", letter_line)
+        self.assertNotIn("we/our", letter_line)
+
+
 class DiffTests(unittest.TestCase):
     def test_merge_and_split_are_classified(self) -> None:
         old = "The robots return to a distant station. This increases their travel distance. " + LONG

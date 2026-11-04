@@ -972,7 +972,14 @@ def abbreviation_report(path: pathlib.Path) -> dict:
     report["defined_more_than_once"] = sorted(a for a, pos in positions.items() if len(pos) > 1)
     report["rarely_used"] = sorted(a for a, pos in positions.items() if len(_uses(body, a)) - len(pos) <= 1)
     tokens = Counter(_acronym_tokens(body))
-    report["never_defined"] = sorted(t for t, n in tokens.items() if n >= 2 and t not in positions)
+
+    def shouted_word(token: str) -> bool:
+        # A capitalized heading word (RESPONSES, THE) also appears in lower case as prose.
+        return token.isalpha() and token.isupper() and len(re.findall(r"\b" + token.lower() + r"\b", body)) >= 2
+
+    report["never_defined"] = sorted(
+        t for t, n in tokens.items() if n >= 2 and t not in positions and not shouted_word(t)
+    )
     if not abstract:
         report["abstract_undefined"] = []
     return report
@@ -1086,6 +1093,128 @@ def diff_report(old_path: pathlib.Path, new_path: pathlib.Path, lang: str = "aut
     }
 
 
+# --------------------------------------------------------------------------- report
+
+
+def _md_cell(text: str) -> str:
+    return text.replace("|", "\\|").replace("\n", " ")
+
+
+def submission_report(paths: list[pathlib.Path], lang: str = "auto", sentences_per_item: int = 5) -> str:
+    """Return a Markdown pre-submission report.
+
+    The first path is the main manuscript: it gets the full fingerprint, flags, banned
+    constructions, short runs, the paragraph-opening spine, and repeated citations.
+    Every path enters the abbreviation audit, and every further path (supplement,
+    response letter) gets its own banned-construction counts.
+    """
+    main = paths[0]
+    result = fingerprint(main, lang)
+    used = result_language(result)
+    profile = LANGUAGES[used]
+    unit = profile["unit"]
+    out: list[str] = [f"# Pre-submission report: {main.name}", ""]
+    out.append(
+        f"Language: {used}; lengths in {unit}. Every item is a lead to read, not a verdict. "
+        "Pasted reviewer comments and quoted titles are exempt from the banned constructions."
+    )
+    missing = MISSING_INCLUDES.get(str(main.resolve().parent), []) if main.suffix.lower() == ".tex" else []
+    if missing:
+        out.append("")
+        out.append("Included files not found and skipped: " + ", ".join(sorted(set(missing))) + ".")
+
+    out += ["", "## 1. Section scale and sentence rhythm", ""]
+    out.append(f"| Section | Paragraphs | {unit.capitalize()} | Sentences | Mean | Median | P90 | Over {profile['long']} | Under {profile['short']} |")
+    out.append("|---|---|---|---|---|---|---|---|---|")
+    for key in SECTION_ORDER + tuple(k for k in result if k not in SECTION_ORDER):
+        if key in result:
+            m = result[key]
+            out.append(
+                f"| {key} | {m['paragraphs']} | {m['words']} | {m['sentences']} | {m['mean']:.1f} | {m['median']:.0f} | "
+                f"{m['p90']:.0f} | {m['share_long']:.0%} | {m['share_short']:.0%} |"
+            )
+
+    out += ["", "## 2. Flags against the house-style band", ""]
+    flags = band_flags(result)
+    out += [f"- {flag}" for flag in flags] or ["- none"]
+
+    out += ["", "## 3. Banned constructions", ""]
+    any_banned = False
+    for key, m in result.items():
+        if key == "body":
+            continue
+        for name, hits in m["banned"].items():
+            any_banned = True
+            out.append(f"- **{key}, {name}** ({len(hits)})")
+            out += [f"  - {_md_cell(sentence[:200])}" for sentence in hits[:sentences_per_item]]
+    if not any_banned:
+        out.append("- none")
+
+    out += ["", "## 4. Over-splitting signals", ""]
+    any_run = False
+    for key, m in result.items():
+        if key == "body":
+            continue
+        for run in m["short_runs"][:sentences_per_item]:
+            any_run = True
+            out.append(f"- **{key}**, short run: " + " / ".join(_md_cell(s[:80]) for s in run))
+        for opener, sentence in m["repeated_openers"][:sentences_per_item]:
+            any_run = True
+            out.append(f"- **{key}**, two sentences open with {opener}: {_md_cell(sentence[:120])}")
+    if not any_run:
+        out.append("- none")
+
+    out += ["", "## 5. Paragraph-opening sentences", ""]
+    out.append("Read this list on its own: it should state the argument of each section in order.")
+    number = 0
+    for entry in spine(main, used):
+        out += ["", f"**[{entry['section']}] {_md_cell(entry['heading'])}**", ""]
+        for opener in entry["openers"]:
+            number += 1
+            out.append(f"{number}. {_md_cell(opener)}")
+
+    out += ["", "## 6. Citations repeated within a section", ""]
+    reuse = citation_reuse(main)
+    out += [f"- {section}: " + ", ".join(f"{k} x{v}" for k, v in keys.items()) for section, keys in reuse.items()] or ["- none"]
+
+    out += ["", "## 7. Abbreviations", ""]
+    audit = abbreviation_audit(paths)
+    labels = (
+        ("used_before_definition", "used before the first definition"),
+        ("defined_more_than_once", "defined more than once"),
+        ("rarely_used", "defined but used at most once afterwards"),
+        ("abstract_undefined", "used in the abstract without a local definition"),
+        ("never_defined", "used repeatedly without a definition"),
+    )
+    for document in audit["documents"]:
+        out.append(f"- **{document['document']}**")
+        for key, label in labels:
+            if document[key]:
+                out.append(f"  - {label}: {', '.join(document[key])}")
+    if len(paths) > 1:
+        if audit["long_form_mismatches"]:
+            for abbr, docs in audit["long_form_mismatches"].items():
+                out.append(f"- {abbr} has different long forms: " + "; ".join(f"'{form}' ({doc})" for doc, form in docs.items()))
+        else:
+            out.append("- every abbreviation has one long form across the documents")
+
+    if len(paths) > 1:
+        out += ["", "## 8. Further documents", ""]
+        for path in paths[1:]:
+            other = fingerprint(path, lang)
+            keys = [k for k in other if k != "body"] or ["body"]
+            letter = bool(re.search(r"reply|response|rebuttal|letter", path.stem, re.I))
+            counts: Counter[str] = Counter()
+            for key in keys:
+                for name, hits in other[key]["banned"].items():
+                    if letter and name.startswith(("we/our", "我们")):
+                        continue  # a response letter keeps the first person
+                    counts[name] += len(hits)
+            summary = ", ".join(f"{name} {count}" for name, count in counts.most_common()) or "none"
+            out.append(f"- **{path.name}**: banned constructions: {summary}")
+    return "\n".join(out) + "\n"
+
+
 # --------------------------------------------------------------------------- output
 
 
@@ -1160,6 +1289,12 @@ def main(argv: list[str] | None = None) -> int:
     parser.add_argument("--lang", choices=["auto", "en", "zh"], default="auto", help="Manuscript language")
     parser.add_argument("--citations", action="store_true", help="Report citation keys repeated within a section")
     parser.add_argument(
+        "--report",
+        action="store_true",
+        help="Write a Markdown pre-submission report: main manuscript first, then supplement and letter",
+    )
+    parser.add_argument("--out", type=pathlib.Path, help="With --report, write the report to this file")
+    parser.add_argument(
         "--spine",
         action="store_true",
         help="Print the opening sentence of every paragraph under its heading (combine with --section)",
@@ -1190,6 +1325,14 @@ def main(argv: list[str] | None = None) -> int:
     for path in args.paths:
         if not path.is_file():
             parser.error(f"file not found: {path}")
+    if args.report:
+        report = submission_report(args.paths, args.lang)
+        if args.out:
+            args.out.write_bytes(report.encode("utf-8"))
+            sys.stdout.write(f"Report written to {args.out}\n")
+        else:
+            sys.stdout.write(report)
+        return 0
     if args.abbrev:
         audit = abbreviation_audit(args.paths)
         if args.json:

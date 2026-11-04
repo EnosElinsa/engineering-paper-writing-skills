@@ -321,6 +321,7 @@ Run `scripts/style_fingerprint.py` (in the skill directory) on the draft when Py
 - `--citations` lists citation keys repeated within a section;
 - `--spine --section intro` prints the opening sentence of every paragraph under its heading, so the center-sentence chain can be read on its own;
 - `--abbrev main.tex supplement.tex reply.tex` audits abbreviations in each document (used before definition, defined twice, rarely used, undefined in the abstract, never defined) and compares their long forms across the documents;
+- `--report main.tex supplement.tex reply.tex --out report.md` writes one Markdown pre-submission report: the section table, the band flags, banned constructions with their sentences, over-splitting signals, the paragraph-opening sentences, repeated citations, the abbreviation audit across all documents, and banned-construction counts for the supplement and the letter (the letter keeps its first person);
 - `--diff old.tex new.tex --show 10` classifies the edits between two versions into merges, splits, rewrites, insertions, and deletions, and compares sentence length and connectives in the changed sentences.
 
 Read every flagged sentence before changing it. A flag is a measurement, not a verdict: a long sentence may be a necessary list, and a short one may be a result.
