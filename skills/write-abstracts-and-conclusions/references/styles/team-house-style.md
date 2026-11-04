@@ -270,7 +270,7 @@ Do not write `the highest`, `superior`, or `state-of-the-art` in the result move
 - Write two to four sentences per item: the object, what is jointly optimized or how the mechanism works, and, in the last item only, one result sentence with its scope (`Experimental results on three benchmark problems show that the proposed algorithm achieves ... than five existing <solver family>s.`).
 - No `novel`, `first`, or `superior`; no claim that the experiments do not show.
 
-**Roadmap.** `The remainder of this study is organized as follows.` followed by one sentence per section: `Section II reviews ...`, `Section III presents the system model and the formulation of ...`, `Section IV introduces the proposed algorithm to solve ...`, `Section V presents the experimental studies.`, `Section VI concludes this study.` Keep the roadmap to one sentence per section and 56–77 words in total, the range of the reference roadmaps. Name what each section does, and do not summarize its content (no list of models, mechanisms, or results).
+**Roadmap.** `The remainder of this study is organized as follows.` followed by one sentence per section: `Section II reviews ...`, `Section III presents the system model and the formulation of ...`, `Section IV introduces the proposed algorithm to solve ...`, `Section V presents the experimental studies.`, `Section VI concludes this study.` Keep the roadmap to one sentence per section and at most about 77 words (reference roadmaps 56–77 words, the supervisor-approved roadmap 46). Name what each section does, and do not summarize its content (no list of models, mechanisms, or results).
 
 ## 12. Conclusion
 
@@ -284,14 +284,14 @@ Do not restate the contribution list (`Our contributions are threefold`), and do
 
 ## 13. Captions and equation lead-ins
 
-**Captions.** A caption is a noun phrase that identifies the artifact and ends with a period. Write it in sentence case in the source (the document class may print table captions in capitals), and give every caption of one kind the same form. [G-STY-cap]
+**Captions.** A figure or table caption is a noun phrase that identifies the artifact and ends with a period. Write it in sentence case in the source (the document class may print table captions in capitals), and give every caption of one kind the same form. [G-STY-cap]
 
 - Name the compared objects, the instances, and the run-selection rule (`at the median run`, `for the median-performing run`).
-- Keep a result-table caption to about 20 words (the reference papers use 6–20). Put metric full names, the run count, and the significance rule in the note below the table.
+- Keep the noun phrase of a result-table caption to about 20 words (the reference papers use 6–20). Put metric full names, the run count, and the significance rule in the note below the table, or in short sentences after the noun phrase when the document class has no table notes (as in the supervisor-approved draft).
 - Fill a caption form with the manuscript's own terms. When the setup calls its test settings `cases`, the caption does too, even where the attested form says `instances`.
 - Do not state the result, explain the method, or repeat what the panel labels, legend, or setup paragraph already state. Panel labels such as `(a) CMOP1. (b) CMOP2.` may follow when the class prints no subcaptions.
 - Define every abbreviation that appears in a table header or row label, in the caption or in a note below the table, and explain significance symbols in that note.
-- Algorithm boxes, figures, and tables of one paper share the sentence case and the final period.
+- Figures and tables of one paper share the sentence case and the final period. An algorithm caption is a sentence-case noun phrase that names the procedure, without a final period (three reference papers and the supervisor-approved draft).
 
 Attested forms, with the number of reference papers (out of four) that use each; H marks the supervisor-approved draft:
 
@@ -323,16 +323,23 @@ Attested forms, with the number of reference papers (out of four) that use each;
 
 ## 14. Measuring a draft
 
-Run `scripts/style_fingerprint.py` (in the skill directory) on the draft when Python is available. For a LaTeX manuscript split into several files, pass the root file: the script inlines `\input`, `\include`, `\subfile`, and `\import` files and warns about missing ones.
+Run `scripts/style_fingerprint.py` (in the skill directory) on the draft when Python is available. Pass a LaTeX root file: the script inlines `\input`, `\include`, `\subfile`, and `\import` files and warns about missing ones. A Chinese manuscript is detected and measured in ideographs against the weak-prior band of the Chinese adapter (`--lang zh` forces it).
 
-- `python scripts/style_fingerprint.py paper.tex` prints section scale, the sentence-length profile, connectives per 100 sentences, within-sentence features per 1000 words, banned constructions with their sentences, runs of short sentences, adjacent short sentences that could merge, and flags against the band of Section 3. A file with fewer than three main sections is checked against its section means and connective counts only (Sections 3 and 5);
+The default output reports:
+
+- section scale, the sentence-length profile, connectives per 100 sentences, and within-sentence features per 1000 words, with flags against the band of Section 3 (a file with fewer than three main sections is checked against its section means and connective counts only);
+- banned constructions, runs of short sentences, adjacent short sentences that could merge, and repeated connectives, each with its sentences;
+- document checks: figure and table captions without a final period or in title case, a result-table noun phrase over 22 words, subsection titles of ten or more words, a roadmap over 77 words or with a sentence that names no section, an Introduction opener used more than once, a count noun that repeats its verb, and more than 6.9 uses of `this study` per 1000 words in the Introduction.
+
+Options:
+
 - `--section exp` restricts the report to one section;
-- `--lang zh` measures a Chinese manuscript in ideographs against the Chinese adapter's weak-prior band and its banned constructions (`--lang auto`, the default, detects the language);
-- `--citations` lists citation keys repeated within a section;
-- `--spine --section intro` prints the opening sentence of every paragraph under its heading, so the center-sentence chain can be read on its own;
-- `--abbrev main.tex supplement.tex reply.tex` audits abbreviations in each document (used before definition, defined twice, rarely used, undefined in the abstract, never defined) and compares their long forms across the documents;
-- `--report main.tex supplement.tex reply.tex --out report.md` writes one Markdown pre-submission report: the section table, the band flags, banned constructions with their sentences, over-splitting signals, the paragraph-opening sentences, repeated citations, the abbreviation audit across all documents, and banned-construction counts for the supplement and the letter (the letter keeps its first person);
-- `--diff old.tex new.tex --show 10` classifies the edits between two versions into merges, splits, rewrites, insertions, and deletions, and compares sentence length and connectives in the changed sentences.
+- `--scale exp=900-1900 exp.paragraphs=10-19 intro.paragraph_words=60-140` checks the ranges of the scale statement;
+- `--terms ledger.txt` reads the term ledger, one group per line with the ledger term first (`case: instance, test instance`), and reports every other variant with its count per section and in the captions;
+- `--citations` lists citation keys repeated within a section, and `--spine --section intro` prints the opening sentence of every paragraph under its heading;
+- `--abbrev main.tex supplement.tex reply.tex` audits abbreviation definitions and uses in each document and compares their long forms;
+- `--report main.tex supplement.tex reply.tex --out report.md` writes all of the above as one Markdown pre-submission report and checks abbreviations, ledger terms, and banned constructions in the supplement and the letter too (the letter keeps its first person);
+- `--diff old.tex new.tex --show 10` classifies the edits between two versions into merges, splits, rewrites, insertions, and deletions.
 
 Read every flagged sentence before changing it. A flag is a measurement, not a verdict: a long sentence may be a necessary list, and a short one may be a result.
 

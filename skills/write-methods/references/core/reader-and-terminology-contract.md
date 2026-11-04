@@ -10,7 +10,7 @@ Default: describe, do not coin.
 - T2 Define a coined term by its function in the sentence that first uses it. A bare parenthetical is not a definition. Abbreviations and short plain-word glosses ("i.e., how many units to allocate") are allowed. [G-SH-T2]
 - T3 One concept, one term. Use one word root per concept family; do not alternate process-root and role-root forms. Follow the root used by the closest cited papers. [G-SH-T3]
 - T4 In an Introduction, name a decision by what it changes and for whom, and an objective by its owner plus a one-clause meaning. Do not use variable-like compounds ("X-duration", "Y-overlap") before the reader knows why the quantity exists. [G-SH-T4]
-- T5 Keep a term ledger: term | definition by function | first use | variants found | external usage evidence or "not searched". Do not call a term standard or common without evidence in the ledger. [G-SH-T5]
+- T5 Keep a term ledger: term | definition by function | first use | variants found | external usage evidence or "not searched". Do not call a term standard or common without evidence in the ledger. When Python is available, write each ledger term with its rejected variants to a plain-text file (`case: instance, test instance`) and run the fingerprint script with `--terms` to find every remaining variant. [G-SH-T5]
 - T6 A coined term never first appears in a heading, caption, or equation label. [G-SH-T6]
 - T7 Delete a coined term if removing it lengthens no sentence. [G-SH-T7]
 
@@ -45,7 +45,7 @@ Every range below is a default. Deviate when the venue limits length, an extra i
 
 1. Default: with supplied reference papers, measure them with the counting rule below and write a three-line scale statement (paragraphs, words per paragraph, sentences in the key paragraph) as ranges before drafting.
 2. Default: without references, use the domain pack's table as a weak prior and say so in the scale statement.
-3. Default: keep the draft inside the declared ranges; a deviation is allowed when the reason is recorded.
+3. Default: keep the draft inside the declared ranges, and check them with the `--scale` option of the bundled fingerprint script when Python is available. A deviation is allowed when the reason is recorded.
 4. Default: when the manuscript language differs from the references, convert word counts with a recorded ratio before comparing, and calibrate that ratio on one translated reference paragraph when possible. Sentence and paragraph counts transfer unchanged. When the manuscript is written in Chinese, read [the Chinese manuscript adapter](../languages/zh.md) for the default ratio and the language rules.
 5. Default: when more than 20% over the upper bound, merge papers that share a predicate, drop paper-level numbers, cut announcement sentences ("In this subsection ..."), and keep one expanded closest work. Deviate when every paper carries an independent claim, and record the reason.
 

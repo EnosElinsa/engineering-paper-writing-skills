@@ -19,7 +19,7 @@ Explain a method as an executable solution to the previously formulated problem.
 6. For MDP or POMDP, value-based, policy-gradient, actor-critic, single-agent, or multi-agent learning, read [the reinforcement-learning route](references/methods/reinforcement-learning.md).
 7. Read [the MEC domain pack](references/domains/mec.md) only when the target problem is MEC or a directly adjacent edge-computing system. It also holds the order-of-magnitude scale table.
 8. When several routes apply, read all applicable references and state which component each route governs.
-9. Run [the fingerprint script](scripts/style_fingerprint.py) on the draft before delivery when Python is available. `--spine --section method` prints the paragraph-opening sentences for the center-sentence audit.
+9. Run [the fingerprint script](scripts/style_fingerprint.py) on the draft before delivery when Python is available, with the ranges of the scale statement as `--scale` and the term ledger as `--terms`. `--spine --section method` prints the paragraph-opening sentences for the center-sentence audit.
 
 ## Workflow
 

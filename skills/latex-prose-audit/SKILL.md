@@ -48,7 +48,8 @@ question; use the project's LaTeX diagnostic workflow for that narrower task.
    read Sections 4, 5, 7, and 13 of [the full team house style](references/styles/team-house-style.md).
 6. Run [the fingerprint script](scripts/style_fingerprint.py) on the target
    when Python is available. Use its flags as leads: read each flagged sentence
-   before reporting it. For a full audit of a submission, `--report` with the
+   before reporting it. Pass the manuscript's term ledger with `--terms` when
+   one exists. For a full audit of a submission, `--report` with the
    manuscript, supplement, and response letter collects every check in one
    Markdown file.
 
