@@ -310,7 +310,7 @@ Attested forms, with the number of reference papers (out of four) that use each;
 
 ## 14. Measuring a draft
 
-Run `scripts/style_fingerprint.py` (in the skill directory) on the draft when Python is available:
+Run `scripts/style_fingerprint.py` (in the skill directory) on the draft when Python is available. For a LaTeX manuscript split into several files, pass the root file: the script inlines `\input`, `\include`, `\subfile`, and `\import` files and warns about missing ones.
 
 - `python scripts/style_fingerprint.py paper.tex` prints section scale, the sentence-length profile, connectives per 100 sentences, within-sentence features per 1000 words, banned constructions with their sentences, runs of short sentences, and flags against the band of Section 3;
 - `--section exp` restricts the report to one section;

@@ -12,6 +12,8 @@ Usage:
 Inputs: LaTeX (.tex), Markdown converted from a PDF (.md, one paragraph per line,
 `#` headings), or plain text (.txt, blank-line paragraphs). English and Chinese
 manuscripts are supported; `--lang auto` (the default) decides from the text.
+A LaTeX root file is read with its \input, \include, \subfile, and \import files
+inlined; missing files are skipped with a warning.
 
 Counting rule (protocols S and R of the reader and terminology contract):
 - displayed equations, figures, tables, algorithms, captions, and headings are excluded;
@@ -382,8 +384,64 @@ def clean_md(paragraph: str) -> str:
     return re.sub(r"\s+", " ", text).strip()
 
 
-def load(path: pathlib.Path) -> tuple[dict[str, list[str]], bool]:
+INCLUDE = re.compile(r"\\(input|include|subfile|import|subimport)\s*(?:\{([^}]*)\})?\s*\{([^}]+)\}")
+MISSING_INCLUDES: dict[str, list[str]] = {}
+
+
+def _resolve_include(base: pathlib.Path, root: pathlib.Path, folder: str | None, name: str) -> pathlib.Path | None:
+    name = name.strip()
+    candidates = []
+    for directory in (base, root):
+        target = directory / (folder or "") / name
+        candidates.extend([target, target.with_name(target.name + ".tex")])
+    for candidate in candidates:
+        if candidate.is_file():
+            return candidate
+    return None
+
+
+def expand_tex(path: pathlib.Path, root: pathlib.Path | None = None, seen: set[pathlib.Path] | None = None,
+               depth: int = 0) -> str:
+    """Return the LaTeX source with \\input, \\include, \\subfile, and \\import files inlined.
+
+    Paths resolve against the including file's folder, then the root file's folder.
+    Comments are removed first, so a commented-out \\input is not expanded. Missing
+    files are recorded in MISSING_INCLUDES under the root file's name.
+    """
+    path = path.resolve()
+    root = root or path.parent
+    seen = seen or set()
+    if depth > 10 or path in seen:
+        return ""
     text = path.read_text(encoding="utf-8-sig", errors="replace")
+    text = re.sub(r"(?<!\\)%.*", "", text)
+    seen = seen | {path}
+
+    def replace(match: re.Match) -> str:
+        command, folder, name = match.group(1), match.group(2), match.group(3)
+        if command in {"import", "subimport"} and folder is None:
+            return match.group(0)
+        target = _resolve_include(path.parent, root, folder, name)
+        if target is None:
+            MISSING_INCLUDES.setdefault(str(root), []).append(name)
+            return " "
+        inner = expand_tex(target, root, seen, depth + 1)
+        if command == "subfile":
+            body = re.search(r"\\begin\{document\}(.*?)\\end\{document\}", inner, flags=re.S)
+            inner = body.group(1) if body else inner
+        return "\n\n" + inner + "\n\n"
+
+    return INCLUDE.sub(replace, text)
+
+
+def read_source(path: pathlib.Path) -> str:
+    if path.suffix.lower() == ".tex":
+        return expand_tex(path)
+    return path.read_text(encoding="utf-8-sig", errors="replace")
+
+
+def load(path: pathlib.Path) -> tuple[dict[str, list[str]], bool]:
+    text = read_source(path)
     suffix = path.suffix.lower()
     if suffix == ".tex":
         return parse_tex(text), True
@@ -659,7 +717,7 @@ def spine(path: pathlib.Path, lang: str = "auto", section: str | None = None) ->
 
     Each entry is {"section": role, "heading": title, "openers": [sentence, ...]}.
     """
-    text = path.read_text(encoding="utf-8-sig", errors="replace")
+    text = read_source(path)
     tex = path.suffix.lower() == ".tex"
     if lang not in LANGUAGES:
         sections, _ = load(path)
@@ -1107,6 +1165,11 @@ def main(argv: list[str] | None = None) -> int:
     if len(args.paths) > 1:
         parser.error("several files are accepted only with --abbrev")
     args.path = args.paths[0]
+    if args.path.suffix.lower() == ".tex":
+        read_source(args.path)
+        missing = MISSING_INCLUDES.get(str(args.path.resolve().parent), [])
+        if missing:
+            sys.stderr.write("warning: included file(s) not found and skipped: " + ", ".join(sorted(set(missing))) + "\n")
     if args.spine:
         entries = spine(args.path, args.lang, args.section)
         if args.json:

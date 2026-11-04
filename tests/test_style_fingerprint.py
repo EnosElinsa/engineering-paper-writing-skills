@@ -244,6 +244,37 @@ class AbbreviationTests(unittest.TestCase):
                 F.main([str(self.main), str(self.supplement)])
 
 
+class MultiFileTests(unittest.TestCase):
+    def test_inputs_are_expanded_and_commented_inputs_ignored(self) -> None:
+        with tempfile.TemporaryDirectory() as directory:
+            root = pathlib.Path(directory)
+            (root / "sections").mkdir()
+            (root / "main.tex").write_text(
+                "\\begin{document}\n\\input{sections/intro}\n% \\input{sections/old}\n\\include{sections/exp.tex}\n"
+                "\\input{sections/missing}\n\\end{document}\n",
+                encoding="utf-8",
+            )
+            (root / "sections" / "intro.tex").write_text("\\section{Introduction}\n" + LONG + "\n", encoding="utf-8")
+            (root / "sections" / "old.tex").write_text("\\section{Related Work}\n" + LONG + "\n", encoding="utf-8")
+            (root / "sections" / "exp.tex").write_text(
+                "\\section{Experimental Studies}\n\\input{sections/table-note}\n", encoding="utf-8"
+            )
+            (root / "sections" / "table-note.tex").write_text(LONG + "\n", encoding="utf-8")
+            result = F.fingerprint(root / "main.tex")
+            missing = F.MISSING_INCLUDES.get(str(root.resolve()), [])
+        self.assertIn("intro", result)
+        self.assertIn("exp", result)
+        self.assertNotIn("related", result)
+        self.assertIn("sections/missing", missing)
+
+    def test_include_cycle_terminates(self) -> None:
+        with tempfile.TemporaryDirectory() as directory:
+            root = pathlib.Path(directory)
+            (root / "a.tex").write_text("\\begin{document}\\section{Introduction}" + LONG + "\\input{b}\\end{document}", encoding="utf-8")
+            (root / "b.tex").write_text("\\input{a}", encoding="utf-8")
+            self.assertIn("intro", F.fingerprint(root / "a.tex"))
+
+
 class SpineTests(unittest.TestCase):
     def test_tex_spine_groups_openers_by_heading(self) -> None:
         tex = (
