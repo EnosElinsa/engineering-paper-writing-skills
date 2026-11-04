@@ -647,6 +647,178 @@ def citation_reuse(path: pathlib.Path) -> dict[str, dict[str, int]]:
     return reuse
 
 
+# --------------------------------------------------------------------------- abbreviations
+
+ABBR_EN = re.compile(r"\(\s*([A-Z][A-Za-z0-9\-]*?)\s*\)")
+ABBR_ZH = re.compile(r"[（(]\s*([A-Za-z][^（）()，,]*?)\s*[，,]\s*([A-Z][A-Za-z0-9\-]*?)\s*[）)]")
+TOKEN = re.compile(r"(?<![A-Za-z0-9-])[A-Za-z][A-Za-z0-9]*(?:-[A-Za-z0-9]+)*")
+ROMAN = re.compile(r"^[IVXLCDM]+$")
+UNITS = {"MHz", "GHz", "kHz", "Hz", "MJ", "kJ", "dB", "dBm", "dBi", "Mbps", "Gbps", "kbps", "Mbit", "Gbit",
+         "MB", "GB", "KB", "TB", "mAh", "Wh", "kWh", "GFLOPS", "TFLOPS"}
+LONG_FORM_SKIP = {"of", "and", "the", "for", "in", "on", "with", "a", "an", "to", "by", "based"}
+
+
+def _singular(token: str) -> str:
+    """Strip a plural s from an acronym (UAVs -> UAV, DCMOEAs -> DCMOEA)."""
+    return token[:-1] if len(token) > 2 and token.endswith("s") and token[-2].isupper() else token
+
+
+def _is_acronym(text: str) -> bool:
+    text = _singular(text)
+    return (
+        sum(c.isupper() for c in text) >= 2
+        and not any(c.isdigit() for c in text)
+        and not ROMAN.match(text)
+        and text not in UNITS
+        and text != MATH
+    )
+
+
+def _initials_match(letters: list[str], tokens: list[str]) -> int | None:
+    """Return the start index of the shortest word span whose initials spell the letters."""
+    def walk(i: int, j: int) -> int | None:
+        if j < 0:
+            return i + 1
+        if i < 0:
+            return None
+        word = tokens[i].lower()
+        if word[:1] == letters[j]:
+            found = walk(i - 1, j - 1)
+            if found is not None:
+                return found
+        if word in LONG_FORM_SKIP and j < len(letters) - 1:
+            return walk(i - 1, j)
+        return None
+
+    return walk(len(tokens) - 1, len(letters) - 1)
+
+
+def _best_long_form(short: str, candidate: str) -> str | None:
+    """Find the long form before '(ABBR)': word initials first, then Schwartz-Hearst letter matching."""
+    letters = [c.lower() for c in short if c.isalpha()]
+    words_only = re.findall(r"[A-Za-z][A-Za-z'\-]*", candidate)
+    for tokens in (words_only, [part for word in words_only for part in word.split("-") if part]):
+        start = _initials_match(letters, tokens)
+        if start is not None:
+            return " ".join(tokens[start:])
+    s, l = len(letters) - 1, len(candidate) - 1
+    while s >= 0:
+        char = letters[s]
+        while l >= 0 and (candidate[l].lower() != char or (s == 0 and l > 0 and candidate[l - 1].isalnum())):
+            l -= 1
+        if l < 0:
+            return None
+        l -= 1
+        s -= 1
+    return candidate[l + 1:].strip()
+
+
+def _acronym_tokens(text: str) -> list[str]:
+    """Acronyms used in the text: whole compounds such as H-PPO or NSGA-II, and the acronym
+    parts of mixed compounds such as UAV-assisted or mothership-UAV."""
+    found: list[str] = []
+    for token in TOKEN.findall(text):
+        if re.match(r"^([A-Z]-[IVXLC]+|[IVXLC]+-[A-Z])$", token):
+            continue
+        parts = [p for p in token.split("-") if p]
+        whole = all(_is_acronym(p) or ROMAN.match(p) or (len(p) == 1 and p.isupper()) for p in parts)
+        if len(parts) > 1 and whole and _is_acronym(token):
+            found.append(_singular(token))
+            continue
+        found.extend(_singular(p) for p in parts if _is_acronym(p))
+    return found
+
+
+def _normalize_long_form(form: str) -> str:
+    parts = re.split(r"[\s\-]+", form.lower())
+    return " ".join(p[:-1] if len(p) > 3 and p.endswith("s") and not p.endswith("ss") else p for p in parts if p)
+
+
+def _uses(text: str, abbr: str) -> list[int]:
+    return [m.start() for m in re.finditer(r"(?<![A-Za-z0-9-])" + re.escape(abbr) + r"s?(?![A-Za-z0-9-])", text)]
+
+
+def _definitions(text: str) -> list[tuple[str, str, int]]:
+    """Return (abbreviation, long form, position) for every 'long form (ABBR)' in the text."""
+    found = []
+    for match in ABBR_ZH.finditer(text):
+        abbr = _singular(match.group(2))
+        if _is_acronym(abbr):
+            found.append((abbr, match.group(1).strip().lower(), match.start(2)))
+    for match in ABBR_EN.finditer(text):
+        abbr = _singular(match.group(1))
+        if not _is_acronym(abbr):
+            continue
+        before = text[:match.start()].rstrip()
+        candidate = " ".join(before.split()[-(len(abbr) + 5):])
+        long_form = _best_long_form(abbr, candidate)
+        if long_form:
+            found.append((abbr, long_form.lower(), match.start(1)))
+    return sorted(found, key=lambda item: item[2])
+
+
+def abbreviation_report(path: pathlib.Path) -> dict:
+    sections, tex = load(path)
+    clean = (lambda p: clean_tex(p)) if tex else (lambda p: clean_md(p))
+    abstract = " ".join(clean(p) for p in sections.get("abstract", []))
+    body = " ".join(clean(p) for key, paragraphs in sections.items() if key != "abstract" for p in paragraphs)
+    report: dict = {"document": path.name}
+    abstract_defs = {abbr for abbr, _, _ in _definitions(abstract)}
+    abstract_tokens = set(_acronym_tokens(abstract))
+    report["abstract_undefined"] = sorted(t for t in abstract_tokens if t not in abstract_defs)
+    definitions = _definitions(body)
+    positions: dict[str, list[int]] = {}
+    long_forms: dict[str, str] = {}
+    for abbr, long_form, position in definitions:
+        positions.setdefault(abbr, []).append(position)
+        long_forms.setdefault(abbr, long_form)
+    report["defined"] = len(positions)
+    report["long_forms"] = long_forms
+    report["used_before_definition"] = sorted(a for a, pos in positions.items() if _uses(body, a) and _uses(body, a)[0] < pos[0] - 1)
+    report["defined_more_than_once"] = sorted(a for a, pos in positions.items() if len(pos) > 1)
+    report["rarely_used"] = sorted(a for a, pos in positions.items() if len(_uses(body, a)) - len(pos) <= 1)
+    tokens = Counter(_acronym_tokens(body))
+    report["never_defined"] = sorted(t for t, n in tokens.items() if n >= 2 and t not in positions)
+    if not abstract:
+        report["abstract_undefined"] = []
+    return report
+
+
+def abbreviation_audit(paths: list[pathlib.Path]) -> dict:
+    reports = [abbreviation_report(path) for path in paths]
+    forms: dict[str, dict[str, str]] = {}
+    for report in reports:
+        for abbr, long_form in report["long_forms"].items():
+            forms.setdefault(abbr, {})[report["document"]] = long_form
+    mismatches = {
+        abbr: docs for abbr, docs in forms.items()
+        if len({_normalize_long_form(form) for form in docs.values()}) > 1
+    }
+    return {"documents": reports, "long_form_mismatches": mismatches}
+
+
+def _print_abbreviations(audit: dict) -> None:
+    write = sys.stdout.write
+    labels = (
+        ("used_before_definition", "used before its first definition"),
+        ("defined_more_than_once", "defined more than once in the body"),
+        ("rarely_used", "defined but used at most once afterwards (consider spelling out)"),
+        ("abstract_undefined", "used in the abstract without a definition in the abstract"),
+        ("never_defined", "used at least twice but never defined (check: names, units, or missing definitions)"),
+    )
+    for report in audit["documents"]:
+        write(f"Abbreviations: {report['document']} ({report['defined']} defined in the body)\n")
+        for key, label in labels:
+            items = report[key]
+            write(f"  {label}: {', '.join(items) if items else 'none'}\n")
+    if len(audit["documents"]) > 1:
+        write("Across documents:\n")
+        if not audit["long_form_mismatches"]:
+            write("  every abbreviation has one long form\n")
+        for abbr, docs in audit["long_form_mismatches"].items():
+            write(f"  {abbr}: " + "; ".join(f"'{form}' ({doc})" for doc, form in docs.items()) + "\n")
+
+
 # --------------------------------------------------------------------------- diff
 
 
@@ -789,10 +961,15 @@ def _print_diff(report: dict, show: int) -> None:
 
 def main(argv: list[str] | None = None) -> int:
     parser = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
-    parser.add_argument("path", nargs="?", type=pathlib.Path, help="Manuscript file (.tex, .md, or .txt)")
+    parser.add_argument("paths", nargs="*", type=pathlib.Path, help="Manuscript file(s) (.tex, .md, or .txt)")
     parser.add_argument("--section", choices=[k for k in SECTION_ORDER], help="Report one section only")
     parser.add_argument("--lang", choices=["auto", "en", "zh"], default="auto", help="Manuscript language")
     parser.add_argument("--citations", action="store_true", help="Report citation keys repeated within a section")
+    parser.add_argument(
+        "--abbrev",
+        action="store_true",
+        help="Audit abbreviation definitions and uses; pass several files (manuscript, supplement, letter) to compare them",
+    )
     parser.add_argument("--json", action="store_true", help="Print machine-readable JSON")
     parser.add_argument("--diff", nargs=2, type=pathlib.Path, metavar=("OLD", "NEW"), help="Classify edits between two versions")
     parser.add_argument("--show", type=int, default=0, help="With --diff, print the first N changed hunks")
@@ -809,10 +986,22 @@ def main(argv: list[str] | None = None) -> int:
         else:
             _print_diff(report, args.show)
         return 0
-    if args.path is None:
+    if not args.paths:
         parser.error("a manuscript path or --diff OLD NEW is required")
-    if not args.path.is_file():
-        parser.error(f"file not found: {args.path}")
+    for path in args.paths:
+        if not path.is_file():
+            parser.error(f"file not found: {path}")
+    if args.abbrev:
+        audit = abbreviation_audit(args.paths)
+        if args.json:
+            json.dump(audit, sys.stdout, indent=2, ensure_ascii=False)
+            sys.stdout.write("\n")
+        else:
+            _print_abbreviations(audit)
+        return 0
+    if len(args.paths) > 1:
+        parser.error("several files are accepted only with --abbrev")
+    args.path = args.paths[0]
     if args.citations:
         reuse = citation_reuse(args.path)
         if args.json:

@@ -316,6 +316,7 @@ Run `scripts/style_fingerprint.py` (in the skill directory) on the draft when Py
 - `--section exp` restricts the report to one section;
 - `--lang zh` measures a Chinese manuscript in ideographs against the Chinese adapter's weak-prior band and its banned constructions (`--lang auto`, the default, detects the language);
 - `--citations` lists citation keys repeated within a section;
+- `--abbrev main.tex supplement.tex reply.tex` audits abbreviations in each document (used before definition, defined twice, rarely used, undefined in the abstract, never defined) and compares their long forms across the documents;
 - `--diff old.tex new.tex --show 10` classifies the edits between two versions into merges, splits, rewrites, insertions, and deletions, and compares sentence length and connectives in the changed sentences.
 
 Read every flagged sentence before changing it. A flag is a measurement, not a verdict: a long sentence may be a necessary list, and a short one may be a result.

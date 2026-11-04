@@ -180,6 +180,70 @@ class ChineseModeTests(unittest.TestCase):
         self.assertTrue(band_flags)
 
 
+ABBR_MAIN = r"""
+\begin{document}
+\begin{abstract}
+Uncrewed aerial vehicles (UAVs) deliver parcels, and the PPO agent plans their routes for the robots in each zone.
+\end{abstract}
+\section{Introduction}
+Campus delivery uses uncrewed aerial vehicles (UAVs) and ground robots in every zone of the site. A hybrid PPO
+(H-PPO) method has been applied to such planning, and the routes are then refined with mixed-integer linear programming.
+Later, proximal policy optimization (PPO) is adopted as the learner, and the PPO agent observes the queue of every
+zone. The hypervolume (HV) metric is reported, and the channel state information (CSI) is assumed to be perfect.
+The HV values are compared across all instances, and MILP solvers and MILP warm starts are used in Section S-IV.
+Again, the hypervolume (HV) is defined for the reader of this paragraph.
+\end{document}
+"""
+
+ABBR_SUPPLEMENT = r"""
+\begin{document}
+\section{Introduction}
+This supplement studies the unmanned aerial vehicles (UAVs) of the main manuscript and the routes of every robot
+in each zone of the campus, and the UAVs return to the station after every planning cycle of the mission.
+\end{document}
+"""
+
+
+class AbbreviationTests(unittest.TestCase):
+    def setUp(self) -> None:
+        self.temp = tempfile.TemporaryDirectory()
+        root = pathlib.Path(self.temp.name)
+        self.main = root / "main.tex"
+        self.supplement = root / "supplement.tex"
+        self.main.write_text(ABBR_MAIN, encoding="utf-8")
+        self.supplement.write_text(ABBR_SUPPLEMENT, encoding="utf-8")
+
+    def tearDown(self) -> None:
+        self.temp.cleanup()
+
+    def test_long_form_detection(self) -> None:
+        self.assertEqual(F._best_long_form("PPO", "is adopted with proximal policy optimization"), "proximal policy optimization")
+        self.assertEqual(F._best_long_form("NLoS", "the non-line-of-sight"), "non line of sight")
+        self.assertEqual(F._best_long_form("HV", "the hypervolume"), "hypervolume")
+
+    def test_single_document_findings(self) -> None:
+        report = F.abbreviation_report(self.main)
+        self.assertIn("PPO", report["used_before_definition"])
+        self.assertIn("HV", report["defined_more_than_once"])
+        self.assertIn("CSI", report["rarely_used"])
+        self.assertIn("PPO", report["abstract_undefined"])
+        self.assertNotIn("UAV", report["abstract_undefined"])
+        self.assertIn("MILP", report["never_defined"])
+        self.assertNotIn("S-IV", report["never_defined"])
+
+    def test_cross_document_long_forms(self) -> None:
+        audit = F.abbreviation_audit([self.main, self.supplement])
+        self.assertIn("UAV", audit["long_form_mismatches"])
+        self.assertNotIn("HV", audit["long_form_mismatches"])
+
+    def test_cli_accepts_several_files_only_with_abbrev(self) -> None:
+        with contextlib.redirect_stdout(io.StringIO()):
+            self.assertEqual(F.main(["--abbrev", str(self.main), str(self.supplement)]), 0)
+        with contextlib.redirect_stdout(io.StringIO()), contextlib.redirect_stderr(io.StringIO()):
+            with self.assertRaises(SystemExit):
+                F.main([str(self.main), str(self.supplement)])
+
+
 class DiffTests(unittest.TestCase):
     def test_merge_and_split_are_classified(self) -> None:
         old = "The robots return to a distant station. This increases their travel distance. " + LONG

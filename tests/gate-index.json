@@ -619,6 +619,15 @@
           "id": "G-STY-eq"
         }
       ]
+    },
+    "47": {
+      "summary": "Abbreviation used before its definition and expanded differently",
+      "gates": [
+        {
+          "file": "skills/latex-prose-audit/references/rules-and-checks.md",
+          "id": "G-AUD-abbr"
+        }
+      ]
     }
   }
 }

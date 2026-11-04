@@ -151,6 +151,16 @@ paper explicitly defines.
 - An abstract or supplement may define the same abbreviation locally.
 - Keep terms such as `CMOP/CMOPs`, `multi-objective`, and
   `constraint-handling` stable.
+- Count table headers, row labels, and captions as uses: an abbreviation
+  defined only in prose after a table that uses it is defined too late.
+- Run the fingerprint script with `--abbrev` on every document of the
+  submission at once (manuscript, supplement, response letter). It lists
+  abbreviations used before their first definition, defined twice, defined but
+  used at most once afterwards, used in the abstract without a local
+  definition, and used repeatedly without any definition, and it compares the
+  long forms across documents. Treat each item as a lead: method names, units,
+  and quoted passages in a response letter (which repeat definitions by design)
+  need a reading, not an automatic fix. [G-AUD-abbr]
 
 #### 2.3 Variant and formal referents
 
