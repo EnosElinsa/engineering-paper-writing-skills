@@ -244,6 +244,39 @@ class AbbreviationTests(unittest.TestCase):
                 F.main([str(self.main), str(self.supplement)])
 
 
+class SectionRoleTests(unittest.TestCase):
+    def test_method_section_named_after_the_algorithm(self) -> None:
+        titles = ["Introduction", "Related Work", "System Model", "Problem Formulation",
+                  "MAPPO-Based Joint Offloading for Delivery Robots", "Simulation Results", "Conclusion"]
+        self.assertEqual(
+            F.resolve_roles(titles),
+            ["intro", "related", "model", "model", "method", "exp", "concl"],
+        )
+
+    def test_unclassified_section_between_model_and_experiments_is_method(self) -> None:
+        titles = ["Introduction", "Related Work", "Temporal Sequence of Constraint Handling", "Experimental Setup", "Conclusion"]
+        self.assertEqual(F.resolve_roles(titles)[2], "method")
+
+    def test_sections_after_experiments_stay_unclassified(self) -> None:
+        titles = ["Introduction", "System Model", "Numerical Results", "Discussion of Limits", "Conclusion"]
+        self.assertEqual(F.resolve_roles(titles)[3], "other")
+
+    def test_markdown_paper_title_is_not_a_method_section(self) -> None:
+        text = (
+            "# Station Planning for Robots: A Multi-Objective Optimization Approach\n\nAuthor list\n\n"
+            "Abstract—" + LONG + "\n\n## I. INTRODUCTION\n\n" + LONG + "\n\n"
+            "## IV. DEPENDENCY-AWARE GENERATION FOR STATION PLANNING\n\n" + LONG + "\n\n"
+            "## III. SYSTEM MODEL\n\n" + LONG + "\n\n## V. EXPERIMENTAL STUDIES\n\n" + LONG + "\n"
+        )
+        with tempfile.TemporaryDirectory() as directory:
+            path = pathlib.Path(directory) / "paper.md"
+            path.write_text(text, encoding="utf-8")
+            sections, _ = F.load(path)
+        self.assertNotIn("Author list", " ".join(sections.get("method", [])))
+        self.assertIn("intro", sections)
+        self.assertIn("exp", sections)
+
+
 class MultiFileTests(unittest.TestCase):
     def test_inputs_are_expanded_and_commented_inputs_ignored(self) -> None:
         with tempfile.TemporaryDirectory() as directory:

@@ -45,16 +45,20 @@ from collections import Counter
 
 MATH = "MATHTOKEN"
 
+# Checked in this order; the first match wins. Experiment patterns precede method
+# patterns, and a top-level section that matches nothing but lies between the model
+# and the experiments is assigned to the method by position (see resolve_roles).
 SECTION_PATTERNS = (
     ("abstract", r"\babstract\b|摘要"),
     ("intro", r"introduction|引言|绪论"),
     ("related", r"related work|literature review|相关工作|研究现状"),
-    ("model", r"system model|problem formulation|system overview|系统模型|问题建模|问题描述"),
-    ("method", r"proposed\b.*\b(algorithm|method|framework|approach)|algorithm design|\bframework\b|solution approach|"
-               r"求解方法|所提算法|算法设计|方法设计|提出的算法"),
-    ("exp", r"experiment|numerical results|simulation|performance evaluation|evaluation|实验|仿真|性能评估"),
+    ("model", r"system model|problem formulation|problem statement|problem description|system overview|"
+              r"system description|\bmodel(l)?ing\b|系统模型|问题建模|问题描述"),
     ("concl", r"conclusion|结论|总结"),
+    ("exp", r"experiment|numerical results|simulation|performance evaluation|evaluation|实验|仿真|性能评估"),
     ("future", r"future|未来工作|展望"),
+    ("method", r"proposed|algorithm|solution|approach|scheme|mechanism|strategy|framework|\bmethod|"
+               r"求解方法|所提算法|算法设计|方法设计|提出的算法"),
 )
 
 SECTION_ORDER = ("abstract", "intro", "related", "model", "method", "exp", "future", "concl", "body")
@@ -242,9 +246,19 @@ def _hits(rule, sentence: str) -> bool:
 # --------------------------------------------------------------------------- parsing
 
 
-def classify(title: str) -> str | None:
+# Method words for headings without a section number (a Markdown paper title such as
+# "...: A Multi-Objective Optimization Approach" must not open a method section).
+METHOD_STRICT = (
+    r"proposed\b.*\b(algorithm|method|framework|approach)|algorithm design|solution approach|"
+    r"求解方法|所提算法|算法设计|方法设计|提出的算法"
+)
+
+
+def classify(title: str, strict: bool = False) -> str | None:
     lowered = title.lower()
     for key, pattern in SECTION_PATTERNS:
+        if strict and key == "method":
+            pattern = METHOD_STRICT
         if re.search(pattern, lowered):
             return key
     return None
@@ -315,60 +329,101 @@ def _tex_paragraphs(block: str) -> list[str]:
     return [part.strip() for part in re.split(r"\n\s*\n", block) if part.strip()]
 
 
-def parse_tex(text: str) -> dict[str, list[str]]:
+REFERENCES_HEADING = re.compile(r"references|bibliography|acknowledg|参考文献|致谢", re.I)
+
+# A block is (top-level section index, top-level title, current heading, raw paragraph).
+# The index is -1 for the abstract.
+Block = tuple[int, str, str, str]
+
+
+def resolve_roles(titles: list[str]) -> list[str | None]:
+    """Classify top-level section titles, then fill in method sections by position.
+
+    A section whose title names no role and that lies between the last introduction,
+    related-work, or model section and the first experiment section is the method
+    section (many papers title it with the algorithm name). Reference and
+    acknowledgment sections get None and are skipped.
+    """
+    roles: list[str | None] = [None if REFERENCES_HEADING.search(t) else (classify(t) or "other") for t in titles]
+    if "exp" in roles:
+        first_exp = roles.index("exp")
+        anchors = [i for i, role in enumerate(roles[:first_exp]) if role in {"intro", "related", "model"}]
+        if anchors:
+            for i in range(anchors[-1] + 1, first_exp):
+                if roles[i] == "other":
+                    roles[i] = "method"
+    return roles
+
+
+def tex_blocks(text: str) -> tuple[list[str], list[Block], list[str]]:
+    """Return top-level titles, prose blocks, and the fallback paragraphs of a LaTeX source."""
     text = re.sub(r"(?<!\\)%.*", "", text)
-    sections: dict[str, list[str]] = {}
+    blocks: list[Block] = []
     match = re.search(r"\\begin\{abstract\}(.*?)\\end\{abstract\}", text, flags=re.S)
     if match:
-        sections["abstract"] = _tex_paragraphs(_remove_environments(match.group(1)))
+        for paragraph in _tex_paragraphs(_remove_environments(match.group(1))):
+            blocks.append((-1, "Abstract", "Abstract", paragraph))
         text = text.replace(match.group(0), " ")
     match = re.search(r"\\begin\{document\}(.*?)\\end\{document\}", text, flags=re.S)
     body = match.group(1) if match else text
     body = re.split(r"\\bibliography\{|\\begin\{thebibliography\}|\\appendices\b|\\appendix\b|\\begin\{IEEEbiography", body)[0]
     body = _remove_environments(body)
-    body = _strip_command(body, "section", keep=False, replacement="\n@@SECTION@@{arg}@@END@@\n")
-    current: str | None = None
-    for part in re.split(r"(@@SECTION@@.*?@@END@@)", body, flags=re.S):
-        heading = re.match(r"@@SECTION@@(.*?)@@END@@", part, flags=re.S)
-        if heading:
-            current = classify(clean_tex(heading.group(1))) or "other"
+    fallback = _tex_paragraphs(body)
+    for command, marker in (("section", "S"), ("subsection", "U"), ("subsubsection", "U")):
+        body = _strip_command(body, command, keep=False, replacement=f"\n\n@@{marker}@@{{arg}}@@END@@\n\n")
+    titles: list[str] = []
+    top: int | None = None
+    heading = ""
+    for chunk in re.split(r"(@@[SU]@@.*?@@END@@)", body, flags=re.S):
+        marker = re.match(r"^@@([SU])@@(.*?)@@END@@$", chunk, flags=re.S)
+        if marker:
+            title = clean_tex(marker.group(2))
+            if marker.group(1) == "S":
+                titles.append(title)
+                top = len(titles) - 1
+            heading = title
             continue
-        if current is None:
+        if top is None:
             continue
-        sections.setdefault(current, []).extend(_tex_paragraphs(part))
-    if len(sections) <= 1 and not any(key != "abstract" for key in sections):
-        sections.setdefault("body", []).extend(_tex_paragraphs(body))
-    return sections
+        for paragraph in _tex_paragraphs(chunk):
+            blocks.append((top, titles[top], heading, paragraph))
+    return titles, blocks, fallback
 
 
-def parse_md(text: str) -> dict[str, list[str]]:
+def md_blocks(text: str) -> tuple[list[str], list[Block], list[str]]:
+    """Return top-level titles, prose blocks, and the fallback paragraphs of a Markdown source."""
     text = re.sub(r"\$\$.*?\$\$", " ", text, flags=re.S)
     text = re.sub(r"<table.*?</table>", " ", text, flags=re.S | re.I)
-    sections: dict[str, list[str]] = {}
-    top: str | None = None
-    current: str | None = None
+    fallback = [part.strip() for part in re.split(r"\n\s*\n", text) if part.strip()]
+    titles: list[str] = []
+    blocks: list[Block] = []
+    top: int | None = None
+    heading = ""
     for raw in text.splitlines():
         line = raw.strip()
         if not line:
             continue
         abstract = re.match(r"^(Abstract|摘要)\s*[\u2014\-:.：]\s*", line)
         if abstract:
-            sections.setdefault("abstract", []).append(line[abstract.end():])
+            blocks.append((-1, "Abstract", "Abstract", line[abstract.end():]))
             continue
         if line.startswith(("Index Terms", "关键词")):
             continue
-        heading = re.match(r"^#+\s*(.*)$", line)
-        if heading:
-            title = heading.group(1).strip()
-            if re.search(r"references|bibliography|acknowledg|参考文献|致谢", title, re.I):
-                top = current = None
+        match = re.match(r"^#+\s*(.*)$", line)
+        if match:
+            title = match.group(1).strip()
+            if REFERENCES_HEADING.search(title) and not re.match(r"^[A-H]\.\s", title):
+                titles.append(title)
+                top = None
             elif re.match(r"^[A-H]\.\s", title):
-                current = top
-            elif re.match(r"^[IVX]+\.\s", title) or classify(title):
-                top = classify(title) or "other"
-                current = top
+                if top is not None:
+                    heading = title
+            elif re.match(r"^[IVX]+\.\s", title) or classify(title, strict=True):
+                titles.append(title)
+                top = len(titles) - 1
+                heading = title
             continue
-        if current is None:
+        if top is None:
             continue
         if line.startswith(("!", "|", "<")) or FURNITURE.search(line):
             continue
@@ -376,10 +431,43 @@ def parse_md(text: str) -> dict[str, list[str]]:
             continue
         if re.match(r"^(图|表|算法)\s*\d", line) and len(line) < 300:
             continue
-        sections.setdefault(current, []).append(line)
-    if not sections:
-        sections["body"] = [part.strip() for part in re.split(r"\n\s*\n", text) if part.strip()]
+        blocks.append((top, titles[top], heading, line))
+    return titles, blocks, fallback
+
+
+def document_blocks(path: pathlib.Path) -> tuple[list[str | None], list[Block], list[str], bool]:
+    """Return section roles, prose blocks, fallback paragraphs, and whether the source is LaTeX."""
+    text = read_source(path)
+    suffix = path.suffix.lower()
+    if suffix == ".tex":
+        titles, blocks, fallback = tex_blocks(text)
+        return resolve_roles(titles), blocks, fallback, True
+    if suffix in {".md", ".markdown"}:
+        titles, blocks, fallback = md_blocks(text)
+        return resolve_roles(titles), blocks, fallback, False
+    return [], [], [part.strip() for part in re.split(r"\n\s*\n", text) if part.strip()], False
+
+
+def _sections(roles: list[str | None], blocks: list[Block], fallback: list[str]) -> dict[str, list[str]]:
+    sections: dict[str, list[str]] = {}
+    for top, _title, _heading, paragraph in blocks:
+        role = "abstract" if top < 0 else roles[top]
+        if role is None:
+            continue
+        sections.setdefault(role, []).append(paragraph)
+    if not any(key != "abstract" for key in sections):
+        sections.setdefault("body", []).extend(fallback)
     return sections
+
+
+def parse_tex(text: str) -> dict[str, list[str]]:
+    titles, blocks, fallback = tex_blocks(text)
+    return _sections(resolve_roles(titles), blocks, fallback)
+
+
+def parse_md(text: str) -> dict[str, list[str]]:
+    titles, blocks, fallback = md_blocks(text)
+    return _sections(resolve_roles(titles), blocks, fallback)
 
 
 def clean_md(paragraph: str) -> str:
@@ -445,13 +533,8 @@ def read_source(path: pathlib.Path) -> str:
 
 
 def load(path: pathlib.Path) -> tuple[dict[str, list[str]], bool]:
-    text = read_source(path)
-    suffix = path.suffix.lower()
-    if suffix == ".tex":
-        return parse_tex(text), True
-    if suffix in {".md", ".markdown"}:
-        return parse_md(text), False
-    return {"body": [part.strip() for part in re.split(r"\n\s*\n", text) if part.strip()]}, False
+    roles, blocks, fallback, tex = document_blocks(path)
+    return _sections(roles, blocks, fallback), tex
 
 
 def detect_language(sections: dict[str, list[str]]) -> str:
@@ -712,76 +795,22 @@ def citation_reuse(path: pathlib.Path) -> dict[str, dict[str, int]]:
 # --------------------------------------------------------------------------- spine
 
 
-def _heading_title(raw: str, tex: bool) -> str:
-    return clean_tex(raw) if tex else re.sub(r"^#+\s*", "", raw).strip()
-
-
 def spine(path: pathlib.Path, lang: str = "auto", section: str | None = None) -> list[dict]:
     """Return the opening sentence of every prose paragraph, grouped under its heading.
 
     Each entry is {"section": role, "heading": title, "openers": [sentence, ...]}.
     """
-    text = read_source(path)
-    tex = path.suffix.lower() == ".tex"
+    roles, raw_blocks, fallback, tex = document_blocks(path)
     if lang not in LANGUAGES:
-        sections, _ = load(path)
-        lang = detect_language(sections)
+        lang = detect_language(_sections(roles, raw_blocks, fallback))
     minimum = LANGUAGES[lang]["min_paragraph"]
     blocks: list[tuple[str, str, str]] = []  # (section role, heading, paragraph)
-    if tex:
-        text = re.sub(r"(?<!\\)%.*", "", text)
-        match = re.search(r"\\begin\{abstract\}(.*?)\\end\{abstract\}", text, flags=re.S)
-        if match:
-            for paragraph in _tex_paragraphs(_remove_environments(match.group(1))):
-                blocks.append(("abstract", "Abstract", paragraph))
-            text = text.replace(match.group(0), " ")
-        match = re.search(r"\\begin\{document\}(.*?)\\end\{document\}", text, flags=re.S)
-        body = match.group(1) if match else text
-        body = re.split(r"\\bibliography\{|\\begin\{thebibliography\}|\\appendices\b|\\appendix\b|\\begin\{IEEEbiography", body)[0]
-        body = _remove_environments(body)
-        for command, marker in (("section", "S"), ("subsection", "U"), ("subsubsection", "U")):
-            body = _strip_command(body, command, keep=False, replacement=f"\n\n@@{marker}@@{{arg}}@@END@@\n\n")
-        role, heading = None, ""
-        for chunk in re.split(r"\n\s*\n", body):
-            chunk = chunk.strip()
-            marker = re.match(r"^@@([SU])@@(.*?)@@END@@$", chunk, flags=re.S)
-            if marker:
-                title = _heading_title(marker.group(2), True)
-                if marker.group(1) == "S":
-                    role, heading = classify(title) or "other", title
-                else:
-                    heading = title
-                continue
-            if role is None:
-                continue
-            for paragraph in _tex_paragraphs(chunk):
-                blocks.append((role, heading, paragraph))
-    else:
-        role, heading = None, ""
-        text = re.sub(r"\$\$.*?\$\$", " ", text, flags=re.S)
-        for raw in text.splitlines():
-            line = raw.strip()
-            if not line:
-                continue
-            title = re.match(r"^(#+)\s*(.*)$", line)
-            if title:
-                name = title.group(2).strip()
-                if re.search(r"references|bibliography|acknowledg|参考文献|致谢", name, re.I):
-                    role = None
-                elif re.match(r"^[A-H]\.\s", name) and role:
-                    heading = name
-                elif re.match(r"^[IVX]+\.\s", name) or classify(name):
-                    role, heading = classify(name) or "other", name
-                continue
-            abstract = re.match(r"^(Abstract|摘要)\s*[\u2014\-:.：]\s*", line)
-            if abstract:
-                blocks.append(("abstract", "Abstract", line[abstract.end():]))
-                continue
-            if role is None or line.startswith(("!", "|", "<")) or FURNITURE.search(line):
-                continue
-            if re.match(r"^(Fig\.|TABLE|Table|Algorithm|图|表|算法)\s*[0-9IVX]+", line) and len(line) < 400:
-                continue
-            blocks.append((role, heading, line))
+    for top, _title, heading, paragraph in raw_blocks:
+        role = "abstract" if top < 0 else roles[top]
+        if role is not None:
+            blocks.append((role, heading, paragraph))
+    if not blocks:
+        blocks = [("body", "", paragraph) for paragraph in fallback]
     entries: list[dict] = []
     for role, heading, paragraph in blocks:
         if section and role != section:
