@@ -43,5 +43,6 @@ jobs:
         run: |
           expected=$(python3 -c "import json; print(len(json.load(open('skills-manifest.json'))['skills']))")
           npx -y skills add "$GITHUB_WORKSPACE" --list > skills-list.txt 2>&1 || { cat skills-list.txt; exit 1; }
-          cat skills-list.txt
-          grep -q "Found ${expected} skills" skills-list.txt || { echo "expected ${expected} skills"; exit 1; }
+          sed -r 's/\x1b\[[0-9;]*[A-Za-z]//g' skills-list.txt > skills-list-plain.txt
+          cat skills-list-plain.txt
+          grep -q "Found ${expected} skills" skills-list-plain.txt || { echo "expected ${expected} skills"; exit 1; }
