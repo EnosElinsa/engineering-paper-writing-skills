@@ -15,8 +15,8 @@ The short version of [the full team house style](team-house-style.md). Read this
 ## Rhythm
 
 <!-- calibrate:begin card -->
-- Body: mean sentence length 23.2–24.8 words, median 21–23, 90th percentile 37–39, 11%–15% of sentences over 35 words, 9%–11% under 12 words.
-- Section means (indicative): Abstract 24.8–30.5, Introduction 20.1–23.6, Related Work 21.3–26.3, System Model and Problem Formulation 22.7–27.1, Proposed algorithm 20.5–27.0, Experimental studies 23.1–24.6, Conclusion 24.2–28.0 words.
+- Body: mean sentence length 20.4–24.8 words, median 19–23, 90th percentile 33–39, 7%–15% of sentences over 35 words, 9%–19% under 12 words.
+- Section means (indicative): Abstract 24.8–30.5, Introduction 20.1–23.6, Related Work 21.3–26.3, System Model and Problem Formulation 19.7–27.1, Proposed algorithm 19.2–27.0, Experimental studies 20.9–24.6, Conclusion 24.2–28.0 words.
 - Abstract 210–250 words in 7–10 sentences; Conclusion 165–280 words in 6–10 sentences.
 <!-- calibrate:end card -->
 - A Chinese manuscript uses the weak-prior band of the Chinese manuscript adapter.

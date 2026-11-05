@@ -18,8 +18,9 @@ Usage:
     python scripts/calibrate_house_style.py --references DIR_OR_FILE ... \\
         [--approved FILE ...] [--baseline FILE] [--abstract-limit 250] [--check | --write]
 
---approved   supervisor-approved drafts whose abstract and Conclusion values widen
-             the abstract and Conclusion bands (they never change the body band).
+--approved   supervisor-approved drafts whose values widen every band (body measures,
+             section means, abstract, and Conclusion), so that the band covers the
+             supervisor's own practice as well as the reference papers.
 --baseline   one supervisor-approved draft whose body values fill the last column
              of the house-style rhythm table.
 --abstract-limit   the author's abstract word limit; it replaces the upper end of
@@ -106,9 +107,9 @@ def propose(references: list[dict], approved: list[dict], abstract_limit: int | 
         raise ValueError("at least two reference papers are required")
     band: dict = {"body": {}, "section_mean": {}}
     for key in ("mean", "median", "p90", "share_long", "share_short"):
-        band["body"][key] = span([r[key] for r in references])
+        band["body"][key] = span([r[key] for r in references + approved])
     for section in SECTIONS:
-        pool = references + (approved if section in {"abstract", "concl"} else [])
+        pool = references + approved
         values = [r["sections"][section] for r in pool if section in r["sections"]]
         if len(values) >= 2:
             band["section_mean"][section] = span(values)
@@ -181,6 +182,9 @@ def render_rhythm(band: dict, references: list[dict], baseline: dict | None, app
     count = NUMBER_WORDS.get(len(references), str(len(references)))
     header = f"| Body measure | Band | Reference papers ({count}) |"
     rule = "|---|---|---|"
+    if approved:
+        header += " Supervisor-approved draft |"
+        rule += "---|"
     if baseline:
         header += " Supervisor-approved baseline draft |"
         rule += "---|"
@@ -198,29 +202,26 @@ def render_rhythm(band: dict, references: list[dict], baseline: dict | None, app
     lines = [header, rule]
     for label, band_text, ref_text, key, fmt in rows:
         line = f"| {label} | {band_text} | {ref_text} |"
+        if approved:
+            line += " " + ", ".join(fmt(doc[key]) for doc in approved) + " |"
         if baseline:
             line += f" {fmt(baseline[key])} |"
         lines.append(line)
-    lines += ["", "| Section | Mean sentence length band |", "|---|---|"]
+    section_header = "| Section | Mean sentence length band |" + (" Supervisor-approved draft |" if approved else "")
+    lines += ["", section_header, "|---|---|" + ("---|" if approved else "")]
     for section in SECTIONS:
         if section in band["section_mean"]:
             low, high = band["section_mean"][section]
-            lines.append(f"| {SECTION_LABELS[section]} | {_num(low, 1)}–{_num(high, 1)} |")
+            line = f"| {SECTION_LABELS[section]} | {_num(low, 1)}–{_num(high, 1)} |"
+            if approved:
+                values = [_num(doc["sections"][section], 1) for doc in approved if section in doc["sections"]]
+                line += f" {', '.join(values) or '-'} |"
+            lines.append(line)
     lines.append("")
-    approved_values = []
-    for doc in approved:
-        parts = []
-        if "abstract" in doc["sections"]:
-            parts.append(f"abstract {_num(doc['sections']['abstract'], 1)}")
-        if "concl" in doc["sections"]:
-            parts.append(f"Conclusion {_num(doc['sections']['concl'], 1)}")
-        if parts:
-            approved_values.append(", ".join(parts))
-    if approved_values:
+    if approved:
         lines.append(
-            "The abstract and Conclusion bands include the supervisor-approved values ("
-            + "; ".join(approved_values)
-            + f"). Section means within {section_tolerance:g} words of the band count as inside."
+            "Every band spans the reference papers and the supervisor-approved draft. "
+            f"Section means within {section_tolerance:g} words of the band count as inside."
         )
     else:
         lines.append(f"Section means within {section_tolerance:g} words of the band count as inside.")

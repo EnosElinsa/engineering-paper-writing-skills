@@ -69,19 +69,19 @@ SECTION_ORDER = ("abstract", "intro", "related", "model", "method", "exp", "futu
 # calibrate:begin band
 TEAM_BAND = {
     "body": {
-        "mean": (23.2, 24.8),
-        "median": (21.0, 23.0),
-        "p90": (37.0, 39.0),
-        "share_long": (0.11, 0.15),
-        "share_short": (0.09, 0.11),
+        "mean": (20.4, 24.8),
+        "median": (19.0, 23.0),
+        "p90": (33.0, 39.0),
+        "share_long": (0.07, 0.15),
+        "share_short": (0.09, 0.19),
     },
     "section_mean": {
         "abstract": (24.8, 30.5),
         "intro": (20.1, 23.6),
         "related": (21.3, 26.3),
-        "model": (22.7, 27.1),
-        "method": (20.5, 27.0),
-        "exp": (23.1, 24.6),
+        "model": (19.7, 27.1),
+        "method": (19.2, 27.0),
+        "exp": (20.9, 24.6),
         "concl": (24.2, 28.0),
     },
     "abstract_words": (210, 250),

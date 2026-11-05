@@ -53,25 +53,25 @@ Default: keep the body and every section inside the band below. A deviation need
 Counting rule: the counting rule of the reader and terminology contract, with inline math counted as one word in sentence lengths, sentences under four words (run-in labels such as `Step 1.`) excluded, and the abstract excluded from the body.
 
 <!-- calibrate:begin rhythm -->
-| Body measure | Band | Reference papers (four) | Supervisor-approved baseline draft |
-|---|---|---|---|
-| Mean sentence length (words) | 23.2–24.8 | 23.2, 24.2, 24.4, 24.8 | 22.4 |
-| Median | 21–23 | 21, 22, 23, 23 | 21 |
-| 90th percentile | 37–39 | 37, 38, 38, 39 | 36 |
-| Share of sentences over 35 words | 11%–15% | 11%, 14%, 14%, 15% | 11% |
-| Share of sentences under 12 words | 9%–11% | 9%, 9%, 10%, 11% | 15% |
+| Body measure | Band | Reference papers (four) | Supervisor-approved draft | Supervisor-approved baseline draft |
+|---|---|---|---|---|
+| Mean sentence length (words) | 20.4–24.8 | 23.2, 24.2, 24.4, 24.8 | 20.4 | 22.4 |
+| Median | 19–23 | 21, 22, 23, 23 | 19 | 21 |
+| 90th percentile | 33–39 | 37, 38, 38, 39 | 33 | 36 |
+| Share of sentences over 35 words | 7%–15% | 11%, 14%, 14%, 15% | 7% | 11% |
+| Share of sentences under 12 words | 9%–19% | 9%, 9%, 10%, 11% | 19% | 15% |
 
-| Section | Mean sentence length band |
-|---|---|
-| Abstract | 24.8–30.5 |
-| Introduction | 20.1–23.6 |
-| Related Work | 21.3–26.3 |
-| System Model and Problem Formulation | 22.7–27.1 |
-| Proposed algorithm | 20.5–27.0 |
-| Experimental studies | 23.1–24.6 |
-| Conclusion | 24.2–28.0 |
+| Section | Mean sentence length band | Supervisor-approved draft |
+|---|---|---|
+| Abstract | 24.8–30.5 | 24.8 |
+| Introduction | 20.1–23.6 | 20.2 |
+| Related Work | 21.3–26.3 | 23.3 |
+| System Model and Problem Formulation | 19.7–27.1 | 19.7 |
+| Proposed algorithm | 19.2–27.0 | 19.2 |
+| Experimental studies | 20.9–24.6 | 20.9 |
+| Conclusion | 24.2–28.0 | 28.0 |
 
-The abstract and Conclusion bands include the supervisor-approved values (abstract 24.8, Conclusion 28.0). Section means within 3 words of the band count as inside.
+Every band spans the reference papers and the supervisor-approved draft. Section means within 3 words of the band count as inside.
 <!-- calibrate:end rhythm -->
 
 How to use the band:
@@ -82,7 +82,7 @@ How to use the band:
 - The 90th percentile and the two shares describe the body of a whole paper, measured over at least three of the Introduction, Related Work, model, method, experiment, and Conclusion sections. When one section is drafted or measured alone, check its section mean only. A settings subsection that lists definitions and parameters may hold many long or short sentences. Do not split its definition or list sentences to move a share into the band.
 - After a section-mean flag, split or merge only until the mean is inside the band. Do not aim at the band center, and check afterwards that the long sentences were not all split.
 - When fewer than about 5% of the sentences of an experiment section run under 12 words, reread whether short results and definitions were merged into long sentences. The script lists this as a note, not a flag.
-- The body band is the default to act on. The section bands rest on four papers and vary more between papers than the body band (compare the last two columns of the validation table in Section 15). Treat a section outside its band as a reason to reread that section, and change it only when its sentences show the over-splitting or stacking signals of Section 4.
+- The body band is the default to act on. The section bands rest on four papers and one supervisor-approved draft and vary more between papers than the body band (compare the last two columns of the validation table in Section 15). Treat a section outside its band as a reason to reread that section, and change it only when its sentences show the over-splitting or stacking signals of Section 4.
 
 ## 4. Combining and splitting sentences
 
@@ -357,6 +357,8 @@ The numbers were measured on the complete text of four IEEE Transactions papers 
 
 Experiment order. Two of the four reference papers (Demand-aware and Fusion) report their scenario experiments before the overall comparison. The Dispersed and Terrain-aware papers open with the overall comparison and then investigate their mechanisms. The supervisor-approved revision moved its scenario experiments ahead of the overall comparison. These observations support the ordering default of the experiment skill.
 
+The rhythm band spans the four papers and the supervisor-approved draft, following the precedence of Section 1, which puts supervisor practice before the reference papers. Measured with the same counting, the supervisor-approved draft writes shorter sentences than the four papers (body mean 20.4 against 23.2–24.8 words).
+
 The supervisor-practice rows come from two rounds of supervisor edits on a 2026 journal revision by the same team, measured as before-and-after sentence diffs; no sentence of that manuscript is reproduced here. In the only round that contained supervisor edits alone, the changed passages went from 49 to 38 sentences and their mean length rose from 22.3 to 23.9 words, through six merges and two deletions without a single split. All examples in this file are synthetic. Openers and title shapes are short stock phrases, not copied sentences.
 
 <!-- calibrate:begin validation -->
@@ -364,8 +366,8 @@ Validation. The band was checked against 13 further published papers that were n
 
 | Group | Papers | Body mean (min–max) | Body mean inside the band or its tolerance | Any section mean outside |
 |---|---|---|---|---|
-| same-lineage constrained evolutionary papers | 5 | 21.7–26.9 | 3 of 5 | 2 of 5 |
-| reinforcement-learning MEC papers | 8 | 20.4–25.2 | 6 of 8 | 5 of 8 |
+| same-lineage constrained evolutionary papers | 5 | 21.7–26.9 | 4 of 5 | 2 of 5 |
+| reinforcement-learning MEC papers | 8 | 20.4–25.2 | 8 of 8 | 5 of 8 |
 <!-- calibrate:end validation -->
 
 The tables between `calibrate` markers in Sections 3 and 15, the band in the fingerprint script, and the Chinese weak-prior tables are generated together. When the team publishes another paper of this family, add it to the reference set and regenerate them with the calibration tool of the collection repository instead of editing the numbers by hand.

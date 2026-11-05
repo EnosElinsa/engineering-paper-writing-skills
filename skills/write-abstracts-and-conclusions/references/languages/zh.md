@@ -37,20 +37,20 @@ No Chinese reference paper by the team is available. The band below converts the
 <!-- calibrate:begin zh-rhythm -->
 | Body measure | Weak-prior band |
 |---|---|
-| Mean sentence length (ideographs) | 35–50 |
-| Median | 32–46 |
-| 90th percentile | 56–78 |
-| Share of sentences over 61 ideographs | 11%–15% |
-| Share of sentences under 21 ideographs | 9%–11% |
+| Mean sentence length (ideographs) | 31–50 |
+| Median | 28–46 |
+| 90th percentile | 50–78 |
+| Share of sentences over 61 ideographs | 7%–15% |
+| Share of sentences under 21 ideographs | 9%–19% |
 
 | Section | Mean sentence length band (ideographs) |
 |---|---|
 | Abstract | 37–61 |
 | Introduction | 30–47 |
 | Related Work | 32–53 |
-| System Model and Problem Formulation | 34–54 |
-| Proposed algorithm | 31–54 |
-| Experimental studies | 35–49 |
+| System Model and Problem Formulation | 30–54 |
+| Proposed algorithm | 29–54 |
+| Experimental studies | 31–49 |
 | Conclusion | 36–56 |
 
 The abstract converts to 315–500 ideographs and the Conclusion to 248–560 ideographs. A venue's own limit overrides both.
