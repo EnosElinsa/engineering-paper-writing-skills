@@ -175,6 +175,7 @@ Assign every source one primary Introduction claim. The default is one appearanc
 
 Hard rules:
 
+- When the sources give two causes for one weakness, state both, each with its own citation, and put each citation in the sentence that states its cause.
 - Never cite the same reference more than once in one paragraph.
 - Do not repeat a source in successive paragraphs to support adjacent steps of one argument.
 - Do not repeat an identical citation cluster in background, classification, and gap paragraphs.

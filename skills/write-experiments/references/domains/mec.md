@@ -80,13 +80,14 @@ These are order-of-magnitude defaults for the scale statement (protocol S in the
 | Experiment section, prose words | about 1100 | about 1700 | about 900 | about 1900 |
 | Lettered subsections | 4 | 6 | 3 | 7 |
 
-**Script counts for `--scale`.** The bundled fingerprint script counts contribution items as paragraphs, joins every other list item and the `where` clause after a display to the paragraph that introduces it, and drops blocks under 20 words. Its counts of the MinerU text of the four papers are below. Use them to declare `--scale` ranges for a draft. Do not run `--scale` on PDF-converted reference text, whose page and column breaks can still split a paragraph. For these four sections: `exp=986-1888 exp.paragraphs=9-18 exp.paragraph_words=99-154`.
+**Script counts for `--scale`.** The bundled fingerprint script counts contribution items as paragraphs, joins every other list item and the `where` clause after a display to the paragraph that introduces it, and drops blocks under 20 words, table notes (`Note.` lines), and caption lines. Declared ranges below round outward, so the four papers fall inside them. Its counts of the MinerU text of the four papers are below. Use them to declare `--scale` ranges for a draft. Do not run `--scale` on PDF-converted reference text, whose page and column breaks can still split a paragraph. For these four sections: `exp=1030-1888 exp.paragraphs=11-18 exp.paragraph_words=93-133`.
 
 | Script count | Demand-aware | Dispersed | Terrain-aware | Fusion |
 |---|---:|---:|---:|---:|
-| Paragraphs | 9 | 16 | 10 | 18 |
-| Words | 1390 | 1653 | 986 | 1888 |
-| Words per paragraph | 154 | 103 | 99 | 105 |
+| Paragraphs | 11 | 17 | 11 | 18 |
+| Words | 1460 | 1698 | 1030 | 1888 |
+| Words per paragraph | 132.7 | 99.9 | 93.6 | 104.9 |
+| Share of sentences under 12 words | 8.3% | 8.3% | 6.5% | 9.1% |
 
 Reading the table: expect roughly 900–1,900 words, 10–19 prose paragraphs, and three to seven subsections. Some reference papers move further experiments to a supplementary document, so the counts understate the full study.
 

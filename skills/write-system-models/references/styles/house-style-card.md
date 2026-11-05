@@ -15,13 +15,13 @@ The short version of [the full team house style](team-house-style.md). Read this
 ## Rhythm
 
 <!-- calibrate:begin card -->
-- Body: mean sentence length 20.4–24.8 words, median 19–23, 90th percentile 33–39, 7%–15% of sentences over 35 words, 9%–19% under 12 words.
-- Section means (indicative): Abstract 24.8–30.5, Introduction 20.1–23.6, Related Work 21.3–26.3, System Model and Problem Formulation 19.7–27.1, Proposed algorithm 19.2–27.0, Experimental studies 20.9–24.6, Conclusion 24.2–28.0 words.
+- Body: mean sentence length 23.2–24.8 words, median 21–23, 90th percentile 37–39, 11%–15% of sentences over 35 words, 9%–11% under 12 words.
+- Section means (indicative): Abstract 24.8–30.5, Introduction 20.1–23.6, Related Work 21.3–26.3, System Model and Problem Formulation 22.7–27.1, Proposed algorithm 20.5–27.0, Experimental studies 22.6–24.6, Conclusion 24.2–28.0 words.
 - Abstract 210–250 words in 7–10 sentences; Conclusion 165–280 words in 6–10 sentences.
 <!-- calibrate:end card -->
 - A Chinese manuscript uses the weak-prior band of the Chinese manuscript adapter.
-- The 90th percentile and the two shares apply to a whole paper. Check one section alone against its section mean only. After a section-mean flag, stop once inside the band.
-- Below the band means over-split: merge before cutting. Never write three sentences under 12 words in a row, merge two adjacent short sentences that state two sides of one comparison or share a subject, and do not split definition or list sentences to move a share. Keep short result and definition sentences: an experiment section with under 5% short sentences is a reason to reread.
+- The 90th percentile and the two shares apply to a whole paper. Check one section alone against its section mean only. After a section-mean flag, split or merge until the mean is inside the band and stop there. Without a flag, this rule is no reason to skip a reread.
+- Below the band means over-split: merge before cutting. Never write three sentences under 12 words in a row, merge two adjacent short sentences that state two sides of one comparison or share a subject, and do not split definition or list sentences to move a share. Keep short result and definition sentences. The four reference experiment sections hold 6.5%–9.1% of sentences under 12 words. Aim at that range. The script's note threshold is its lower end, not the target.
 
 ## Merge, then split
 
@@ -31,7 +31,7 @@ Split only a second independent claim: two claims joined by `, and`, a participl
 
 ## Connectives
 
-Over a whole paper, open at most one sentence in 100 with `Since` and one with `Accordingly`, and none with `Hence`. On one section alone, allow one of each per 100 sentences of the section (at least one), and check `However` and `To address` over the whole paper only. The allowance is a limit, not a quota, and most sections use none. Rotate `Therefore`, `Consequently`, `As a result`, and `Thus`. Use `However` only for a real contrast and `For example` where a general claim needs a case. Never open two consecutive sentences with the same connective, and recount after any splitting pass.
+Over a whole paper, open at most one sentence in 100 with `Since` and one with `Accordingly`, and none with `Hence`. On one section alone, allow one of each per full 100 sentences of the section, so a section under 100 sentences opens none with `Since` or `Accordingly`. Check `However` and `To address` over the whole paper only. Rotate `Therefore`, `Consequently`, `As a result`, and `Thus`. Use `However` only for a real contrast and `For example` where a general claim needs a case. Never open two consecutive sentences with the same connective, and recount after any splitting pass.
 
 ## Structure defaults
 
