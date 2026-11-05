@@ -69,19 +69,19 @@ SECTION_ORDER = ("abstract", "intro", "related", "model", "method", "exp", "futu
 # calibrate:begin band
 TEAM_BAND = {
     "body": {
-        "mean": (20.4, 24.8),
-        "median": (19.0, 23.0),
-        "p90": (33.0, 39.0),
-        "share_long": (0.07, 0.15),
-        "share_short": (0.09, 0.19),
+        "mean": (23.2, 24.8),
+        "median": (21.0, 23.0),
+        "p90": (37.0, 39.0),
+        "share_long": (0.11, 0.15),
+        "share_short": (0.09, 0.11),
     },
     "section_mean": {
         "abstract": (24.8, 30.5),
         "intro": (20.1, 23.6),
         "related": (21.3, 26.3),
-        "model": (19.7, 27.1),
-        "method": (19.2, 27.0),
-        "exp": (20.9, 24.6),
+        "model": (22.7, 27.1),
+        "method": (20.5, 27.0),
+        "exp": (22.6, 24.6),
         "concl": (24.2, 28.0),
     },
     "abstract_words": (210, 250),
@@ -136,7 +136,7 @@ FURNITURE = re.compile(
     re.I,
 )
 
-PROTECT = ("et al.", "Figs.", "Fig.", "Eqs.", "Eq.", "e.g.", "i.e.", "vs.", "Sec.", "Secs.", "No.", "Ref.", "Refs.", "resp.", "cf.")
+PROTECT = ("et al.", "Figs.", "Fig.", "Eqs.", "Eq.", "e.g.", "i.e.", "vs.", "Sec.", "Secs.", "Ref.", "Refs.", "resp.", "cf.")
 
 WORD = re.compile(r"[A-Za-z][A-Za-z'\-]*")
 CJK = re.compile(r"[\u4e00-\u9fff]")
@@ -442,7 +442,9 @@ def md_blocks(text: str) -> tuple[list[str], list[Block], list[str]]:
             continue
         if line.startswith(("!", "|", "<")) or FURNITURE.search(line):
             continue
-        if re.match(r"^(Fig\.|TABLE|Table|Algorithm)\s*[0-9IVX]+", line) and len(line) < 400:
+        # A table note (`Note. ...`) and a caption line are not prose. A line that starts a reporting
+        # sentence such as "Table III presents ..." is prose.
+        if re.match(r"^[*_]{0,2}Notes?[.:]", line) or _md_caption(line):
             continue
         if re.match(r"^(图|表|算法)\s*\d", line) and len(line) < 300:
             continue
@@ -580,13 +582,18 @@ def split_sentences(paragraph: str, lang: str = "en") -> list[str]:
     for index, token in enumerate(PROTECT):
         protected = protected.replace(token, token.replace(".", f"<D{index}>"))
     # A capital initial before a period is protected, except a subsection label such as V-A.
-    protected = re.sub(r"(?<!-)\b([A-Z])\.(?=\s[A-Z])", r"\1<INI>", protected)
-    parts = re.split(r"(?<=[.!?])\s+(?=[A-Z(\"\u201c])", protected)
+    # "No." is protected only before a number ("No. 5"), and a label such as Table I. or Case A.
+    # ends a sentence like any other word.
+    protected = re.sub(r"\bNo\.(?=\s*\d)", "No<NO>", protected)
+    protected = re.sub(r"(?<!-)(?<!Table )(?<!TABLE )(?<!Section )(?<!Sections )(?<!Algorithm )(?<!Case )"
+                       r"(?<!Step )\b([A-Z])\.(?=\s[A-Z])", r"\1<INI>", protected)
+    # A sentence may open with a lowercase-initial name such as mEDCMOA or tDEA-CPBI.
+    parts = re.split(r"(?<=[.!?])\s+(?=[A-Z(\"\u201c]|[a-z]+[A-Z])", protected)
     sentences = []
     for part in parts:
         for index, token in enumerate(PROTECT):
             part = part.replace(f"<D{index}>", ".")
-        part = part.replace("<INI>", ".").strip()
+        part = part.replace("<INI>", ".").replace("<NO>", ".").strip()
         if part:
             sentences.append(part)
     return sentences
@@ -792,6 +799,11 @@ WHOLE_PAPER_SECTIONS = ("intro", "related", "model", "method", "exp", "concl")
 WHOLE_PAPER_MINIMUM = 3
 COUNTED_CONNECTIVES = ("Since", "Accordingly", "Hence")
 
+# Shares of sentences under 12 words in the four reference experiment sections, measured
+# once with the current counting. A section below the lower end gets a note; the note
+# threshold of other sections is 5%. Recalibration leaves these alone.
+SHORT_SHARE_REFERENCE = {"exp": ("experiment", 0.065, 0.091)}
+
 SCOPE_NOTES = {
     "paper": "whole paper; every band applies",
     "sections": (
@@ -844,11 +856,12 @@ def band_flags(result: dict[str, dict]) -> list[str]:
                 for connective in COUNTED_CONNECTIVES:
                     used = body["initial_counts"].get(connective, 0)
                     high = band["initial_per_100"][connective][1]
-                    allowed = 0 if high == 0 else max(1, int(high * count / 100))
+                    allowed = int(high * count / 100)
                     if used > allowed:
                         flags.append(
                             f"sentence-initial {connective}: {used} in {count} sentences "
-                            f"(at most {allowed} below a whole paper)"
+                            f"(at most {allowed} in a section of {count} sentences; the whole paper allows "
+                            f"{high:g} per 100 sentences)"
                         )
         elif lang == "en":
             for connective, (low, high) in band["initial_per_100"].items():
@@ -926,7 +939,9 @@ def band_notes(result: dict[str, dict]) -> list[str]:
             if name in judged or low <= body[name] <= high:
                 continue
             if name.startswith("share"):
-                shown, span = f"{body[name]:.0%}", f"{low:.0%}-{high:.0%}"
+                near_edge = min(abs(body[name] - low), abs(body[name] - high)) < 0.01
+                shown = f"{body[name]:.1%}" if near_edge else f"{body[name]:.0%}"
+                span = f"{low:.0%}-{high:.0%}"
             else:
                 shown, span = f"{body[name]:.1f}", f"{low:g}-{high:g}"
             notes.append(f"{name} = {shown} is outside the whole-paper band {span} (not judged below a whole paper)")
@@ -934,7 +949,7 @@ def band_notes(result: dict[str, dict]) -> list[str]:
             count = body["sentences"]
             for connective in COUNTED_CONNECTIVES:
                 high = band["initial_per_100"][connective][1]
-                allowed = 0 if high == 0 else max(1, int(high * count / 100))
+                allowed = int(high * count / 100)
                 used = body["initial_counts"].get(connective, 0)
                 if used and used == allowed:
                     notes.append(f"sentence-initial {connective}: {used} in {count} sentences reaches the single-section "
@@ -947,9 +962,12 @@ def band_notes(result: dict[str, dict]) -> list[str]:
     for section, measured in result.items():
         if section in {"abstract", "concl"} or (section == "body" and scope != "text") or measured["sentences"] < 20:
             continue
-        if measured["share_short"] < 0.05:
-            notes.append(f"{section}: {measured['share_short']:.0%} of sentences under {profile['short']} {unit}; "
-                         "reread whether short results and definitions were merged into long sentences")
+        reference = SHORT_SHARE_REFERENCE.get(section) if lang == "en" else None
+        if measured["share_short"] < (reference[1] if reference else 0.05):
+            target = (f" (four reference {reference[0]} sections {reference[1]:.1%}-{reference[2]:.1%}; aim at "
+                      "that range, not at this threshold)") if reference else ""
+            notes.append(f"{section}: {measured['share_short']:.1%} of sentences under {profile['short']} {unit}"
+                         f"{target}; reread whether short results and definitions were merged into long sentences")
     return notes
 
 

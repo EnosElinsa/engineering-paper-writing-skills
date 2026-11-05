@@ -18,9 +18,9 @@ Usage:
     python scripts/calibrate_house_style.py --references DIR_OR_FILE ... \\
         [--approved FILE ...] [--baseline FILE] [--abstract-limit 250] [--check | --write]
 
---approved   supervisor-approved drafts whose values widen every band (body measures,
-             section means, abstract, and Conclusion), so that the band covers the
-             supervisor's own practice as well as the reference papers.
+--approved   supervisor-approved drafts whose abstract and Conclusion values widen
+             the abstract and Conclusion bands. Their body and section values are
+             shown next to the band for comparison and never change it.
 --baseline   one supervisor-approved draft whose body values fill the last column
              of the house-style rhythm table.
 --abstract-limit   the author's abstract word limit; it replaces the upper end of
@@ -107,9 +107,9 @@ def propose(references: list[dict], approved: list[dict], abstract_limit: int | 
         raise ValueError("at least two reference papers are required")
     band: dict = {"body": {}, "section_mean": {}}
     for key in ("mean", "median", "p90", "share_long", "share_short"):
-        band["body"][key] = span([r[key] for r in references + approved])
+        band["body"][key] = span([r[key] for r in references])
     for section in SECTIONS:
-        pool = references + approved
+        pool = references + (approved if section in {"abstract", "concl"} else [])
         values = [r["sections"][section] for r in pool if section in r["sections"]]
         if len(values) >= 2:
             band["section_mean"][section] = span(values)
@@ -220,7 +220,8 @@ def render_rhythm(band: dict, references: list[dict], baseline: dict | None, app
     lines.append("")
     if approved:
         lines.append(
-            "Every band spans the reference papers and the supervisor-approved draft. "
+            "The body and section bands follow the reference papers. The supervisor-approved draft is shown "
+            "for comparison, and its abstract and Conclusion values widen those two bands. "
             f"Section means within {section_tolerance:g} words of the band count as inside."
         )
     else:

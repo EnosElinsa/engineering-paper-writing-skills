@@ -576,11 +576,16 @@ class CountingAndNoteTests(unittest.TestCase):
 
     def test_notes_cover_unjudged_measures_tolerance_and_quota(self) -> None:
         since = "Since the station moves with the demand, the controller assigns every robot to the nearest zone again."
-        path = self.write("notes.md", "# V. Experimental Studies\n\n" + " ".join([since] + [LONG] * 21) + "\n")
-        notes = F.band_notes(F.fingerprint(path))
+        path = self.write("notes.md", "# V. Experimental Studies\n\n" + " ".join([since] + [LONG] * 99) + "\n")
+        result = F.fingerprint(path)
+        notes = F.band_notes(result)
         self.assertTrue(any("not judged below a whole paper" in note for note in notes), notes)
-        self.assertTrue(any("0% of sentences under 12" in note for note in notes), notes)
+        self.assertTrue(any("0.0% of sentences under 12" in note and "reference experiment sections" in note
+                            for note in notes), notes)
         self.assertTrue(any("reaches the single-section limit" in note for note in notes), notes)
+        short = self.write("short.md", "# V. Experimental Studies\n\n" + " ".join([since] + [LONG] * 30) + "\n")
+        flags = F.band_flags(F.fingerprint(short))
+        self.assertTrue(any(flag.startswith("sentence-initial Since: 1 in 31 sentences (at most 0") for flag in flags))
 
     def test_opener_templates_count_per_verb_and_need_an_introduction(self) -> None:
         considers = "To address this limitation, this study considers a mobile depot that follows the delivery demand."
@@ -631,6 +636,29 @@ class CountingAndNoteTests(unittest.TestCase):
     def test_subsection_label_ends_a_sentence_and_e_notation_is_one_token(self) -> None:
         self.assertEqual(len(F.split_sentences("The settings follow Section V-A. The results are reported next.")), 2)
         self.assertEqual(F.sentence_length("The HV is 5.83e+04 on the first instance."), 7)
+        self.assertEqual(len(F.split_sentences("The variant without reuse is denoted No. The No version is slower.")), 2)
+        self.assertEqual(len(F.split_sentences("The settings appear in Table I. Table II lists the instances.")), 2)
+        self.assertEqual(len(F.split_sentences("The fourth baseline is NSGA-II. mEDCMOA keeps an archive.")), 2)
+        self.assertEqual(len(F.split_sentences("The case is reported as No. 5 in the list of instances.")), 1)
+
+    def test_table_notes_and_reporting_lines(self) -> None:
+        path = self.write("tables.md", (
+            "# V. Experimental Studies\n\n" + LONG + "\n\nTABLE III. Comparison results of the five algorithms.\n\n"
+            "| A | B |\n|---|---|\n| 1 | 2 |\n\nNote. HV: hypervolume. IGD: inverted generational distance. The best "
+            "value of each instance is shown in bold, and the symbols mark the Wilcoxon rank-sum test at the 0.05 level.\n\n"
+            "Table III presents the mean and the standard deviation of HV and IGD over thirty runs on every instance of "
+            "the benchmark set.\n"
+        ))
+        exp = F.fingerprint(path)["exp"]
+        self.assertEqual(exp["paragraphs"], 2)
+        self.assertEqual(exp["sentences"], 2)
+
+    def test_share_near_a_band_edge_shows_one_decimal(self) -> None:
+        low = F.TEAM_BAND["body"]["share_short"][0]
+        result = {"exp": {"unit": "words", "sentences": 50, "mean": 23.5, "median": 22.0, "p90": 38.0, "share_long": 0.12,
+                          "share_short": low - 0.004, "initial_counts": {}, "initial_per_100": {}}}
+        notes = F.band_notes(result)
+        self.assertTrue(any(f"share_short = {low - 0.004:.1%}" in note for note in notes), notes)
 
 
 class DiffTests(unittest.TestCase):
