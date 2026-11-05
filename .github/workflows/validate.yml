@@ -1,38 +1,47 @@
 name: Validate skills
-
 on:
   push:
     branches: [main]
   pull_request:
-
 permissions:
   contents: read
-
 jobs:
   validate:
+    name: Python ${{ matrix.python-version }}
     runs-on: ubuntu-latest
     strategy:
       fail-fast: false
       matrix:
-        python-version: ["3.10", "3.x"]
-
+        python-version: ["3.10", "3.12", "3.x"]
     steps:
       - name: Check out repository
         uses: actions/checkout@v5
-
       - name: Set up Python
         uses: actions/setup-python@v6
         with:
           python-version: ${{ matrix.python-version }}
-
       - name: Run unit tests
         run: python -m unittest discover -s tests -v
-
       - name: Validate skill collection
         run: python scripts/validate_skills.py
-
       - name: Check shared files are synchronized
         run: python scripts/sync_shared.py --check
 
-      - name: Verify installer dry run
-        run: python scripts/install_skills.py --dry-run
+  skills-cli:
+    name: Discoverable by the skills CLI
+    runs-on: ubuntu-latest
+    env:
+      DISABLE_TELEMETRY: "1"
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v5
+      - name: Set up Node.js
+        uses: actions/setup-node@v5
+        with:
+          node-version: "22"
+      - name: List the skills the CLI finds
+        run: |
+          expected=$(python3 -c "import json; print(len(json.load(open('skills-manifest.json'))['skills']))")
+          npx -y skills add "$GITHUB_WORKSPACE" --list > skills-list.txt 2>&1 || { cat skills-list.txt; exit 1; }
+          cat skills-list.txt
+          grep -q "Found ${expected} skills" skills-list.txt || { echo "expected ${expected} skills"; exit 1; }

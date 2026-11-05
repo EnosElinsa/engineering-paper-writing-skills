@@ -1,0 +1,27 @@
+name: Rule proposal
+description: Propose a new rule, a change to a rule, or a new domain pack.
+labels: [enhancement]
+body:
+  - type: textarea
+    id: rule
+    attributes:
+      label: Proposed rule
+      description: The rule as it would read in the skill, and the skill or shared file it belongs to.
+    validations:
+      required: true
+  - type: textarea
+    id: failure
+    attributes:
+      label: Failure it prevents
+      description: A short synthetic example of the writing failure, and the corrected version.
+    validations:
+      required: true
+  - type: textarea
+    id: evidence
+    attributes:
+      label: Evidence
+      description: >-
+        Where the practice comes from: published papers (cite them), venue guidelines, or measured edits.
+        Say whether the rule is generic or specific to a field or solver family.
+    validations:
+      required: true

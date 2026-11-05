@@ -1,0 +1,43 @@
+name: Bug report
+description: A skill gave wrong guidance, or a script crashed or measured something wrongly.
+labels: [bug]
+body:
+  - type: dropdown
+    id: component
+    attributes:
+      label: Component
+      options:
+        - write-introductions
+        - write-related-work
+        - write-system-models
+        - write-methods
+        - write-experiments
+        - write-abstracts-and-conclusions
+        - write-revision-responses
+        - latex-prose-audit
+        - style_fingerprint.py
+        - repository tools (sync, validation, calibration)
+    validations:
+      required: true
+  - type: textarea
+    id: what-happened
+    attributes:
+      label: What happened
+      description: The guidance or output you got, and what you expected instead.
+    validations:
+      required: true
+  - type: textarea
+    id: reproduce
+    attributes:
+      label: How to reproduce
+      description: >-
+        The request you gave the agent or the command you ran. Use a short synthetic snippet;
+        do not paste unpublished manuscript text.
+      render: text
+    validations:
+      required: true
+  - type: input
+    id: environment
+    attributes:
+      label: Environment
+      description: Agent and version, skills version (`npx skills list -g`), Python version, operating system.

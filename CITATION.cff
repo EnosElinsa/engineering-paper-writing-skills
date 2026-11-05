@@ -1,0 +1,21 @@
+cff-version: 1.2.0
+message: "If these skills support your work, please cite the repository as below."
+title: "Engineering Paper Writing Skills"
+abstract: >-
+  Agent skills for drafting, revising, and auditing engineering research papers,
+  with section contracts, a measured team house style, and a style fingerprint script.
+type: software
+authors:
+  - alias: EnosElinsa
+version: 3.0.0
+date-released: 2026-11-04
+license: MIT
+repository-code: "https://github.com/EnosElinsa/engineering-paper-writing-skills"
+url: "https://github.com/EnosElinsa/engineering-paper-writing-skills"
+keywords:
+  - agent skills
+  - academic writing
+  - scientific writing
+  - engineering research
+  - LaTeX
+  - mobile edge computing
